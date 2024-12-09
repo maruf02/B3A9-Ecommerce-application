@@ -59,35 +59,40 @@ const VendorDashBoard = () => {
 
   return (
     <div className="border border-2 border-red-600 w-full h-full min-h-screen text-center align-middle">
-      {vendorData ? (
-        <div className="place-content-center">
-          Shop Name:{vendorData.data.shopName}
-        </div>
-      ) : (
-        <div className="place-content-center">
-          <div>
-            <form onSubmit={handleAddShopname}>
-              <label className="mb-2 ml-1 font-bold text-xs text-slate-700">
-                Shop Name
-              </label>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  name="shopName"
-                  required
-                  className="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow"
-                  placeholder="Enter Your Shop Name"
-                />
-              </div>
-              <div className="flex justify-center my-5  ">
-                <button className="flex text-white btn hover:bg-[#1A4870] bg-[#5B99C2] btn-md justify-center w-full text-2xl pb-1 ">
-                  Save
-                </button>
-              </div>
-            </form>
+      <div>
+        {" "}
+        {vendorData ? (
+          <div className="place-content-center">
+            Shop Name:{vendorData.data.shopName}
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="place-content-center">
+            <div>
+              <form onSubmit={handleAddShopname}>
+                <label className="mb-2 ml-1 font-bold text-xs text-slate-700">
+                  Shop Name
+                </label>
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    name="shopName"
+                    required
+                    className="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow"
+                    placeholder="Enter Your Shop Name"
+                  />
+                </div>
+                <div className="flex justify-center my-5  ">
+                  <button className="flex text-white btn hover:bg-[#1A4870] bg-[#5B99C2] btn-md justify-center w-full text-2xl pb-1 ">
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+      {/* view shop details portion */}
+      {/* view shop details portion */}
     </div>
   );
 };

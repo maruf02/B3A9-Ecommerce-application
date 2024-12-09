@@ -19,6 +19,8 @@ import AdminProtectRoute from "./Components/AdminProtectRoute/AdminProtectRoute.
 import VendorProtectRoute from "./Components/vendorProjectRoute/VendorProtectRoute.tsx";
 import ManageProduct from "./DashBoardPanel/VendorPanel/ManageProduct/ManageProduct.tsx";
 import OrderManagement from "./DashBoardPanel/VendorPanel/OrderManagement/OrderManagement.tsx";
+import ManageCategory from "./DashBoardPanel/AdminPanel/ManageCategory/ManageCategory.tsx";
+import UserManagement from "./DashBoardPanel/AdminPanel/UserManagement/UserManagement.tsx";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +52,22 @@ const router = createBrowserRouter([
         element: (
           <AdminProtectRoute>
             <AdminDashBoard />
+          </AdminProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/admin/ManageCategory",
+        element: (
+          <AdminProtectRoute>
+            <ManageCategory />
+          </AdminProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/admin/ManageUsers",
+        element: (
+          <AdminProtectRoute>
+            <UserManagement />
           </AdminProtectRoute>
         ),
       },

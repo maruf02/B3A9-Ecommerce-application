@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../Redux/hooks";
 
-import { useLoginMutation } from "../../Redux/features/auth/authApi";
+import {
+  useLoginMutation,
+  usePostLoginActivityMutation,
+} from "../../Redux/features/auth/authApi";
 import { verifyToken } from "../../Redux/verifyToken";
 import { setUser } from "../../Redux/features/auth/authSlice";
 import Navbar from "../../Navbar/Navbar";
@@ -13,6 +16,8 @@ import {
   useGetUserEmailQuery,
   useUpdatePasswordMutation,
 } from "../../Redux/user/userApi";
+import moment from "moment";
+import Bowser from "bowser";
 
 type FieldType = {
   password?: string;
@@ -38,6 +43,7 @@ const LoginPage = () => {
   const { data: userData, isError } = useGetUserEmailQuery(email);
   const [updatePassword] = useUpdatePasswordMutation();
   const [login] = useLoginMutation();
+  const [postLoginActivity] = usePostLoginActivityMutation();
 
   // login portion
   console.log(userData);
@@ -53,12 +59,25 @@ const LoginPage = () => {
     // };
     const userInfo = { email, password };
 
+    const formattedDateTime = moment().format("YYYY-MM-DD HH:mm:ss");
+    const loginAt = formattedDateTime;
+    const browser = Bowser.getParser(window.navigator.userAgent);
+    const browserName = browser.getBrowser().name;
+    const browserVersion = browser.getBrowser().version;
+    const osName = browser.getOS().name;
+    const osVersion = browser.getOS().version;
+    const platformType = browser.getPlatformType();
+    const device = `${browserName},${browserVersion},${osName},${osVersion},${platformType}`;
+
+    const loginActivityInfo = { email, loginAt, device };
+
     try {
       const res = await login(userInfo).unwrap();
       const user = verifyToken(res.data.accessToken);
       const { role } = user as User;
       //   console.log("User data:", role);
       dispatch(setUser({ user: user, token: res.data.accessToken }));
+      await postLoginActivity(loginActivityInfo).unwrap();
       navigate(`/DashBoard/${role}`);
     } catch (err) {
       const error = err as ErrorResponse;

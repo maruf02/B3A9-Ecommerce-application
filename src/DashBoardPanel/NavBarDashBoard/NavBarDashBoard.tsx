@@ -22,7 +22,7 @@ type MenuItem = {
 
 const adminItems: MenuItem[] = [
   { key: "1", icon: <PieChartOutlined />, label: "Dashboard" },
-  { key: "2", icon: <DesktopOutlined />, label: "Manage Car" },
+  { key: "2", icon: <DesktopOutlined />, label: "Manage Categories" },
   { key: "3", icon: <DesktopOutlined />, label: "Manage Booking" },
   { key: "4", icon: <DesktopOutlined />, label: "Manage Return" },
   { key: "5", icon: <DesktopOutlined />, label: "User Management" },
@@ -80,7 +80,7 @@ const NavBarDashBoard = () => {
             navigate("/DashBoard/admin");
             break;
           case "2":
-            navigate("/DashBoard/ManageCars");
+            navigate("/DashBoard/admin/ManageCategory");
             break;
           case "3":
             navigate("/DashBoard/ManageBooking");
@@ -89,7 +89,7 @@ const NavBarDashBoard = () => {
             navigate("/DashBoard/ManageReturn");
             break;
           case "5":
-            navigate("/DashBoard/ManageUsers");
+            navigate("/DashBoard/admin/ManageUsers");
             break;
           case "6":
             navigate("/DashBoard/ReportGenerate");

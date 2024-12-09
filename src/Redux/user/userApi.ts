@@ -22,15 +22,21 @@ const authApi = baseApi.injectEndpoints({
         body: { password },
       }),
     }),
+    changePassword: builder.mutation({
+      query: () => ({
+        url: "/change-password",
+        method: "PUT",
+      }),
+    }),
     GetAllUser: builder.query({
       query: () => ({
-        url: "/auth/users",
+        url: "/users",
         method: "GET",
       }),
     }),
     GetUserEmail: builder.query({
       query: (email: string) => ({
-        url: `/auth/usersEmail/${email}`,
+        url: `/users/email/${email}`,
         method: "GET",
       }),
     }),
@@ -44,14 +50,14 @@ const authApi = baseApi.injectEndpoints({
 
     updateUser: builder.mutation({
       query: ({ userId, userModifyData }) => ({
-        url: `/auth/usersInfo/${userId}`,
+        url: `/users/${userId}`,
         method: "PUT",
         body: userModifyData,
       }),
     }),
     deleteUser: builder.mutation({
       query: (userId: string) => ({
-        url: `/cars/${userId}`,
+        url: `/users/${userId}`,
         method: "DELETE",
       }),
     }),
@@ -65,4 +71,5 @@ export const {
   useSignUpUserMutation,
   useAddUserMutation,
   useUpdateUserMutation,
+  useDeleteUserMutation,
 } = authApi;

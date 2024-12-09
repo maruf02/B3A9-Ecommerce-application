@@ -9,7 +9,24 @@ const authApi = baseApi.injectEndpoints({
         body: userInfo,
       }),
     }),
+
+    postLoginActivity: builder.mutation({
+      query: (loginActivityInfo) => ({
+        url: `/loginActivity`,
+        method: "POST",
+        body: loginActivityInfo,
+      }),
+    }),
+
+    // Query to get all login activities
+    getLoginActivities: builder.query({
+      query: () => `/loginActivities`,
+    }),
   }),
 });
 
-export const { useLoginMutation } = authApi;
+export const {
+  useLoginMutation,
+  useGetLoginActivitiesQuery,
+  usePostLoginActivityMutation,
+} = authApi;
