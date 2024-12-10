@@ -18,21 +18,15 @@ const persistConfig = {
   key: "auth",
   storage,
 };
-const persistConfigCart = {
-  key: "cart",
-  storage,
-  whitelist: ["vendorId", "productIds"],
-};
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
-const persistedCartReducer = persistReducer(persistConfigCart, cartReducer);
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     // auth: authReducer,
     auth: persistedAuthReducer,
-    cart: persistedCartReducer,
+    cart: cartReducer,
 
     // product: productReducer,
     // placeOrder: placeOrderReducer,

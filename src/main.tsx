@@ -22,6 +22,8 @@ import OrderManagement from "./DashBoardPanel/VendorPanel/OrderManagement/OrderM
 import ManageCategory from "./DashBoardPanel/AdminPanel/ManageCategory/ManageCategory.tsx";
 import UserManagement from "./DashBoardPanel/AdminPanel/UserManagement/UserManagement.tsx";
 import SalesReport from "./DashBoardPanel/VendorPanel/SalesReport/SalesReport.tsx";
+import ProductDetailsViewPage from "./Pages/ProductDetailsViewPage/ProductDetailsViewPage.tsx";
+import ShopPage from "./Pages/ShopPage/ShopPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +34,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Homepage />,
+      },
+      {
+        path: "/productDetailsView/:productId",
+        element: <ProductDetailsViewPage />,
+      },
+      {
+        path: "/shopPage/:vendorId",
+        element: <ShopPage />,
       },
     ],
   },
@@ -83,9 +93,9 @@ const router = createBrowserRouter([
       {
         path: "/DashBoard/vendor/ManageProducts",
         element: (
-          <VendorProtectRoute>
-            <ManageProduct />
-          </VendorProtectRoute>
+          // <VendorProtectRoute>
+          <ManageProduct />
+          // </VendorProtectRoute>
         ),
       },
       {

@@ -53,6 +53,18 @@ const produtcsApi = baseApi.injectEndpoints({
         body: productData,
       }),
     }),
+    // GetAllProduct: builder.query({
+    //   query: () => ({
+    //     url: "/products",
+    //     method: "GET",
+    //   }),
+    // }),
+    GetAllProductQuery: builder.query({
+      query: ({ page, limit }) => ({
+        url: `/products?page=${page}&limit=${limit}`,
+        method: "GET",
+      }),
+    }),
     GetAllProduct: builder.query({
       query: () => ({
         url: "/products",
@@ -62,6 +74,22 @@ const produtcsApi = baseApi.injectEndpoints({
     GetProductById: builder.query({
       query: (productId: string) => ({
         url: `/products/${productId}`,
+        method: "GET",
+      }),
+    }),
+
+    // ***********************
+    getProductsByCartIds: builder.query({
+      query: (productIds) => ({
+        url: "/cartProducts/cartItem",
+        method: "GET",
+        params: { productIds: productIds.join(",") },
+      }),
+    }),
+    // ***********************
+    GetProductByVendorId: builder.query({
+      query: (vendorId: string) => ({
+        url: `/productsByShopName/${vendorId}`,
         method: "GET",
       }),
     }),
@@ -102,4 +130,7 @@ export const {
   useGetProductByShopNameQuery,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useGetAllProductQueryQuery,
+  useGetProductByVendorIdQuery,
+  useGetProductsByCartIdsQuery,
 } = produtcsApi;
