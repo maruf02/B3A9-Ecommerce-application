@@ -1,7 +1,7 @@
 import { IoAddCircleOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 
-import { FaEdit } from "react-icons/fa";
+import { FaCopy, FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { useState } from "react";
 import {
@@ -64,6 +64,7 @@ const ManageProduct = () => {
     const discount = selectedDiscount;
     const discountPrice = parseFloat(form.discountPrice.value);
     const isFlashSale = selectedIsFlashSale;
+
     // ***************************************************************************
     // ***************************************************************************
 
@@ -202,7 +203,7 @@ const ManageProduct = () => {
       name,
       price,
       category,
-      image: mimageUrl,
+      mimage: mimageUrl,
       image2: imageUrl2,
       image3: imageUrl3,
       image4: imageUrl4,
@@ -214,7 +215,7 @@ const ManageProduct = () => {
       isFlashSale,
       vendorId: vendor.vendorId,
     };
-    // console.log("productData", productData);
+    console.log("productData", productData);
 
     try {
       await addProductItem(productData).unwrap();
@@ -239,6 +240,53 @@ const ManageProduct = () => {
     }
   };
 
+  const handleCopyProduct = async (productId: string) => {
+    console.log(productId);
+    const product = produtcs.find((p: any) => p.productId === productId);
+    if (product) {
+      setSelectedProduct(product);
+      setSelectedCategory(product.category);
+      setSelectedDiscount(product.discount);
+      setSelectedIsFlashSale(product.isFlashSale);
+    }
+
+    const productData = {
+      shopNameM: selectedProduct?.shopNameM,
+      email: selectedProduct?.email,
+      name: selectedProduct?.name,
+      price: selectedProduct?.price,
+      category: selectedProduct?.category,
+      mimage: selectedProduct?.mimage,
+      image2: selectedProduct?.image2,
+      image3: selectedProduct?.imageUrl3,
+      image4: selectedProduct?.imageUrl4,
+      image5: selectedProduct?.imageUrl5,
+      quantity: selectedProduct?.quantity,
+      description: selectedProduct?.description,
+      discount: selectedProduct?.discount,
+      discountPrice: selectedProduct?.discountPrice,
+      isFlashSale: selectedProduct?.isFlashSale,
+      vendorId: vendor.vendorId,
+    };
+    console.log("productData", productData);
+
+    try {
+      await addProductItem(productData).unwrap();
+      // console.log("Product added:", response);
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your duplicate work has been saved",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      productsRefech();
+    } catch (error) {
+      // console.error("Failed to add product:", error);
+    }
+  };
+
   const handleEditProduct = (productId: string) => {
     setSelectedproductId(productId);
     const modal = document.getElementById(
@@ -251,6 +299,8 @@ const ManageProduct = () => {
     if (product) {
       setSelectedProduct(product);
       setSelectedCategory(product.category);
+      setSelectedDiscount(product.discount);
+      setSelectedIsFlashSale(product.isFlashSale);
     }
   };
 
@@ -259,26 +309,170 @@ const ManageProduct = () => {
 
     const form = event.target as HTMLFormElement;
     const name = form.nameT.value;
-    const image = form.Mimage.value;
+    const price = parseFloat(form.price.value);
     const category = selectedCategory;
 
-    // const quantity = parseInt(form.quantity.value);
+    const quantity = parseInt(form.quantity.value);
+    const mimage = form.Mimage.files[0];
+    const image2 = form.image2.files[0];
+    const image3 = form.image3.files[0];
+    const image4 = form.image4.files[0];
+    const image5 = form.image5.files[0];
+    const discount = selectedDiscount || selectedProduct.discount;
+    const discountPrice = parseFloat(form.discountPrice.value);
+    const isFlashSale = selectedIsFlashSale || selectedProduct.isFlashSale;
 
     const description = form.description.value;
 
+    // Mimage upload portion
+    let mimageUrl; // Use existing image URL if no new image is uploaded
+
+    if (mimage) {
+      const formData = new FormData();
+      formData.append("file", mimage);
+      formData.append("upload_preset", "frontend_preset");
+
+      try {
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dnsqmhk8i/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        mimageUrl = data.secure_url;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
+
+    // Mimage upload portion
+    // Mimage2upload portion
+    let imageUrl2; // Use existing image URL if no new image is uploaded
+
+    if (image2) {
+      const formData = new FormData();
+      formData.append("file", image2);
+      formData.append("upload_preset", "frontend_preset");
+
+      try {
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dnsqmhk8i/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        imageUrl2 = data.secure_url;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
+
+    // Mimage2 upload portion
+    // Mimage3 upload portion
+    let imageUrl3; // Use existing image URL if no new image is uploaded
+
+    if (image3) {
+      const formData = new FormData();
+      formData.append("file", image3);
+      formData.append("upload_preset", "frontend_preset");
+
+      try {
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dnsqmhk8i/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        imageUrl3 = data.secure_url;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
+
+    // Mimage3 upload portion
+    // Mimage4 upload portion
+    let imageUrl4; // Use existing image URL if no new image is uploaded
+
+    if (image4) {
+      const formData = new FormData();
+      formData.append("file", image4);
+      formData.append("upload_preset", "frontend_preset");
+
+      try {
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dnsqmhk8i/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        imageUrl4 = data.secure_url;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
+
+    // Mimage4 upload portion
+    // Mimage5 upload portion
+    let imageUrl5; // Use existing image URL if no new image is uploaded
+
+    if (image5) {
+      const formData = new FormData();
+      formData.append("file", image5);
+      formData.append("upload_preset", "frontend_preset");
+
+      try {
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dnsqmhk8i/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        imageUrl5 = data.secure_url;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
+
+    // image3 upload portion
+
+    // ***************************************************************************
+    // ***************************************************************************
+
     const productModifyData = {
       name,
-      image,
-
+      price,
       category,
-
+      quantity,
+      mimage: mimageUrl || selectedProduct?.mimage,
+      image2: imageUrl2 || selectedProduct?.image2,
+      image3: imageUrl3 || selectedProduct?.image3,
+      image4: imageUrl4 || selectedProduct?.image4,
+      image5: imageUrl5 || selectedProduct?.image5,
       description,
+      discount,
+      discountPrice,
+      isFlashSale,
     };
-
+    console.log("productModifyData", productModifyData);
     try {
       await updateProduct({
         productId: selectedproductId,
-        productModifyData: productModifyData,
+        productsModifyData: productModifyData,
       });
       // console.log("Product updated:", response);
       Swal.fire({
@@ -305,6 +499,16 @@ const ManageProduct = () => {
     const form = event.target as HTMLFormElement;
     const selectedValue = form.value;
     setSelectedCategory(selectedValue);
+  };
+  const handleSelectChangeDiscount = (event: React.FormEvent) => {
+    const form = event.target as HTMLFormElement;
+    const selectedValue = form.value;
+    setSelectedDiscount(selectedValue);
+  };
+  const handleSelectChangeIsFlashSale = (event: React.FormEvent) => {
+    const form = event.target as HTMLFormElement;
+    const selectedValue = form.value;
+    setSelectedIsFlashSale(selectedValue);
   };
 
   // console.log(selectedproductId);
@@ -341,7 +545,7 @@ const ManageProduct = () => {
         <h2 className="text-2xl text-black font-semibold">
           Product Management
         </h2>
-
+        {/* **************add product modal********************************* */}
         <button
           onClick={() => {
             const modal = document.getElementById(
@@ -378,6 +582,7 @@ const ManageProduct = () => {
                     type="text"
                     name="shopName"
                     defaultValue={vendor.shopName}
+                    readOnly
                     placeholder="Enter Product name"
                     className="input input-bordered input-primary w-full max-w-60 bg-inherit text-white"
                   />
@@ -412,10 +617,42 @@ const ManageProduct = () => {
                   />
                 </div>
                 <div>
-                  <label className="pr-3 text-white"> Image:</label>
+                  <label className="pr-3 text-white">Main Image-1:</label>
                   <input
                     type="file"
                     name="Mimage"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="pr-3 text-white">Main Image-2:</label>
+                  <input
+                    type="file"
+                    name="image2"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="pr-3 text-white">Main Image-3:</label>
+                  <input
+                    type="file"
+                    name="image3"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="pr-3 text-white">Main Image-4:</label>
+                  <input
+                    type="file"
+                    name="image4"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="pr-3 text-white">Main Image-5:</label>
+                  <input
+                    type="file"
+                    name="image5"
                     className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
                   />
                 </div>
@@ -452,13 +689,26 @@ const ManageProduct = () => {
                   </select>
                 </div>
 
-                {selectedDiscount === "Yes" && (
+                {selectedDiscount === "Yes" ? (
                   <div>
                     <label className="pr-12 text-white">Discount Price:</label>
                     <input
                       type="number"
-                      name="price"
+                      name="discountPrice"
                       min={1}
+                      placeholder="Enter Product name"
+                      className="input input-bordered input-primary w-full max-w-60 bg-inherit text-white"
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label className="pr-12 text-white">Discount Price:</label>
+                    <input
+                      type="number"
+                      name="discountPrice"
+                      min={0}
+                      defaultValue={0}
+                      readOnly
                       placeholder="Enter Product name"
                       className="input input-bordered input-primary w-full max-w-60 bg-inherit text-white"
                     />
@@ -472,7 +722,7 @@ const ManageProduct = () => {
                     value={selectedIsFlashSale || ""} // Ensure the selected value reflects the state
                     className="select select-bordered w-full max-w-60 bg-[#1A4870] text-white "
                   >
-                    <option value="" disabled selected>
+                    <option value="" disabled>
                       Select Flash sale
                     </option>
                     <option value="Yes">Yes</option>
@@ -498,6 +748,9 @@ const ManageProduct = () => {
             {/* add car form */}
           </div>
         </dialog>
+
+        {/* **************add product modal********************************* */}
+        {/* **************edit product modal********************************* */}
         {/* edit modal */}
         <dialog id="editProductModal" className="modal">
           <div className="modal-box bg-[#1A4870]">
@@ -520,28 +773,96 @@ const ManageProduct = () => {
                   </div>
                 )}
                 <div>
-                  <label className="pr-12 text-white">Name:</label>
+                  <label className="pr-12 text-white">Shop Name:</label>
+                  <input
+                    type="text"
+                    name="shopName"
+                    defaultValue={vendor.shopName}
+                    readOnly
+                    placeholder="Enter Product name"
+                    className="input input-bordered input-primary w-full max-w-60 bg-inherit text-white"
+                  />
+                </div>
+                <div>
+                  <label className="pr-12 text-white">Product Name:</label>
                   <input
                     type="text"
                     name="nameT"
                     defaultValue={selectedProduct?.name}
                     placeholder="Enter Product name"
-                    className="input input-bordered input-primary w-full max-w-xs bg-inherit text-white"
+                    className="input input-bordered input-primary w-full max-w-60 bg-inherit text-white"
                   />
                 </div>
                 <div>
-                  <label className="pr-2 text-white">Image:</label>
+                  <label className="pr-12 text-white">Product Price:</label>
                   <input
-                    type="text"
-                    // defaultValue={selectedProduct?.images[0]}
-                    name="Mimage"
-                    placeholder="Enter image Link (Link only)"
-                    className="input input-bordered input-primary w-full max-w-xs bg-inherit text-white"
+                    type="number"
+                    name="price"
+                    defaultValue={selectedProduct?.price}
+                    min={1}
+                    placeholder="Enter Product name"
+                    className="input input-bordered input-primary w-full max-w-60 bg-inherit text-white"
+                  />
+                </div>
+                <div>
+                  <label className="pr-12 text-white">Product Quantity:</label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    defaultValue={selectedProduct?.quantity}
+                    min={1}
+                    placeholder="Enter Product name"
+                    className="input input-bordered input-primary w-full max-w-60 bg-inherit text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="pr-8 text-white">Category:</label>
+                  <label className="pr-3 text-white">Main Image-1:</label>
+                  <input
+                    type="file"
+                    defaultValue={selectedProduct?.mimage}
+                    name="Mimage"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="pr-3 text-white">Main Image-2:</label>
+                  <input
+                    type="file"
+                    name="image2"
+                    defaultValue={selectedProduct?.image2}
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="pr-3 text-white">Main Image-3:</label>
+                  <input
+                    type="file"
+                    defaultValue={selectedProduct?.image3}
+                    name="image3"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="pr-3 text-white">Main Image-4:</label>
+                  <input
+                    type="file"
+                    defaultValue={selectedProduct?.image4}
+                    name="image4"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="pr-3 text-white">Main Image-5:</label>
+                  <input
+                    type="file"
+                    defaultValue={selectedProduct?.image5}
+                    name="image5"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="pr-9 text-white">Category:</label>
                   <select
                     onChange={handleSelectChangeCategory}
                     value={selectedCategory || selectedProduct?.category || ""}
@@ -550,20 +871,63 @@ const ManageProduct = () => {
                     <option value="" disabled>
                       Select Category
                     </option>
-                    {categories.map((category: any, index: string) => (
+                    {categories.map((category: any, index: number) => (
                       <option key={index} value={category.CategoryName}>
                         {category.CategoryName}
                       </option>
                     ))}
                   </select>
                 </div>
+                <div>
+                  <label className="pr-9 text-white"> Discount:</label>
+                  <select
+                    onChange={handleSelectChangeDiscount}
+                    value={selectedDiscount || selectedProduct?.discount || ""}
+                    className="select select-bordered w-full max-w-xs bg-[#1A4870] text-white"
+                  >
+                    <option value="" disabled>
+                      Select Discount status
+                    </option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="pr-9 text-white"> Discount Price:</label>
+                  <input
+                    type="number"
+                    name="discountPrice"
+                    value={selectedProduct?.discountPrice || 0}
+                    min={0}
+                    placeholder="Enter Product name"
+                    className="input input-bordered input-primary w-full max-w-60 bg-inherit text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="pr-9 text-white">IsFlash Sale:</label>
+                  <select
+                    onChange={handleSelectChangeIsFlashSale}
+                    value={
+                      selectedIsFlashSale || selectedProduct?.isFlashSale || ""
+                    }
+                    className="select select-bordered w-full max-w-xs bg-[#1A4870] text-white"
+                  >
+                    <option value="" disabled>
+                      Select Flash sale
+                    </option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
 
                 <div className="flex flex-row align-middle">
-                  <label className="pr-6  text-white">Description:</label>
+                  <label className="pr-8  text-white">Description:</label>
                   <textarea
                     name="description"
-                    // defaultValue={selectedProduct?.description}
-                    className="textarea textarea-bordered w-full max-w-xs bg-[#1A4870] text-white"
+                    defaultValue={selectedProduct?.description}
+                    className="textarea textarea-bordered w-full max-w-sm bg-[#1A4870] text-white"
                     placeholder="Bio"
                   ></textarea>
                 </div>
@@ -577,6 +941,7 @@ const ManageProduct = () => {
           </div>
         </dialog>
         {/* edit modal */}
+        {/* **************edit product modal********************************* */}
       </div>
       {/* table view */}
       <div className="container mx-auto overflow-x-auto pb-5 w-full max-w-4xl">
@@ -586,9 +951,11 @@ const ManageProduct = () => {
             <tr>
               <th>Name</th>
               <th>category</th>
-              <th>Model</th>
-              <th>Year</th>
-              <th>pricePerHour</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>disPr</th>
+              <th>FlashS</th>
+
               <th>actions</th>
             </tr>
           </thead>
@@ -605,7 +972,7 @@ const ManageProduct = () => {
                         <div className="avatar">
                           <div className="mask mask-squircle h-12 w-12">
                             <img
-                              // src={car.images[0]}
+                              src={product.mimage}
                               alt="Avatar Tailwind CSS Component"
                               className="w-full h-full"
                             />
@@ -618,22 +985,31 @@ const ManageProduct = () => {
                     </td>
                     <td>
                       <div>
-                        {/* <div className="font-semibold">{car.category}</div> */}
+                        <div className="font-semibold">{product.category}</div>
                       </div>
                     </td>
                     <td>
                       <div>
-                        {/* <div className="font-semibold">{car.model}</div> */}
+                        <div className="font-semibold">${product.price}</div>
                       </div>
                     </td>
                     <td>
                       <div>
-                        {/* <div className="font-semibold">{car.year}</div> */}
+                        <div className="font-semibold">{product.quantity}</div>
                       </div>
                     </td>
                     <td>
                       <div>
-                        {/* <div className="font-semibold">${car.pricePerHour}</div> */}
+                        <div className="font-semibold">
+                          ${product.discountPrice || 0}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        <div className="font-semibold">
+                          {product.isFlashSale}
+                        </div>
                       </div>
                     </td>
                     <th>
@@ -643,6 +1019,12 @@ const ManageProduct = () => {
                           className="btn btn-ghost btn-sm  "
                         >
                           <FaEdit className="w-6 h-6 " />
+                        </button>
+                        <button
+                          onClick={() => handleCopyProduct(product.productId)}
+                          className="btn btn-ghost btn-sm  "
+                        >
+                          <FaCopy className="w-6 h-6 " />
                         </button>
                         <button
                           onClick={() =>
