@@ -43,6 +43,10 @@ const produtcsApi = baseApi.injectEndpoints({
     }),
     // category section
     // *********************
+    // **********product section***********
+
+    // **********product section***********
+    // *********************************************************
   }),
 });
 

@@ -14,12 +14,25 @@ const bookingApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    GetVendorById: builder.query({
+      query: (shopId: string) => ({
+        url: `/vendors/email/${shopId}`,
+        method: "GET",
+      }),
+    }),
 
     addShopName: builder.mutation({
       query: (shopData) => ({
         url: "/vendors",
         method: "POST",
         body: shopData,
+      }),
+    }),
+    updateShopName: builder.mutation({
+      query: ({ shopId, shopModifyData }) => ({
+        url: `/vendors/${shopId}`,
+        method: "PUT",
+        body: shopModifyData,
       }),
     }),
 
@@ -31,4 +44,6 @@ export const {
   useGetAllVendorQuery,
   useGetVendorByEmailQuery,
   useAddShopNameMutation,
+  useUpdateShopNameMutation,
+  useGetVendorByIdQuery,
 } = bookingApi;
