@@ -22,9 +22,11 @@ import OrderManagement from "./DashBoardPanel/VendorPanel/OrderManagement/OrderM
 import ManageCategory from "./DashBoardPanel/AdminPanel/ManageCategory/ManageCategory.tsx";
 import UserManagement from "./DashBoardPanel/AdminPanel/UserManagement/UserManagement.tsx";
 import SalesReport from "./DashBoardPanel/VendorPanel/SalesReport/SalesReport.tsx";
-import ProductDetailsViewPage from "./Pages/ProductDetailsViewPage/ProductDetailsViewPage.tsx";
 import ShopPage from "./Pages/ShopPage/ShopPage.tsx";
-import CartItemPage from "./Pages/CartItemPage/CartItemPage.tsx";
+// import CheckOutPage from "./Pages/CheckOutPage/CheckOutPage.tsx";
+import AllProductPage from "./Components/AllProductPage/AllProductPage.tsx";
+import ProductDetailsPage from "./Pages/ProductDetailsPage/ProductDetailsPage.tsx";
+import CartViewPage from "./Pages/CartViewPage/CartViewPage.tsx";
 import CheckOutPage from "./Pages/CheckOutPage/CheckOutPage.tsx";
 
 const router = createBrowserRouter([
@@ -38,12 +40,25 @@ const router = createBrowserRouter([
         element: <Homepage />,
       },
       {
-        path: "/productDetailsView/:productId",
-        element: <ProductDetailsViewPage />,
+        path: "/products",
+        element: <AllProductPage />,
       },
       {
-        path: "/shopPage/:vendorId",
+        path: "/ProductDetailsView/:productId",
+        element: <ProductDetailsPage />,
+      },
+
+      {
+        path: "/shopPage/:shopName/:vendorId",
         element: <ShopPage />,
+      },
+      {
+        path: "/cartView",
+        element: <CartViewPage />,
+      },
+      {
+        path: "/checkout",
+        element: <CheckOutPage />,
       },
     ],
   },
@@ -55,6 +70,7 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <SingUpPage />,
   },
+
   {
     path: "/DashBoard",
     element: <DashBoardRoot />,
@@ -124,22 +140,22 @@ const router = createBrowserRouter([
           </UserProtectRoute>
         ),
       },
-      {
-        path: "/DashBoard/user/Cart",
-        element: (
-          // <UserProtectRoute>
-          <CartItemPage />
-          // </UserProtectRoute>
-        ),
-      },
-      {
-        path: "/DashBoard/user/CheckOut",
-        element: (
-          // <UserProtectRoute>
-          <CheckOutPage />
-          // </UserProtectRoute>
-        ),
-      },
+      // {
+      //   path: "/DashBoard/user/Cart",
+      //   element: (
+      //     <UserProtectRoute>
+      //     <CartItemPage />
+      //     </UserProtectRoute>
+      //   ),
+      // },
+      // {
+      //   path: "/DashBoard/user/CheckOut",
+      //   element: (
+      //     <UserProtectRoute>
+      //     <CheckOutPage />
+      //     </UserProtectRoute>
+      //   ),
+      // },
     ],
   },
 ]);

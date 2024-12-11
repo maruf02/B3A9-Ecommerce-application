@@ -21,12 +21,12 @@ const Navbar = () => {
       </li>
 
       <li>
-        <NavLink to="/cars" className="activeNavLink ">
-          <button>Cars</button>
+        <NavLink to="/products" className="activeNavLink ">
+          <button>Products</button>
         </NavLink>
       </li>
       <li>
-        <NavLink to="/DashBoard/user/Cart" className="activeNavLink ">
+        <NavLink to="/cartView" className="activeNavLink ">
           <button>Cart</button>
         </NavLink>
       </li>

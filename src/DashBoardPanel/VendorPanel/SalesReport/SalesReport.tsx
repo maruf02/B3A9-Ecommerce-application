@@ -29,7 +29,7 @@ const SalesReport = () => {
   });
 
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
-
+  console.log("productData", productData);
   const total = productData?.meta?.total;
   const categories = categoryData?.data || [];
 

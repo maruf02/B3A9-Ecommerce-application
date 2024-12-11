@@ -5,10 +5,15 @@ import StarRatings from "react-star-ratings";
 import { useGetVendorByEmailQuery } from "../../Redux/features/vendor/vendorApi";
 import { toast } from "react-toast";
 import { useAppDispatch, useAppSelector } from "../../Redux/hooks";
-import { addProductToCart } from "../../Redux/features/CartItem/cartSlice";
+import {
+  addProductToCart,
+  clearCart,
+} from "../../Redux/features/CartItem/cartSlice";
 import Swal from "sweetalert2";
 
 const ProductSingleViewPage = ({ product }: any) => {
+  const dispatch = useAppDispatch();
+  const cart = useAppSelector((state) => state.cart);
   const [isExpanded, setIsExpanded] = useState(false);
   const {
     productId,
@@ -42,24 +47,42 @@ const ProductSingleViewPage = ({ product }: any) => {
   const truncatedDescription = description.slice(0, 200);
 
   // *************************************
-  const dispatch = useAppDispatch();
-  const cart = useAppSelector((state) => state.cart);
-
   const handleAddToCart = () => {
-    if (cart.vendorId && cart.vendorId !== vendorId) {
-      const confirmSwitch = window.confirm(
-        "Your previous cart items will be removed because the vendor is different. Do you want to continue?"
-      );
-
-      if (confirmSwitch) {
-        dispatch(addProductToCart({ vendorId, productId }));
-        Swal.fire("Cart updated with new vendor and product");
-      } else {
-        toast.info("Cart update canceled");
-      }
+    if (cart.savedVendor && cart.savedVendor.vendorId !== vendor.vendorId) {
+      Swal.fire({
+        title: "Different Vendor Detected",
+        text: "Your previous cart items will be removed because the vendor is different. Do you want to continue?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, switch vendor",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(clearCart());
+          dispatch(
+            addProductToCart({
+              vendor,
+              product: { ...product, requiredQty: 1 },
+            })
+          );
+          Swal.fire(
+            "Cart Updated",
+            "Your cart has been updated with the new vendor and product.",
+            "success"
+          );
+        } else {
+          toast.info("Cart update canceled");
+        }
+      });
     } else {
-      dispatch(addProductToCart({ vendorId, productId }));
-      Swal.fire("Product added to cart");
+      dispatch(
+        addProductToCart({ vendor, product: { ...product, requiredQty: 1 } })
+      );
+      Swal.fire(
+        "Product Added",
+        "The product has been added to your cart.",
+        "success"
+      );
     }
   };
   // *************************************
@@ -120,13 +143,14 @@ const ProductSingleViewPage = ({ product }: any) => {
                   Add to Cart
                 </button>
               </div>
-              <Link to={`/productDetailsView/${productId}`}>
-                <div className="card-actions   mt-3 ">
-                  <button className="btn btn-primary w-full ">
-                    View Details
-                  </button>
-                </div>
-              </Link>
+              {/* <Link to={`/productDetailsView/${productId}`}> */}
+              <div className=" container mx-auto   mt-3   w-full flex flex-row gap-2">
+                <button className="btn btn-primary  w-1/2 ">Add to Cart</button>
+                <button className="btn btn-primary  w-1/2 ">
+                  View Details
+                </button>
+              </div>
+              {/* </Link> */}
             </div>
           </div>
         </motion.div>

@@ -29,10 +29,10 @@ const produtcsApi = baseApi.injectEndpoints({
       }),
     }),
     updateCategory: builder.mutation({
-      query: ({ categoryId, CategoryModifyData }) => ({
+      query: ({ categoryId, categoryModifyData }) => ({
         url: `/categories/${categoryId}`,
         method: "PUT",
-        body: CategoryModifyData,
+        body: categoryModifyData,
       }),
     }),
     deleteCategory: builder.mutation({
@@ -101,6 +101,13 @@ const produtcsApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    GetProductByVendorIdPaginate: builder.query({
+      query: ({ vendorId, page, limit }) => ({
+        url: `/productsByShopNameP/${vendorId}?page=${page}&limit=${limit}`,
+        method: "GET",
+      }),
+    }),
     GetProductByShopName: builder.query({
       query: (email: string) => ({
         url: `/productsByShopName/email/${email}`,
@@ -149,4 +156,5 @@ export const {
   useGetProductsByCartIdsQuery,
   useDuplicateProductMutation,
   useGetProductByShopNamePaginateQuery,
+  useGetProductByVendorIdPaginateQuery,
 } = produtcsApi;

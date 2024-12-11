@@ -26,8 +26,34 @@ const ManageCategory = () => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const categoryName = form.categoryName.value;
+    const mimage = form.Mimage.files[0];
 
-    const newCategory = { CategoryName: categoryName };
+    let mimageUrl; // Use existing image URL if no new image is uploaded
+
+    if (mimage) {
+      const formData = new FormData();
+      formData.append("file", mimage);
+      formData.append("upload_preset", "frontend_preset");
+
+      try {
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dnsqmhk8i/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        mimageUrl = data.secure_url;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
+    const newCategory = {
+      categoryName: categoryName,
+      categoryImage: mimageUrl,
+    };
 
     try {
       await addCategory(newCategory).unwrap();
@@ -59,7 +85,7 @@ const ManageCategory = () => {
     if (modal) {
       modal.showModal();
     }
-    const category = categories.find((c: any) => c.CategoryId === categoryId);
+    const category = categories.find((c: any) => c.categoryId === categoryId);
     if (category) {
       setSelectedCategory(category);
     }
@@ -70,15 +96,39 @@ const ManageCategory = () => {
 
     const form = event.target as HTMLFormElement;
     const categoryName = form.categoryName.value;
+    const mimage = form.Mimage.files[0];
 
+    let mimageUrl; // Use existing image URL if no new image is uploaded
+
+    if (mimage) {
+      const formData = new FormData();
+      formData.append("file", mimage);
+      formData.append("upload_preset", "frontend_preset");
+
+      try {
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dnsqmhk8i/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        mimageUrl = data.secure_url;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
     const updatedCategory = {
-      CategoryName: categoryName,
+      categoryName: categoryName,
+      categoryImage: mimageUrl,
     };
 
     try {
       await updateCategory({
-        CategoryId: selectedCategoryId,
-        updatedCategory,
+        categoryId: selectedCategoryId,
+        categoryModifyData: updatedCategory,
       }).unwrap();
       Swal.fire({
         position: "top-end",
@@ -87,14 +137,13 @@ const ManageCategory = () => {
         showConfirmButton: false,
         timer: 1500,
       });
-
+      refetch();
       const modal = document.getElementById(
         "editCategoryModal"
       ) as HTMLDialogElement;
       if (modal) {
         modal.close();
       }
-      refetch();
     } catch (error) {
       Swal.fire("Error!", "Failed to update category.", "error");
     }
@@ -164,6 +213,14 @@ const ManageCategory = () => {
                   placeholder="Enter category name"
                   className="input input-bordered input-primary w-full bg-inherit text-white"
                 />
+                <div className="py-3">
+                  <label className="pr-3 text-white">Category Image:</label>
+                  <input
+                    type="file"
+                    name="Mimage"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
                 <button className="flex text-white btn hover:bg-[#1A4870] bg-[#5B99C2] btn-md w-full justify-center text-2xl pb-1">
                   Save
                 </button>
@@ -191,10 +248,19 @@ const ManageCategory = () => {
                 <input
                   type="text"
                   name="categoryName"
-                  defaultValue={selectedCategory?.CategoryName}
+                  defaultValue={selectedCategory?.categoryName}
                   placeholder="Enter category name"
                   className="input input-bordered input-primary w-full bg-inherit text-white"
                 />
+                <div>
+                  <label className="pr-3 text-white">Category Image:</label>
+                  <input
+                    type="file"
+                    defaultValue={selectedCategory?.image}
+                    name="Mimage"
+                    className="file-input file-input-bordered file-input-primary file-input-sm w-full max-w-xs bg-transparent"
+                  />
+                </div>
                 <button className="flex text-white btn hover:bg-[#1A4870] bg-[#5B99C2] btn-md w-full justify-center text-2xl pb-1">
                   Edit
                 </button>
@@ -208,6 +274,7 @@ const ManageCategory = () => {
           <thead className="text-black text-lg">
             <tr>
               <th>Category Name</th>
+              <th>Category Image</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -220,21 +287,30 @@ const ManageCategory = () => {
               </tr>
             ) : (
               categories.map((category: any) => (
-                <tr key={category.CategoryId} className="hover:bg-gray-300">
+                <tr key={category.categoryId} className="hover:bg-gray-300">
                   <td>
-                    <div className="font-semibold">{category.CategoryName}</div>
+                    <div className="font-semibold">{category.categoryName}</div>
+                  </td>
+                  <td>
+                    <div className="mask mask-squircle h-12 w-12">
+                      <img
+                        src={category.categoryImage}
+                        alt="Avatar Tailwind CSS Component"
+                        className="w-full h-full"
+                      />
+                    </div>
                   </td>
                   <td>
                     <div className="space-x-2">
                       <button
-                        onClick={() => handleEditCategory(category.CategoryId)}
+                        onClick={() => handleEditCategory(category.categoryId)}
                         className="btn btn-ghost btn-sm"
                       >
                         <FaEdit className="w-6 h-6" />
                       </button>
                       <button
                         onClick={() =>
-                          handleDeleteCategory(category.CategoryId)
+                          handleDeleteCategory(category.categoryId)
                         }
                         className="btn btn-ghost btn-sm"
                       >

@@ -13,6 +13,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import cartReducer from "./features/CartItem/cartSlice";
+import placeOrderReducer from "./features/CartItem/placeOrderSlice";
 
 const persistConfig = {
   key: "auth",
@@ -21,11 +22,19 @@ const persistConfig = {
 const persistConfigCart = {
   key: "cart",
   storage,
-  whitelist: ["vendorId", "productIds"],
+  whitelist: ["savedVendor", "savedProducts", "savedUser"],
 };
-
+const persistConfigPlaceOrder = {
+  key: "placeOrder",
+  storage,
+  whitelist: ["orderData"],
+};
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 const persistedCartReducer = persistReducer(persistConfigCart, cartReducer);
+const persistedplaceOrderReducer = persistReducer(
+  persistConfigPlaceOrder,
+  placeOrderReducer
+);
 
 export const store = configureStore({
   reducer: {
@@ -33,6 +42,9 @@ export const store = configureStore({
     // auth: authReducer,
     auth: persistedAuthReducer,
     cart: persistedCartReducer,
+    order: persistedplaceOrderReducer,
+    // placeOrder: persistedPlaceOrderReducer,
+    // placeOrder: placeOrderReducer,
 
     // product: productReducer,
     // placeOrder: placeOrderReducer,
