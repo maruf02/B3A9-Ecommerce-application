@@ -55,8 +55,9 @@ const VendorDashBoard = () => {
 
     const form = event.target as HTMLFormElement;
     const shopName = form.shopName.value;
-    const email = userData.email;
-    const userId = userData.userId;
+    const email = userDataToken.email;
+    const userId = userDataToken.userId;
+
     if (!email || !userId) {
       Swal.fire("Error", "User is not authenticated.", "error");
       return;
@@ -123,6 +124,7 @@ const VendorDashBoard = () => {
       shopId: vendorId,
       shopModifyData: newShopName,
     });
+    vendorRefetch();
     userRefetch();
     closeModal();
     Swal.fire("updated");
@@ -229,164 +231,168 @@ const VendorDashBoard = () => {
         )}
       </div>
       {/* view shop details portion */}
-      <div className="border border-2 border-red-500 w-full h-full min-h-72 flex items-center justify-center">
-        {/* view shop details portion */}
-        <div className=" w-3/4 text-black bg-[#B7B7B7] max-w-2xl shadow-xl mx-auto">
-          <div className="card-body">
-            <h2 className="card-title">
-              Shop Name: {vendorData?.data?.shopName || "Name not available"}
-            </h2>
-            <h2 className="card-title">
-              Shop owner Name: {userData?.data?.name || "Name not available"}
-            </h2>
-            <h2 className="card-title">
-              Email: {userData?.data?.email || "Email not available"}
-            </h2>
-            <h2 className="card-title">
-              Phone: {userData?.data?.phone || "Phone not available"}
-            </h2>
-            <h2 className="card-title">
-              Total Followers: {userData?.data?.follower?.length || 0}
-              <button
-                className="btn btn-sm btn-primary"
-                onClick={openFollowerModal}
-              >
-                see all followers
-              </button>
-            </h2>
-            <h1 className="card-title">
-              Total Following: {userData?.data?.following?.length || 0}
-              <button
-                className="btn btn-sm btn-primary"
-                onClick={openFollowingModal}
-              >
-                see all following
-              </button>
-            </h1>
-            <h1 className="card-title">
-              Change Password:{" "}
-              <button
-                onClick={openPasswordModal}
-                className="btn btn-sm btn-primary"
-              >
-                Change password
-              </button>
-            </h1>
-            {/* change password modal option */}
-            {isPasswordModalOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-50 ">
-                <form onSubmit={handlePasswordCheck}>
-                  <div className="bg-[#B7B7B7] rounded-lg p-6 w-96 border border-2 border-primary">
-                    <h2 className="text-2xl font-bold mb-4">
-                      Enter New Password
-                    </h2>
-                    <div>
-                      <label>Email</label>
-                      <input
-                        type="text"
-                        name="email"
-                        readOnly
-                        defaultValue={userData?.data?.email}
-                        className="input input-bordered max-w-xl mb-4 input-sm input-primary bg-white text-black ml-20"
-                      />
+      {vendorData && (
+        <div className="border border-2 border-red-500 w-full h-full min-h-72 flex items-center justify-center">
+          {/* view shop details portion */}
+          <div className=" w-3/4 text-black bg-[#B7B7B7] max-w-2xl shadow-xl mx-auto">
+            <div className="card-body">
+              <h2 className="card-title">
+                Shop Name: {vendorData?.data?.shopName || "Name not available"}
+              </h2>
+              <h2 className="card-title">
+                Shop owner Name: {userData?.data?.name || "Name not available"}
+              </h2>
+              <h2 className="card-title">
+                Email: {userData?.data?.email || "Email not available"}
+              </h2>
+              <h2 className="card-title">
+                Phone: {userData?.data?.phone || "Phone not available"}
+              </h2>
+              <h2 className="card-title">
+                Total Followers: {userData?.data?.follower?.length || 0}
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={openFollowerModal}
+                >
+                  see all followers
+                </button>
+              </h2>
+              <h1 className="card-title">
+                Total Following: {userData?.data?.following?.length || 0}
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={openFollowingModal}
+                >
+                  see all following
+                </button>
+              </h1>
+              <h1 className="card-title">
+                Change Password:{" "}
+                <button
+                  onClick={openPasswordModal}
+                  className="btn btn-sm btn-primary"
+                >
+                  Change password
+                </button>
+              </h1>
+              {/* change password modal option */}
+              {isPasswordModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-50 ">
+                  <form onSubmit={handlePasswordCheck}>
+                    <div className="bg-[#B7B7B7] rounded-lg p-6 w-96 border border-2 border-primary">
+                      <h2 className="text-2xl font-bold mb-4">
+                        Enter New Password
+                      </h2>
+                      <div>
+                        <label>Email</label>
+                        <input
+                          type="text"
+                          name="email"
+                          readOnly
+                          defaultValue={userData?.data?.email}
+                          className="input input-bordered max-w-xl mb-4 input-sm input-primary bg-white text-black ml-20"
+                        />
+                      </div>
+                      <div>
+                        <label>Current Password:</label>
+                        <input
+                          type="password"
+                          name="password"
+                          className="input input-bordered input-sm input-primary max-w-xl mb-4 bg-white text-black ml-2"
+                          required
+                        />
+                      </div>
+                      <div className="flex justify-end mt-4">
+                        <button
+                          onClick={closePasswordModal}
+                          className="mr-4 px-4 py-2 bg-gray-300 rounded-lg"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          // onClick={() => {
+                          //   closePasswordModal();
+                          //   openConfirmPasswordModal(); // Open second modal
+                          // }}
+                          // onClick={handlePasswordCheck}
+                          className="px-4 py-2 bg-primary text-white rounded-lg"
+                        >
+                          Confirm
+                        </button>
+                      </div>
                     </div>
-                    <div>
-                      <label>Current Password:</label>
-                      <input
-                        type="password"
-                        name="password"
-                        className="input input-bordered input-sm input-primary max-w-xl mb-4 bg-white text-black ml-2"
-                        required
-                      />
-                    </div>
-                    <div className="flex justify-end mt-4">
-                      <button
-                        onClick={closePasswordModal}
-                        className="mr-4 px-4 py-2 bg-gray-300 rounded-lg"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        // onClick={() => {
-                        //   closePasswordModal();
-                        //   openConfirmPasswordModal(); // Open second modal
-                        // }}
-                        // onClick={handlePasswordCheck}
-                        className="px-4 py-2 bg-primary text-white rounded-lg"
-                      >
-                        Confirm
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            )}
+                  </form>
+                </div>
+              )}
 
-            {isConfirmPasswordModalOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <form onSubmit={handlePassChange}>
-                  <div className="bg-[#B7B7B7] rounded-lg p-6 w-96 border border-2 border-primary">
-                    <h2 className="text-2xl font-bold mb-4 text-black">
-                      Update Password
-                    </h2>
-                    <div>
-                      <label className="text-black">Email</label>
-                      <input
-                        type="text"
-                        name="email"
-                        readOnly
-                        defaultValue={userData?.data?.email}
-                        className="input input-bordered max-w-xl mb-4 input-sm input-primary bg-white text-black ml-20"
-                      />
+              {isConfirmPasswordModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                  <form onSubmit={handlePassChange}>
+                    <div className="bg-[#B7B7B7] rounded-lg p-6 w-96 border border-2 border-primary">
+                      <h2 className="text-2xl font-bold mb-4 text-black">
+                        Update Password
+                      </h2>
+                      <div>
+                        <label className="text-black">Email</label>
+                        <input
+                          type="text"
+                          name="email"
+                          readOnly
+                          defaultValue={userData?.data?.email}
+                          className="input input-bordered max-w-xl mb-4 input-sm input-primary bg-white text-black ml-20"
+                        />
+                      </div>
+                      <div>
+                        <label>old Password:</label>
+                        <input
+                          type="password"
+                          name="oldPassword"
+                          className="input input-bordered max-w-xl mb-4 input-sm input-primary bg-white text-black ml-6"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label>New Password:</label>
+                        <input
+                          type="password"
+                          name="newPassword"
+                          className="input input-bordered max-w-xl mb-4 input-sm input-primary bg-white text-black ml-6"
+                          required
+                        />
+                      </div>
+                      <div className="flex justify-end mt-4">
+                        <button
+                          onClick={closeConfirmPasswordModal}
+                          className="mr-4 px-4 py-2 bg-gray-300 rounded-lg"
+                        >
+                          Cancel
+                        </button>
+                        <button className="px-4 py-2 bg-primary text-white rounded-lg">
+                          Update
+                        </button>
+                      </div>
                     </div>
-                    <div>
-                      <label>old Password:</label>
-                      <input
-                        type="password"
-                        name="oldPassword"
-                        className="input input-bordered max-w-xl mb-4 input-sm input-primary bg-white text-black ml-6"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label>New Password:</label>
-                      <input
-                        type="password"
-                        name="newPassword"
-                        className="input input-bordered max-w-xl mb-4 input-sm input-primary bg-white text-black ml-6"
-                        required
-                      />
-                    </div>
-                    <div className="flex justify-end mt-4">
-                      <button
-                        onClick={closeConfirmPasswordModal}
-                        className="mr-4 px-4 py-2 bg-gray-300 rounded-lg"
-                      >
-                        Cancel
-                      </button>
-                      <button className="px-4 py-2 bg-primary text-white rounded-lg">
-                        Update
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            )}
-            {/* change password modal option */}
-            <img
-              src={vendorData?.data?.image || "https://via.placeholder.com/150"}
-              alt="Profile"
-              className="w-32 h-32 rounded-full"
-            />
+                  </form>
+                </div>
+              )}
+              {/* change password modal option */}
+              <img
+                src={
+                  vendorData?.data?.image || "https://via.placeholder.com/150"
+                }
+                alt="Profile"
+                className="w-32 h-32 rounded-full"
+              />
+            </div>
+            <button
+              onClick={openModal}
+              className="w-full h-10 my-5 bg-primary rounded-lg"
+            >
+              Update
+            </button>
           </div>
-          <button
-            onClick={openModal}
-            className="w-full h-10 my-5 bg-primary rounded-lg"
-          >
-            Update
-          </button>
         </div>
-      </div>
+      )}
 
       {/* Simple Modal  update all info portion*/}
       {isModalOpen && (

@@ -53,6 +53,13 @@ const produtcsApi = baseApi.injectEndpoints({
         body: productData,
       }),
     }),
+    duplicateProduct: builder.mutation({
+      query: (productData) => ({
+        url: "/products",
+        method: "POST",
+        body: productData,
+      }),
+    }),
     // GetAllProduct: builder.query({
     //   query: () => ({
     //     url: "/products",
@@ -65,6 +72,7 @@ const produtcsApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+
     GetAllProduct: builder.query({
       query: () => ({
         url: "/products",
@@ -96,6 +104,12 @@ const produtcsApi = baseApi.injectEndpoints({
     GetProductByShopName: builder.query({
       query: (email: string) => ({
         url: `/productsByShopName/email/${email}`,
+        method: "GET",
+      }),
+    }),
+    GetProductByShopNamePaginate: builder.query({
+      query: ({ email, page, limit }) => ({
+        url: `/productsByShopName/email/${email}?page=${page}&limit=${limit}`,
         method: "GET",
       }),
     }),
@@ -133,4 +147,6 @@ export const {
   useGetAllProductQueryQuery,
   useGetProductByVendorIdQuery,
   useGetProductsByCartIdsQuery,
+  useDuplicateProductMutation,
+  useGetProductByShopNamePaginateQuery,
 } = produtcsApi;

@@ -26,8 +26,8 @@ const Navbar = () => {
         </NavLink>
       </li>
       <li>
-        <NavLink to="/Booking" className="activeNavLink ">
-          <button>Booking</button>
+        <NavLink to="/DashBoard/user/Cart" className="activeNavLink ">
+          <button>Cart</button>
         </NavLink>
       </li>
       <li>

@@ -5,10 +5,26 @@ import ProductSingleViewPage from "../ProductSingleViewPage/ProductSingleViewPag
 
 const ShopPage = () => {
   const { vendorId } = useParams<{ vendorId: string }>();
-  const { data: productsData } = useGetProductByVendorIdQuery(
-    vendorId as string
-  );
+  const {
+    data: productsData,
+    isLoading,
+    isError,
+  } = useGetProductByVendorIdQuery(vendorId as string);
+  console.log("vendorId", vendorId);
   const produtcs = productsData?.data || {};
+  console.log("produtcs", productsData);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error fetching products</p>;
+  }
+
+  if (!productsData || productsData.length === 0) {
+    return <p>No products found for this vendor.</p>;
+  }
   return (
     <div>
       <div>

@@ -24,6 +24,8 @@ import UserManagement from "./DashBoardPanel/AdminPanel/UserManagement/UserManag
 import SalesReport from "./DashBoardPanel/VendorPanel/SalesReport/SalesReport.tsx";
 import ProductDetailsViewPage from "./Pages/ProductDetailsViewPage/ProductDetailsViewPage.tsx";
 import ShopPage from "./Pages/ShopPage/ShopPage.tsx";
+import CartItemPage from "./Pages/CartItemPage/CartItemPage.tsx";
+import CheckOutPage from "./Pages/CheckOutPage/CheckOutPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -120,6 +122,22 @@ const router = createBrowserRouter([
           <UserProtectRoute>
             <UserDashBoard />
           </UserProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/user/Cart",
+        element: (
+          // <UserProtectRoute>
+          <CartItemPage />
+          // </UserProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/user/CheckOut",
+        element: (
+          // <UserProtectRoute>
+          <CheckOutPage />
+          // </UserProtectRoute>
         ),
       },
     ],

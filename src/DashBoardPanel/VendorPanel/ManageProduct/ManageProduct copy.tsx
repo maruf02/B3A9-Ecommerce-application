@@ -3,27 +3,21 @@ import Swal from "sweetalert2";
 
 import { FaCopy, FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   useCreateProductMutation,
   useDeleteProductMutation,
   useDuplicateProductMutation,
   useGetAllCategoryQuery,
-  useGetProductByShopNamePaginateQuery,
   useGetProductByShopNameQuery,
   useUpdateProductMutation,
 } from "../../../Redux/features/produtcs/productsApi";
-import { Pagination, Select } from "antd";
+import { Select } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store";
 import { useGetVendorByEmailQuery } from "../../../Redux/features/vendor/vendorApi";
 
 const ManageProduct = () => {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [products, setProducts] = useState([]);
-  const [displayedProducts, setDisplayedProducts] = useState([]);
-
   const userDataToken =
     (useSelector((state: RootState) => state.auth.user) as User) || null; // get user info from redux token
 
@@ -35,16 +29,8 @@ const ManageProduct = () => {
   const [selectedDiscount, setSelectedDiscount] = useState("");
   const [selectedIsFlashSale, setSelectedIsFlashSale] = useState("");
 
-  // const { data: productData, refetch: productsRefech } =
-  //   useGetProductByShopNameQuery(userDataToken.email);
-  const email = userDataToken.email;
-  const {
-    data: productData,
-    isLoading,
-    isError,
-    refetch: productsRefech,
-  } = useGetProductByShopNamePaginateQuery({ email, page, limit });
-
+  const { data: productData, refetch: productsRefech } =
+    useGetProductByShopNameQuery(userDataToken.email);
   const { data: vendorData, refetch: vendorRefech } = useGetVendorByEmailQuery(
     userDataToken.email
   );
@@ -56,11 +42,10 @@ const ManageProduct = () => {
   const [deleteProduct] = useDeleteProductMutation();
 
   const produtcs = productData?.data || [];
-  const displayedProductsData = displayedProducts?.result || 0;
-  const total = productData?.meta?.total;
   const categories = categoryData?.data || [];
   const vendor = vendorData?.data || [];
   // console.log("object", produtcs, categories);
+  console.log("selectedCategory", selectedCategory, categories);
 
   const handleAddProduct = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -716,37 +701,8 @@ const ManageProduct = () => {
       }
     });
   };
-
-  // pagination***************************************************
-  // pagination***************************************************
-
-  useEffect(() => {
-    if (produtcs) {
-      setProducts(produtcs);
-      setDisplayedProducts(produtcs);
-    }
-  }, [produtcs]);
-
-  if (isLoading)
-    return (
-      <div className="text-center py-5">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  if (isError) return <div>Error loading products</div>;
-
-  const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    if (pageSize && pageSize !== limit) {
-      setLimit(pageSize);
-    }
-  };
-  // pagination***************************************************
-  // pagination***************************************************
-
   return (
     <div className="container mx-auto ">
-      {/* *****************search function */}
       <div className="flex justify-between pt-5">
         <h2 className="text-2xl text-black font-semibold">
           Product Management
@@ -1359,10 +1315,10 @@ const ManageProduct = () => {
           </thead>
           <tbody>
             {/* row 1 */}
-            {displayedProducts.length === 0 ? (
+            {produtcs.length === 0 ? (
               <div>sorry</div>
             ) : (
-              displayedProductsData.map((product: any, index: string) => (
+              produtcs.map((product: any, index: string) => (
                 <>
                   <tr key={index} className="hover:bg-gray-300">
                     <td>
@@ -1442,18 +1398,6 @@ const ManageProduct = () => {
         </table>
       </div>
       {/* table view */}
-
-      {/* Pagination */}
-      <div className="w-full container mx-auto">
-        <Pagination
-          current={page}
-          pageSize={limit}
-          total={total}
-          onChange={handlePageChange}
-          showSizeChanger={true}
-          pageSizeOptions={["1", "2", "3", "5"]}
-        />
-      </div>
     </div>
   );
 };
