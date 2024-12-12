@@ -97,6 +97,7 @@ const CartViewPage = () => {
     // Get product info from the cart items
     const productInfo = savedProducts.map((item) => ({
       productId: item.productId,
+      mimage: item.mimage,
       name: item.name,
       requiredQty: item.requiredQty,
       price: item.price,

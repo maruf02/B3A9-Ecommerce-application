@@ -118,7 +118,7 @@ const BestSellingPage = () => {
                   onMouseLeave={handleMouseLeave}
                 >
                   {randomProducts.map((product: Product) => (
-                    <SwiperSlide key={product._id}>
+                    <SwiperSlide key={product.productId}>
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         onMouseEnter={handleMouseEnter}

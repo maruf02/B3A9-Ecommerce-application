@@ -12,6 +12,7 @@ import {
   clearCart,
 } from "../../Redux/features/CartItem/cartSlice";
 import SideBySideMagnifier from "../../shared/SideBySideMagnifier";
+import CommentSection from "./CommentSection";
 
 type User = {
   userId: string;
@@ -211,6 +212,13 @@ const ProductDetailsPage = () => {
           </div>
         </div>
         {/* Right side portion */}
+      </div>
+      <div>
+        <h1>comment</h1>
+        <CommentSection
+          productId={productId || ""}
+          vendorId={vendor.vendorId}
+        />
       </div>
     </div>
   );

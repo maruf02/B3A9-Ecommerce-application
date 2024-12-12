@@ -3,17 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { RootState } from "../../Redux/store";
+import { useGetAllProductQuery } from "../../Redux/features/produtcs/productsApi";
 import { useCreateOrderMutation } from "../../Redux/features/produtcs/orderApi";
 
-interface ApiError {
-  data?: {
-    message?: string;
-  };
-
-  status?: number;
-}
-
 const CheckOutPage = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const orderData = useSelector((state: RootState) => state.order.orderData);
@@ -24,6 +18,13 @@ const CheckOutPage = () => {
 
   const items = orderData?.items || [];
 
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
   const userId = orderData?.user?.userId || "";
   const userEmail = orderData?.user?.email || "";
   const vendorId = orderData?.vendor?.vendorId || "";
@@ -33,69 +34,21 @@ const CheckOutPage = () => {
   const totalItems = orderData?.totalItems || 0;
   const totalPrice = orderData?.totalPrice || 0;
 
-  const handlePaymentSubmit = async (event: any) => {
-    event.preventDefault();
+  const handlePaymentSubmit = () => {
     console.log("object");
-    Swal.fire({
-      title: "Are you sure?",
-      text: `You need to pay $${totalPrice}`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const orderData = {
-            userId,
-            userEmail,
-            vendorId,
-            vendorEmail,
-            shopName,
-            totalItems,
-            totalPrice,
-            paymentMethod: "credit_card",
-            status: "completed",
-            orderItems: products,
-          };
 
-          // ************************
-          console.log("orderData", orderData);
-
-          const res = await createOrder(orderData).unwrap();
-          if (res.data && res.data.payment_url) {
-            window.location.href = res.data.payment_url;
-          } else {
-            throw new Error("Payment URL not found in response.");
-          }
-        } catch (error) {
-          // console.error("Error during payment submission:", error);
-          // Swal.fire(
-          //   "Error",
-          //   error.data?.message || "There was a problem processing your payment",
-          //   "error"
-          // );
-          const apiError = error as ApiError;
-
-          console.error("Error during payment submission:", apiError);
-          Swal.fire(
-            "Error",
-            apiError.data?.message ||
-              "There was a problem processing your payment",
-            "error"
-          );
-        }
-
-        // ************************
-
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
-      }
-    });
+    const orderData = {
+      userId,
+      userEmail,
+      vendorId,
+      vendorEmail,
+      shopName,
+      totalItems,
+      totalPrice,
+      paymentMethod: "credit_card",
+      status: "completed",
+      orderItems: products,
+    };
 
     console.log(orderData);
   };
@@ -126,10 +79,7 @@ const CheckOutPage = () => {
         {/* left */}
         {/* right */}
         <div className="w-full  justify-start pl-10 pt-10">
-          <form
-            onSubmit={handlePaymentSubmit}
-            className="flex flex-col gap-2 py-5 pl-5 "
-          >
+          <form className="flex flex-col gap-2 py-5 pl-5 ">
             <div>
               <label className="pr-5">Name:</label>
               <input
@@ -191,13 +141,94 @@ const CheckOutPage = () => {
             </div>
 
             <div className="flex justify-center my-5 w-full">
-              <button className="btn btn-primary w-10/12 flex justify-center">
+              <button
+                className="btn btn-primary w-10/12 flex justify-center"
+                onClick={openModal}
+              >
                 Place Order
               </button>
             </div>
           </form>
         </div>
         {/* right */}
+        {isOpen && (
+          <dialog className="modal" open>
+            <div className="modal-box bg-[#B7B7B7] text-black">
+              <h3 className="font-bold text-2xl text-center  ">Welcome!</h3>
+              <p className="py-4">Amount: {totalPrice}</p>
+              <p className="py-2"> </p>
+              <div className="modal-action">
+                <button
+                  onClick={handlePaymentSubmit}
+                  className="flex mx-auto text-white btn hover:bg-[#1A4870] bg-[#5B99C2] btn-md justify-center w-3/4 text-2xl pb-1"
+                >
+                  Proceed to Pay
+                </button>
+                <button
+                  className="btn text-white btn hover:bg-[#1A4870] bg-[#5B99C2] btn-md"
+                  onClick={closeModal}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </dialog>
+        )}
+      </div>
+
+      <div>
+        <h1>all infor of order data from from reduc store:</h1>
+        <div className="my-10">
+          <h1 className="text-2xl text-black font-semibold text-center pb-5 underline">
+            CheckOut Your Purchase:
+          </h1>
+
+          {/* Display Order Summary */}
+          <div className="w-full md:w-7/12 mx-auto shadow-2xl rounded-lg p-5">
+            <h2 className="text-xl font-bold">Order Summary</h2>
+            <div className="mt-3">
+              <p>
+                <strong>User ID:</strong> {userId}
+              </p>
+              <p>
+                <strong>User Email:</strong> {userEmail}
+              </p>
+              <p>
+                <strong>Vendor ID:</strong> {vendorId}
+              </p>
+              <p>
+                <strong>Vendor Email:</strong> {vendorEmail}
+              </p>
+              <p>
+                <strong>Shop Name:</strong> {shopName}
+              </p>
+              <p>
+                <strong>Total Items:</strong> {totalItems}
+              </p>
+              <p>
+                <strong>Total Price:</strong> ${totalPrice.toFixed(2)}
+              </p>
+            </div>
+
+            {/* Display Product List */}
+            <div className="mt-5">
+              <h3 className="text-lg font-semibold">Products:</h3>
+              <ul className="list-disc pl-5">
+                {products.map((product, index) => (
+                  <li key={product.productId}>
+                    <p>
+                      <strong>Product {index + 1}:</strong>
+                    </p>
+                    <p>Product ID: {product.productId}</p>
+                    <p>Name: {product.name}</p>
+                    <p>Required Quantity: {product.requiredQty}</p>
+                    <p>Price: ${product.price.toFixed(2)}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

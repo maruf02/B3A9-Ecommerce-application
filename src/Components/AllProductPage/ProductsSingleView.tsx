@@ -10,6 +10,8 @@ import {
 } from "../../Redux/features/CartItem/cartSlice";
 import { useGetVendorByEmailQuery } from "../../Redux/features/vendor/vendorApi";
 import { toast } from "react-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
 interface Product {
   productId: string;
   email: string;
@@ -22,11 +24,18 @@ interface Product {
   description: string;
 }
 
+type User = {
+  userId: string;
+  email: string;
+  // Add other user properties as needed
+};
+
 interface ProductsSingleViewProps {
   product: Product;
 }
 const ProductsSingleView = ({ product }) => {
   const dispatch = useAppDispatch();
+  const [requiredQty, setRequiredQty] = useState(1);
   const cart = useAppSelector((state) => state.cart);
   const [isExpanded, setIsExpanded] = useState(false);
   const {
@@ -51,7 +60,7 @@ const ProductsSingleView = ({ product }) => {
     email as string
   );
   const vendor = vendorData?.data || {};
-
+  const user = useSelector((state: RootState) => state.auth.user as User);
   const { vendorId } = vendor;
 
   const toggleDescription = () => {
@@ -62,6 +71,15 @@ const ProductsSingleView = ({ product }) => {
 
   // *************************************
   const handleAddToCart = () => {
+    if (!user) {
+      Swal.fire(
+        "Please log in",
+        "You need to log in to add products to your cart.",
+        "info"
+      );
+      return;
+    }
+
     if (cart.savedVendor && cart.savedVendor.vendorId !== vendor.vendorId) {
       Swal.fire({
         title: "Different Vendor Detected",
@@ -75,8 +93,9 @@ const ProductsSingleView = ({ product }) => {
           dispatch(clearCart());
           dispatch(
             addProductToCart({
+              user,
               vendor,
-              product: { ...product, requiredQty: 1 },
+              product: { ...product, requiredQty },
             })
           );
           Swal.fire(
@@ -90,7 +109,7 @@ const ProductsSingleView = ({ product }) => {
       });
     } else {
       dispatch(
-        addProductToCart({ vendor, product: { ...product, requiredQty: 1 } })
+        addProductToCart({ user, vendor, product: { ...product, requiredQty } })
       );
       Swal.fire(
         "Product Added",

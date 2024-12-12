@@ -7,7 +7,7 @@ const Homepage = () => {
     <div>
       <BannerSection />
       <BestSellingPage />
-      {/* <AllProductSection /> */}
+      <AllProductSection />
       {/* <FeatureCar />
       <WhyChooseUsSection />
       <TestimonialSection /> */}

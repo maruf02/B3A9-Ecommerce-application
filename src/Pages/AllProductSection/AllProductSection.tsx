@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useGetAllProductQuery } from "../../Redux/features/produtcs/productsApi";
-import ProductSingleViewPage from "../ProductSingleViewPage/ProductSingleViewPage";
+import ProductDetailsPage from "../ProductDetailsPage/ProductDetailsPage";
 
 const AllProductSection = () => {
   const { data: productData } = useGetAllProductQuery(undefined);
@@ -26,10 +26,10 @@ const AllProductSection = () => {
               </p>
             ) : (
               produtcs.map((product) => (
-                <ProductSingleViewPage
+                <ProductDetailsPage
                   key={product.productId}
                   product={product}
-                ></ProductSingleViewPage>
+                ></ProductDetailsPage>
               ))
             )}
           </div>

@@ -14,6 +14,7 @@ interface PlaceOrderState {
     };
     items: Array<{
       productId: string;
+      mimage: string;
       name: string;
       requiredQty: number;
       price: number;

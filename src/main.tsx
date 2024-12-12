@@ -28,6 +28,7 @@ import AllProductPage from "./Components/AllProductPage/AllProductPage.tsx";
 import ProductDetailsPage from "./Pages/ProductDetailsPage/ProductDetailsPage.tsx";
 import CartViewPage from "./Pages/CartViewPage/CartViewPage.tsx";
 import CheckOutPage from "./Pages/CheckOutPage/CheckOutPage.tsx";
+import CommentPage from "./Pages/CommentPage/CommentPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: "/cartView",
         element: <CartViewPage />,
+      },
+      {
+        path: "/commentPage",
+        element: <CommentPage />,
       },
       {
         path: "/checkout",

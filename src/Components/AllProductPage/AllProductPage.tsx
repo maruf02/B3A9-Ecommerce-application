@@ -38,7 +38,7 @@ const AllProductPage = () => {
     isLoading,
   } = useGetAllProductQueryQuery({ page, limit });
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
-  const categories = categoryData?.data || {};
+  const categories = categoryData?.data || [];
 
   console.log("categories", categories);
   console.log("products", productsData);
@@ -57,7 +57,7 @@ const AllProductPage = () => {
       setProducts(productsData?.data);
       setDisplayedProducts(productsData?.data);
     }
-  }, [productsData]);
+  }, [productsData, categories]);
 
   if (isLoading)
     return (
@@ -288,7 +288,7 @@ const AllProductPage = () => {
                 onChange={handleSelectChangeCategory}
                 className="select select-bordered w-full  bg-[#1A4870] "
               >
-                <option disabled selected>
+                <option disabled defaultValue="Select Category">
                   Select Category
                 </option>
                 {categories.map((category, index) => (
@@ -318,9 +318,7 @@ const AllProductPage = () => {
                 onChange={handleSelectChangePriceAscDesc}
                 className="select select-bordered w-full bg-[#1A4870]"
               >
-                <option disabled selected>
-                  Select Option
-                </option>
+                <option disabled>Select Option</option>
                 <option value="asc">Price Low to High</option>
                 <option value="desc">Price High to Low</option>
               </select>
@@ -362,7 +360,7 @@ const AllProductPage = () => {
             ) : (
               displayedProducts.map((product: any) => (
                 <ProductsSingleView
-                  key={product._id}
+                  key={product.productId}
                   product={product}
                 ></ProductsSingleView>
               ))

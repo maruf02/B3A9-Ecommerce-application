@@ -15,8 +15,8 @@ const bookingApi = baseApi.injectEndpoints({
       }),
     }),
     GetVendorById: builder.query({
-      query: (shopId: string) => ({
-        url: `/vendors/email/${shopId}`,
+      query: (vendorId: string) => ({
+        url: `/vendors/${vendorId}`,
         method: "GET",
       }),
     }),
