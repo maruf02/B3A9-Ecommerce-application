@@ -12,10 +12,10 @@ const CheckOutPage = () => {
 
   // Extract user, vendor, and items from orderData
   const user = orderData?.user;
-  const vendor = orderData?.vendor;
+  // const vendor = orderData?.vendor;
   const items = orderData?.items || [];
-  const totalItems = orderData?.totalItems ?? 0;
-  const totalPrice = orderData?.totalPrice ?? 0;
+  // const totalItems = orderData?.totalItems ?? 0;
+  // const totalPrice = orderData?.totalPrice ?? 0;
   // const [createOrderItem] = useCreateOrderItemMutation();
   const { refetch } = useGetAllProductQuery(undefined);
   console.log("items", items);
@@ -74,6 +74,15 @@ const CheckOutPage = () => {
     //     // console.error("Failed to create order", error);
     //   }
   };
+
+  const userId = orderData?.user?.userId || "";
+  const userEmail = orderData?.user?.email || "";
+  const vendorId = orderData?.vendor?.vendorId || "";
+  const vendorEmail = orderData?.vendor?.email || "";
+  const shopName = orderData?.vendor?.shopName || "";
+  const products = orderData?.items || [];
+  const totalItems = orderData?.totalItems || 0;
+  const totalPrice = orderData?.totalPrice || 0;
 
   return (
     <div className="my-10 ">
@@ -173,6 +182,61 @@ const CheckOutPage = () => {
           </form>
         </div>
         {/* right */}
+      </div>
+
+      <div>
+        <h1>all infor of order data from from reduc store:</h1>
+        <div className="my-10">
+          <h1 className="text-2xl text-black font-semibold text-center pb-5 underline">
+            CheckOut Your Purchase:
+          </h1>
+
+          {/* Display Order Summary */}
+          <div className="w-full md:w-7/12 mx-auto shadow-2xl rounded-lg p-5">
+            <h2 className="text-xl font-bold">Order Summary</h2>
+            <div className="mt-3">
+              <p>
+                <strong>User ID:</strong> {userId}
+              </p>
+              <p>
+                <strong>User Email:</strong> {userEmail}
+              </p>
+              <p>
+                <strong>Vendor ID:</strong> {vendorId}
+              </p>
+              <p>
+                <strong>Vendor Email:</strong> {vendorEmail}
+              </p>
+              <p>
+                <strong>Shop Name:</strong> {shopName}
+              </p>
+              <p>
+                <strong>Total Items:</strong> {totalItems}
+              </p>
+              <p>
+                <strong>Total Price:</strong> ${totalPrice.toFixed(2)}
+              </p>
+            </div>
+
+            {/* Display Product List */}
+            <div className="mt-5">
+              <h3 className="text-lg font-semibold">Products:</h3>
+              <ul className="list-disc pl-5">
+                {products.map((product, index) => (
+                  <li key={product.productId}>
+                    <p>
+                      <strong>Product {index + 1}:</strong>
+                    </p>
+                    <p>Product ID: {product.productId}</p>
+                    <p>Name: {product.name}</p>
+                    <p>Required Quantity: {product.requiredQty}</p>
+                    <p>Price: ${product.price.toFixed(2)}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
