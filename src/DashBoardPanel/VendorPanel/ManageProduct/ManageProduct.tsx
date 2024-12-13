@@ -37,20 +37,20 @@ const ManageProduct = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDiscount, setSelectedDiscount] = useState("");
   const [selectedIsFlashSale, setSelectedIsFlashSale] = useState("");
-
+  const email = userDataToken?.email;
+  const { data: vendorData, refetch: vendorRefech } =
+    useGetVendorByEmailQuery(email);
   // const { data: productData, refetch: productsRefech } =
   //   useGetProductByShopNameQuery(userDataToken.email);
-  const email = userDataToken.email;
+  const vendorId = vendorData?.data?.vendorId;
+  console.log("vendorData", vendorData);
   const {
     data: productData,
     isLoading,
     isError,
     refetch: productsRefech,
-  } = useGetProductByShopNamePaginateQuery({ email, page, limit });
+  } = useGetProductByShopNamePaginateQuery({ vendorId, page, limit });
 
-  const { data: vendorData, refetch: vendorRefech } = useGetVendorByEmailQuery(
-    userDataToken.email
-  );
   // const { data: users } = useGetAllUserQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
   const [addProductItem, {}] = useCreateProductMutation();
@@ -62,6 +62,7 @@ const ManageProduct = () => {
   // const productsData = produtcs?.result || 0;
   // const displayedProductsData = displayedProducts?.result || 0;
   const total = productData?.meta?.total;
+  console.log("total", total);
   const categories = categoryData?.data || [];
   const vendor = vendorData?.data || [];
   console.log("displayedProductsData", displayedProducts, displayedProducts);
@@ -1660,14 +1661,15 @@ const ManageProduct = () => {
       {/* table view */}
 
       {/* Pagination */}
-      <div className="w-full container mx-auto">
+      <div className="container mx-auto w-full flex   justify-center  my-10">
+        {/* Pagination */}
         <Pagination
           current={page}
           pageSize={limit}
           total={total}
           onChange={handlePageChange}
           showSizeChanger={true}
-          pageSizeOptions={["1", "2", "3", "5"]}
+          pageSizeOptions={["1", "2", "3", "5", "10", "20"]}
         />
       </div>
     </div>

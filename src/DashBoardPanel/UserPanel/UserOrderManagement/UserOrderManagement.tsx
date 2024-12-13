@@ -3,12 +3,15 @@ import { Pagination, Select } from "antd";
 import { useSelector } from "react-redux";
 import { IoMdClose } from "react-icons/io";
 import { RootState } from "../../../Redux/store";
-import { useOrderProductByVendorEmailQuery } from "../../../Redux/features/produtcs/orderApi";
+import {
+  useOrderProductByUserEmailQuery,
+  useOrderProductByVendorEmailQuery,
+} from "../../../Redux/features/produtcs/orderApi";
 import { useGetAllCategoryQuery } from "../../../Redux/features/produtcs/productsApi";
 import { FaSearch, FaSortNumericDown } from "react-icons/fa";
 import { MdManageSearch, MdPriceCheck } from "react-icons/md";
 
-const OrderManagement = () => {
+const UserOrderManagement = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchText, setSearchText] = useState("");
@@ -29,7 +32,7 @@ const OrderManagement = () => {
     isLoading,
     isError,
     refetch: vendorRefech,
-  } = useOrderProductByVendorEmailQuery(email);
+  } = useOrderProductByUserEmailQuery(email);
 
   // const { data: users } = useGetAllUserQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
@@ -380,4 +383,4 @@ const OrderManagement = () => {
   );
 };
 
-export default OrderManagement;
+export default UserOrderManagement;

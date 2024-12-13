@@ -33,14 +33,14 @@ const adminItems: MenuItem[] = [
 const vendorItems: MenuItem[] = [
   { key: "1", icon: <PieChartOutlined />, label: "Dashboard" },
   { key: "2", icon: <DesktopOutlined />, label: "Manage Products" },
-  { key: "3", icon: <DesktopOutlined />, label: "Order Management" },
-  { key: "4", icon: <ContainerOutlined />, label: "Sales Report" },
+  { key: "3", icon: <DesktopOutlined />, label: "Order History" },
+  { key: "4", icon: <ContainerOutlined />, label: "Customer Reviews" },
   { key: "5", icon: <ContainerOutlined />, label: "Homepage" },
 ];
 
 const userItems: MenuItem[] = [
   { key: "1", icon: <PieChartOutlined />, label: "DashBoard" },
-  { key: "2", icon: <DesktopOutlined />, label: "Booking Management" },
+  { key: "2", icon: <DesktopOutlined />, label: "Purchase Management" },
   { key: "3", icon: <ContainerOutlined />, label: "Payment Management" },
   { key: "4", icon: <ContainerOutlined />, label: "Homepage" },
 ];
@@ -114,7 +114,7 @@ const NavBarDashBoard = () => {
             navigate("/DashBoard/vendor/OrderManagement");
             break;
           case "4":
-            navigate("/DashBoard/SalesReport");
+            navigate("/DashBoard/vendor/CustomerReview");
             break;
           case "5":
             navigate("/");
@@ -130,7 +130,7 @@ const NavBarDashBoard = () => {
             navigate("/DashBoard/user");
             break;
           case "2":
-            navigate("/DashBoard/BookingManagement");
+            navigate("/DashBoard/user/purchaseManagement");
             break;
           case "3":
             navigate("/DashBoard/ManagePayment");

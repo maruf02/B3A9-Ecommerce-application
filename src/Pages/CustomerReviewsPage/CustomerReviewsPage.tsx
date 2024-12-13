@@ -1,14 +1,20 @@
+import { FaCopy, FaEdit, FaSearch, FaSortNumericDown } from "react-icons/fa";
+import { MdDeleteForever, MdManageSearch, MdPriceCheck } from "react-icons/md";
 import { useEffect, useState } from "react";
+
 import { Pagination, Select } from "antd";
 import { useSelector } from "react-redux";
-import { IoMdClose } from "react-icons/io";
-import { RootState } from "../../../Redux/store";
-import { useOrderProductByVendorEmailQuery } from "../../../Redux/features/produtcs/orderApi";
-import { useGetAllCategoryQuery } from "../../../Redux/features/produtcs/productsApi";
-import { FaSearch, FaSortNumericDown } from "react-icons/fa";
-import { MdManageSearch, MdPriceCheck } from "react-icons/md";
 
-const OrderManagement = () => {
+import { IoMdClose } from "react-icons/io";
+import {
+  useGetAllCategoryQuery,
+  useGetProductByShopNamePaginateQuery,
+} from "../../Redux/features/produtcs/productsApi";
+import { useGetVendorByEmailQuery } from "../../Redux/features/vendor/vendorApi";
+import { RootState } from "../../Redux/store";
+import { Link } from "react-router-dom";
+
+const CustomerReviewsPage = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchText, setSearchText] = useState("");
@@ -24,20 +30,26 @@ const OrderManagement = () => {
   // const { data: productData, refetch: productsRefech } =
   //   useGetProductByShopNameQuery(userDataToken.email);
   const email = userDataToken?.email;
+  const { data: vendorData, refetch: vendorRefech } =
+    useGetVendorByEmailQuery(email);
+
+  const vendorId = vendorData?.data?.vendorId;
   const {
     data: productData,
     isLoading,
     isError,
-    refetch: vendorRefech,
-  } = useOrderProductByVendorEmailQuery(email);
+    refetch: productsRefech,
+  } = useGetProductByShopNamePaginateQuery({ vendorId, page, limit });
 
   // const { data: users } = useGetAllUserQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
 
+  const produtcs = productData?.data || [];
   // const productsData = produtcs?.result || 0;
   // const displayedProductsData = displayedProducts?.result || 0;
   const total = productData?.meta?.total;
   const categories = categoryData?.data || [];
+  const vendor = vendorData?.data || [];
 
   // pagination***************************************************
   // pagination***************************************************
@@ -78,9 +90,7 @@ const OrderManagement = () => {
     const filteredProducts = products.filter(
       (product: any) =>
         product.name.toLowerCase().includes(searchText.toLowerCase()) ||
-        product.product.description
-          .toLowerCase()
-          .includes(searchText.toLowerCase())
+        product.description.toLowerCase().includes(searchText.toLowerCase())
     );
     setDisplayedProducts(filteredProducts);
   };
@@ -95,9 +105,8 @@ const OrderManagement = () => {
       (product: any) =>
         product.price >= minPrice &&
         product.price <= maxPrice &&
-        (!selectedCategory || product.product.category === selectedCategory)
+        (!selectedCategory || product.category === selectedCategory)
     );
-
     setDisplayedProducts(filteredProducts);
   };
 
@@ -106,7 +115,7 @@ const OrderManagement = () => {
     setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
-      (product) => product.product.category === selectedValue
+      (product) => product.category === selectedValue
     );
     setDisplayedProducts(filteredProducts);
   };
@@ -294,8 +303,11 @@ const OrderManagement = () => {
               <th>Name</th>
               <th>category</th>
               <th>Price</th>
-              <th>purchaseQty</th>
-              <th>TotalPrice</th>
+              <th>Quantity</th>
+              <th>disPr</th>
+              <th>FlashS</th>
+
+              <th>actions</th>
             </tr>
           </thead>
           <tbody>
@@ -311,7 +323,7 @@ const OrderManagement = () => {
                         <div className="avatar">
                           <div className="mask mask-squircle h-12 w-12">
                             <img
-                              src={product.product.mimage}
+                              src={product.mimage}
                               alt="Avatar Tailwind CSS Component"
                               className="w-full h-full"
                             />
@@ -324,9 +336,7 @@ const OrderManagement = () => {
                     </td>
                     <td>
                       <div>
-                        <div className="font-semibold">
-                          {product.product.category}
-                        </div>
+                        <div className="font-semibold">{product.category}</div>
                       </div>
                     </td>
                     <td>
@@ -336,15 +346,13 @@ const OrderManagement = () => {
                     </td>
                     <td>
                       <div>
-                        <div className="font-semibold">
-                          {product.requiredQty}
-                        </div>
+                        <div className="font-semibold">{product.quantity}</div>
                       </div>
                     </td>
                     <td>
                       <div>
                         <div className="font-semibold">
-                          ${product.price * product.requiredQty}
+                          ${product.discountPrice || 0}
                         </div>
                       </div>
                     </td>
@@ -355,6 +363,15 @@ const OrderManagement = () => {
                         </div>
                       </div>
                     </td>
+                    <th>
+                      <div className="space-x-0">
+                        <Link to={`/ProductDetailsView/${product.productId}`}>
+                          <button className="btn btn-primary  w-full ">
+                            View Comment
+                          </button>
+                        </Link>
+                      </div>
+                    </th>
                   </tr>
                 </>
               ))
@@ -380,4 +397,4 @@ const OrderManagement = () => {
   );
 };
 
-export default OrderManagement;
+export default CustomerReviewsPage;

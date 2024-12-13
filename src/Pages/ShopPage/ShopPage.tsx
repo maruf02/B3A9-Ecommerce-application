@@ -11,10 +11,19 @@ import { Pagination } from "antd";
 import { IoMdClose } from "react-icons/io";
 import { FaSearch, FaSortNumericDown } from "react-icons/fa";
 import { MdManageSearch, MdPriceCheck } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
+import {
+  useFollowStatusQuery,
+  useStartFollowMutation,
+  useStartUnfollowMutation,
+} from "../../Redux/features/produtcs/orderApi";
+import Swal from "sweetalert2";
 
 const ShopPage = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
   const [searchText, setSearchText] = useState("");
@@ -26,12 +35,25 @@ const ShopPage = () => {
     isLoading,
     isError,
   } = useGetProductByVendorIdPaginateQuery({ vendorId, page, limit });
+
+  const user = useSelector((state: RootState) => state.auth.user as User);
+  const userId = user?.userId || [];
+  const userRole = user?.role || [];
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
   const categories = categoryData?.data || {};
   console.log("vendorId", vendorId);
+  const { data: followData, refetch: followStatusRefetch } =
+    useFollowStatusQuery(vendorId);
+  const [startFollow] = useStartFollowMutation();
+  const [startUnFollow] = useStartUnfollowMutation();
+  const [localFollowStatus, setLocalFollowStatus] = useState(
+    followData?.message || ""
+  );
   const produtcs = productsData?.data || {};
+  const follow = followData?.message || "";
   console.log("produtcs", productsData);
 
+  console.log("followData", followData);
   if (productsData && products.length === 0) {
     setProducts(productsData.data);
     setDisplayedProducts(productsData.data);
@@ -45,7 +67,7 @@ const ShopPage = () => {
       setProducts(productsData?.data);
       setDisplayedProducts(productsData?.data);
     }
-  }, [productsData]);
+  }, [productsData, vendorId]);
 
   if (isLoading)
     return (
@@ -143,6 +165,26 @@ const ShopPage = () => {
   if (!productsData || productsData.length === 0) {
     return <p>No products found for this vendor.</p>;
   }
+  const handleFollow = async (vendorId: string) => {
+    try {
+      await startFollow({ vendorId, userId }).unwrap();
+      setLocalFollowStatus("Following"); // Update the local state
+      followStatusRefetch();
+    } catch (error) {
+      Swal.fire(`Error following: ${vendorId}`, error);
+    }
+  };
+
+  const handleUnFollow = async (vendorId: string) => {
+    try {
+      await startUnFollow({ vendorId, userId }).unwrap();
+      setLocalFollowStatus("NeedFollow"); // Update the local state
+      followStatusRefetch();
+    } catch (error) {
+      Swal.fire(`Error unfollowing: ${vendorId}`, error);
+    }
+  };
+
   return (
     <div>
       <div className="w-full h-full min-h-screen">
@@ -176,13 +218,32 @@ const ShopPage = () => {
           </div>
           {/* ****************************************************************************************************** */}
           {/* title bar left section */}
-          <div className="flex-1 ">
-            <a className=" text-4xl font-bold underline pl-3">
-              ALL PRODUCTS -
-              <span className="text-blue-600 text-4xl uppercase pl-2">
-                {shopName}
-              </span>
-            </a>
+          <div className="w-full  flex flex-row justify-between pb-5 ">
+            <div>
+              <a className=" text-4xl font-bold underline pl-3">
+                ALL PRODUCTS -
+                <span className="text-blue-600 text-4xl uppercase pl-2">
+                  {shopName}
+                </span>
+              </a>
+            </div>
+            <div className="">
+              {localFollowStatus === "NeedFollow" ? (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleFollow(vendorId)}
+                >
+                  Follow
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleUnFollow(vendorId)}
+                >
+                  UnFollow
+                </button>
+              )}
+            </div>
           </div>
           {/* title bar left section */}
           {/* ****************************************************************************************************** */}

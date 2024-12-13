@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { RootState } from "../../Redux/store";
 import { useCreateOrderMutation } from "../../Redux/features/produtcs/orderApi";
+import { clearCart } from "../../Redux/features/CartItem/cartSlice";
 
 interface ApiError {
   data?: {
@@ -32,9 +33,12 @@ const CheckOutPage = () => {
   const products = orderData?.items || [];
   const totalItems = orderData?.totalItems || 0;
   const totalPrice = orderData?.totalPrice || 0;
+  const [coupon, setCoupon] = useState("");
+  const [discountedPrice, setDiscountedPrice] = useState(totalPrice);
 
   const handlePaymentSubmit = async (event: any) => {
     event.preventDefault();
+    const finalPrice = discountedPrice;
     console.log("object");
     Swal.fire({
       title: "Are you sure?",
@@ -54,7 +58,7 @@ const CheckOutPage = () => {
             vendorEmail,
             shopName,
             totalItems,
-            totalPrice,
+            totalPrice: finalPrice,
             paymentMethod: "credit_card",
             status: "completed",
             orderItems: products,
@@ -65,6 +69,7 @@ const CheckOutPage = () => {
 
           const res = await createOrder(orderData).unwrap();
           if (res.data && res.data.payment_url) {
+            dispatch(clearCart());
             window.location.href = res.data.payment_url;
           } else {
             throw new Error("Payment URL not found in response.");
@@ -120,7 +125,11 @@ const CheckOutPage = () => {
             ))}
           </ul>
           <div className="text-xl text-black font-medium ">
-            Total Price: ${totalPrice.toFixed(2)}
+            {/* Total Price: ${totalPrice.toFixed(2)} */}
+            Total Price: ${discountedPrice.toFixed(2)}
+          </div>
+          <div className="text-lg text-blue-500 font-medium ">
+            Use cupon "amaarPay" for less 5%.
           </div>
         </div>
         {/* left */}
@@ -178,16 +187,26 @@ const CheckOutPage = () => {
             </div>
 
             <div className="flex flex-row align-middle gap-2">
-              <label className="pr-3">Payment:</label>
+              <label className="pr-3">Cupon :</label>
               <input
-                type="radio"
-                name="payment"
-                value="CashOnDelivery"
-                id="credit"
+                type="text"
+                name="address"
+                placeholder="Enter your Address"
+                id="address"
                 required
-                className="radio radio-primary"
+                className=" bg-white text-black input input-bordered input-primary input-sm"
+                onChange={(e) => {
+                  const input = e.target.value;
+                  setCoupon(input);
+                  if (input === "amaarPay") {
+                    setDiscountedPrice(totalPrice * 0.95);
+                    Swal.fire("cupon code correct. you get 5% discount");
+                  } else {
+                    setDiscountedPrice(totalPrice);
+                    Swal.fire("cupon code incorrect. ");
+                  }
+                }}
               />
-              <label>Cash On Delivery</label>
             </div>
 
             <div className="flex justify-center my-5 w-full">

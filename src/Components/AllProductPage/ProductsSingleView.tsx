@@ -12,6 +12,7 @@ import { useGetVendorByEmailQuery } from "../../Redux/features/vendor/vendorApi"
 import { toast } from "react-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
+import { addProductToView } from "../../Redux/features/CartItem/viewSlice";
 interface Product {
   productId: string;
   email: string;
@@ -120,6 +121,11 @@ const ProductsSingleView = ({ product }) => {
   };
   // *************************************
 
+  const handleAddView = (product: Product) => {
+    console.log("product", product);
+    dispatch(addProductToView(product)); // Save product details in the view slice
+  };
+
   return (
     <div className=" ">
       {/* *********************** */}
@@ -176,7 +182,10 @@ const ProductsSingleView = ({ product }) => {
                 Add to Cart
               </button>
               <Link to={`/ProductDetailsView/${productId}`}>
-                <button className="btn btn-primary  w-full ">
+                <button
+                  className="btn btn-primary  w-full  "
+                  onClick={() => handleAddView(product)}
+                >
                   View Details
                 </button>
               </Link>

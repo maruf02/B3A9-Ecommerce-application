@@ -29,6 +29,8 @@ import ProductDetailsPage from "./Pages/ProductDetailsPage/ProductDetailsPage.ts
 import CartViewPage from "./Pages/CartViewPage/CartViewPage.tsx";
 import CheckOutPage from "./Pages/CheckOutPage/CheckOutPage.tsx";
 import CommentPage from "./Pages/CommentPage/CommentPage.tsx";
+import CustomerReviewsPage from "./Pages/CustomerReviewsPage/CustomerReviewsPage.tsx";
+import UserOrderManagement from "./DashBoardPanel/UserPanel/UserOrderManagement/UserOrderManagement.tsx";
 
 const router = createBrowserRouter([
   {
@@ -130,6 +132,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/DashBoard/vendor/CustomerReview",
+        element: (
+          <VendorProtectRoute>
+            <CustomerReviewsPage />
+          </VendorProtectRoute>
+        ),
+      },
+      {
         path: "/DashBoard/SalesReport",
         element: (
           <VendorProtectRoute>
@@ -142,6 +152,14 @@ const router = createBrowserRouter([
         element: (
           <UserProtectRoute>
             <UserDashBoard />
+          </UserProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/user/purchaseManagement",
+        element: (
+          <UserProtectRoute>
+            <UserOrderManagement />
           </UserProtectRoute>
         ),
       },

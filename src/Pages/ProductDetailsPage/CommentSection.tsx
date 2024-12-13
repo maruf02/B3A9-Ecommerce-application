@@ -12,6 +12,7 @@ import {
 import Swal from "sweetalert2";
 import { useGetUserByUserIdQuery } from "../../Redux/user/userApi";
 import { useGetVendorByIdQuery } from "../../Redux/features/vendor/vendorApi";
+import StarRatings from "react-star-ratings";
 type pro = {
   productId: string;
   vendorId: string;
@@ -222,6 +223,16 @@ const CommentSection = ({ productId, vendorId }: pro) => {
                             </span>
                             <span className="text-black text-lg font-medium">
                               {comment.comment}
+                              <span className="pl-2">
+                                <StarRatings
+                                  rating={comment.rating}
+                                  starRatedColor="#f39c12"
+                                  numberOfStars={5}
+                                  name="rating"
+                                  starDimension="15px"
+                                  starSpacing="1px"
+                                />
+                              </span>
                             </span>
                           </p>
                           {/*  Replies portion */}
@@ -290,9 +301,9 @@ const CommentSection = ({ productId, vendorId }: pro) => {
                                         className="pl-4 text-black"
                                       >
                                         <span className="text-blue-700">
-                                          Replied:{" "}
+                                          Replied:
                                           <span className="px-2">
-                                            {reply.name}:
+                                            {reply.shopName}:
                                           </span>
                                         </span>
                                         {reply.repliesComment}

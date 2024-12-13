@@ -115,8 +115,8 @@ const produtcsApi = baseApi.injectEndpoints({
       }),
     }),
     GetProductByShopNamePaginate: builder.query({
-      query: ({ email, page, limit }) => ({
-        url: `/productsByShopName/email/${email}?page=${page}&limit=${limit}`,
+      query: ({ vendorId, page, limit }) => ({
+        url: `/productsByShopNameP/${vendorId}?page=${page}&limit=${limit}`,
         method: "GET",
       }),
     }),

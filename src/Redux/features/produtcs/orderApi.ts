@@ -16,6 +16,13 @@ const orderApi = baseApi.injectEndpoints({
       }),
     }),
 
+    orderProductByVendorEmail: builder.query({
+      query: (email) => `/ordersProductByVendorEmail/${email}`,
+    }),
+    orderProductByUserEmail: builder.query({
+      query: (email) => `/ordersProductByUserEmail/${email}`,
+    }),
+
     // *************************************************************
 
     createComment: builder.mutation({
@@ -57,6 +64,31 @@ const orderApi = baseApi.injectEndpoints({
     }),
 
     // ******************************
+    // ************follow/Unfollow******************
+    startFollow: builder.mutation({
+      query: (followShopData) => ({
+        url: "/followShop",
+        method: "POST",
+        body: followShopData,
+      }),
+    }),
+
+    followStatus: builder.query({
+      query: (vendorId) => `/followShopStatus/${vendorId}`,
+    }),
+
+    startUnfollow: builder.mutation<void, { userId: string; vendorId: string }>(
+      {
+        query: ({ userId, vendorId }) => ({
+          url: `/followShop/user/${userId}/vendor/${vendorId}`,
+          method: "DELETE",
+        }),
+      }
+    ),
+
+    // ************follow/Unfollow******************
+    // ******************************
+    // ******************************
   }),
 });
 
@@ -70,4 +102,9 @@ export const {
   useReplyCommentByCIDQuery,
   useReplyCommentMutation,
   useUpdateCommentMutation,
+  useOrderProductByVendorEmailQuery,
+  useOrderProductByUserEmailQuery,
+  useFollowStatusQuery,
+  useStartFollowMutation,
+  useStartUnfollowMutation,
 } = orderApi;
