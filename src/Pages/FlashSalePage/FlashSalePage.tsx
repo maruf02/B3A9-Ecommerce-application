@@ -3,15 +3,9 @@ import { FaSearch, FaSortNumericDown } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { MdManageSearch, MdPriceCheck } from "react-icons/md";
 import { motion } from "framer-motion";
-
-import ProductsSingleView from "./ProductsSingleView";
-import {
-  useGetAllCategoryQuery,
-  useGetAllProductQueryQuery,
-} from "../../Redux/features/produtcs/productsApi";
-import { Pagination } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
+import { useGetAllFlashSaleProductQuery } from "../../Redux/features/produtcs/orderApi";
+import { useGetAllCategoryQuery } from "../../Redux/features/produtcs/productsApi";
+import ProductsSingleView from "../../Components/AllProductPage/ProductsSingleView";
 
 interface Product {
   _id: string;
@@ -24,27 +18,19 @@ interface Product {
   mimage: string;
 }
 
-const AllProductPage = () => {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  // const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedCategoryFromForm, setSelectedCategoryFromForm] = useState("");
+const FlashSalePage = () => {
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
   const [searchText, setSearchText] = useState("");
   const [products, setProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
-
-  const dispatch = useDispatch();
-  const selectedCategory = useSelector(
-    (state: RootState) => state.product.selectedCategory
-  );
 
   // redux part
   const {
     data: productsData,
     isError,
     isLoading,
-  } = useGetAllProductQueryQuery({ page, limit });
+  } = useGetAllFlashSaleProductQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
   const categories = categoryData?.data || [];
 
@@ -56,17 +42,6 @@ const AllProductPage = () => {
     setProducts(productsData.data);
     setDisplayedProducts(productsData.data);
   }
-
-  // pagination***************************************************
-  // pagination***************************************************
-  const total = productsData?.meta?.total;
-
-  // useEffect(() => {
-  //   if (productsData?.data) {
-  //     setProducts(productsData?.data);
-  //     setDisplayedProducts(productsData?.data);
-  //   }
-  // }, [productsData, categories]);
 
   useEffect(() => {
     if (productsData?.data) {
@@ -86,12 +61,6 @@ const AllProductPage = () => {
     );
   if (isError) return <div>Error loading products</div>;
 
-  const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    if (pageSize && pageSize !== limit) {
-      setLimit(pageSize);
-    }
-  };
   // pagination***************************************************
   // pagination***************************************************
 
@@ -127,7 +96,7 @@ const AllProductPage = () => {
   const handleSelectChangeCategory = (event: React.FormEvent) => {
     const form = event.target as HTMLFormElement;
     const selectedValue = form.value;
-    setSelectedCategoryFromForm(selectedValue);
+    setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
       (product: Product) => product.category === selectedValue
@@ -147,8 +116,7 @@ const AllProductPage = () => {
   };
   const handleReset = () => {
     setSearchText("");
-    // setSelectedCategory("");
-    setSelectedCategoryFromForm("");
+    setSelectedCategory("");
     setSelectedPriceAscDesc("");
     setDisplayedProducts(productsData?.data || []); // Reset to initial product list
   };
@@ -196,7 +164,9 @@ const AllProductPage = () => {
         {/* ****************************************************************************************************** */}
         {/* title bar left section */}
         <div className="flex-1 ">
-          <a className=" text-4xl font-bold underline pl-3">ALL PRODUCTS: </a>
+          <a className=" text-4xl font-bold underline pl-3">
+            Flash Sale PRODUCTS:{" "}
+          </a>
         </div>
         {/* title bar left section */}
         {/* ****************************************************************************************************** */}
@@ -390,20 +360,8 @@ const AllProductPage = () => {
         </div>
       </motion.div>
       {/* ****************all product shown********************************************* */}
-
-      <div className="container mx-auto w-full flex   justify-center  my-10">
-        {/* Pagination */}
-        <Pagination
-          current={page}
-          pageSize={limit}
-          total={total}
-          onChange={handlePageChange}
-          showSizeChanger={true}
-          pageSizeOptions={["1", "2", "3", "5", "10", "20"]}
-        />
-      </div>
     </div>
   );
 };
 
-export default AllProductPage;
+export default FlashSalePage;

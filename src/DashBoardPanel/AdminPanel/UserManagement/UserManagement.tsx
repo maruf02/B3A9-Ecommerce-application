@@ -462,7 +462,7 @@ const UserManagement = () => {
             ) : (
               users.map((user: any) => (
                 <>
-                  <tr key={user._id} className="hover:bg-gray-300">
+                  <tr key={user.userId} className="hover:bg-gray-300">
                     <td>
                       <div className="flex items-center gap-3  ">
                         <div className="avatar">

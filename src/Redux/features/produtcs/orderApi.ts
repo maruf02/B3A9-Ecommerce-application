@@ -16,11 +16,33 @@ const orderApi = baseApi.injectEndpoints({
       }),
     }),
 
+    GetAllOrder: builder.query({
+      query: ({ page, limit }) => ({
+        url: `/orders?page=${page}&limit=${limit}`,
+        method: "GET",
+      }),
+    }),
+    GetAllLoginActivities: builder.query({
+      query: () => ({
+        url: "/loginActivities",
+        method: "GET",
+      }),
+    }),
+    // **********************************
+    GetAllFlashSaleProduct: builder.query({
+      query: () => ({
+        url: "/FlashSaleProducts",
+        method: "GET",
+      }),
+    }),
+
     orderProductByVendorEmail: builder.query({
-      query: (email) => `/ordersProductByVendorEmail/${email}`,
+      query: ({ email, page, limit }) =>
+        `/ordersProductByVendorEmail/${email}?page=${page}&limit=${limit}`,
     }),
     orderProductByUserEmail: builder.query({
-      query: (email) => `/ordersProductByUserEmail/${email}`,
+      query: ({ email, page, limit }) =>
+        `/ordersProductByUserEmail/${email}?page=${page}&limit=${limit}`,
     }),
 
     // *************************************************************
@@ -73,6 +95,13 @@ const orderApi = baseApi.injectEndpoints({
       }),
     }),
 
+    GetfollowerByVendorId: builder.query({
+      query: (vendorId: string) => ({
+        url: `/followShop/vendor/${vendorId}`,
+        method: "GET",
+      }),
+    }),
+
     followStatus: builder.query({
       query: (vendorId) => `/followShopStatus/${vendorId}`,
     }),
@@ -107,4 +136,8 @@ export const {
   useFollowStatusQuery,
   useStartFollowMutation,
   useStartUnfollowMutation,
+  useGetAllOrderQuery,
+  useGetAllLoginActivitiesQuery,
+  useGetfollowerByVendorIdQuery,
+  useGetAllFlashSaleProductQuery,
 } = orderApi;

@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import {
   useFollowStatusQuery,
+  useGetfollowerByVendorIdQuery,
   useStartFollowMutation,
   useStartUnfollowMutation,
 } from "../../Redux/features/produtcs/orderApi";
@@ -44,6 +45,8 @@ const ShopPage = () => {
   console.log("vendorId", vendorId);
   const { data: followData, refetch: followStatusRefetch } =
     useFollowStatusQuery(vendorId);
+  const { data: followerData, refetch: followCountRefetch } =
+    useGetfollowerByVendorIdQuery(vendorId);
   const [startFollow] = useStartFollowMutation();
   const [startUnFollow] = useStartUnfollowMutation();
   const [localFollowStatus, setLocalFollowStatus] = useState(
@@ -170,6 +173,7 @@ const ShopPage = () => {
       await startFollow({ vendorId, userId }).unwrap();
       setLocalFollowStatus("Following"); // Update the local state
       followStatusRefetch();
+      followCountRefetch();
     } catch (error) {
       Swal.fire(`Error following: ${vendorId}`, error);
     }
@@ -180,6 +184,7 @@ const ShopPage = () => {
       await startUnFollow({ vendorId, userId }).unwrap();
       setLocalFollowStatus("NeedFollow"); // Update the local state
       followStatusRefetch();
+      followCountRefetch();
     } catch (error) {
       Swal.fire(`Error unfollowing: ${vendorId}`, error);
     }
@@ -227,7 +232,10 @@ const ShopPage = () => {
                 </span>
               </a>
             </div>
-            <div className="">
+            <div className="flex flex-row gap-2 align-middle">
+              <span className="text-blue-500 font-bold text-lg">
+                FollowedBY: {followerData?.data?.length || 0}
+              </span>
               {localFollowStatus === "NeedFollow" ? (
                 <button
                   className="btn btn-primary"

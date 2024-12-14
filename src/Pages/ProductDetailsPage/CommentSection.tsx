@@ -160,8 +160,8 @@ const CommentSection = ({ productId, vendorId }: pro) => {
 
   console.log("productId", productId);
   return (
-    <div className="w-screen min-h-screen flex   justify-center bg-gray-200">
-      <div className="w-2/3 flex flex-row justify-center border border-2 border-red-500">
+    <div className="w-screen h-fit flex   justify-center bg-gray-200">
+      <div className="w-2/3 flex flex-row justify-center ">
         <div className="mt-4 ">
           <h2 className="text-xl font-semibold mb-2 text-black">Comments</h2>
           <div className="flex gap-2 mb-4">

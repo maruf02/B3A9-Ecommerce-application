@@ -28,7 +28,6 @@ const AllProductPage = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   // const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedCategoryFromForm, setSelectedCategoryFromForm] = useState("");
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
   const [searchText, setSearchText] = useState("");
   const [products, setProducts] = useState([]);
@@ -127,7 +126,7 @@ const AllProductPage = () => {
   const handleSelectChangeCategory = (event: React.FormEvent) => {
     const form = event.target as HTMLFormElement;
     const selectedValue = form.value;
-    setSelectedCategoryFromForm(selectedValue);
+    setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
       (product: Product) => product.category === selectedValue
@@ -147,8 +146,7 @@ const AllProductPage = () => {
   };
   const handleReset = () => {
     setSearchText("");
-    // setSelectedCategory("");
-    setSelectedCategoryFromForm("");
+    setSelectedCategory("");
     setSelectedPriceAscDesc("");
     setDisplayedProducts(productsData?.data || []); // Reset to initial product list
   };

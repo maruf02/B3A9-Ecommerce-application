@@ -10,8 +10,6 @@ import {
   useGetAllProductQueryQuery,
 } from "../../Redux/features/produtcs/productsApi";
 import { Pagination } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
 
 interface Product {
   _id: string;
@@ -27,17 +25,11 @@ interface Product {
 const AllProductPage = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  // const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedCategoryFromForm, setSelectedCategoryFromForm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
   const [searchText, setSearchText] = useState("");
   const [products, setProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
-
-  const dispatch = useDispatch();
-  const selectedCategory = useSelector(
-    (state: RootState) => state.product.selectedCategory
-  );
 
   // redux part
   const {
@@ -60,23 +52,12 @@ const AllProductPage = () => {
   // pagination***************************************************
   // pagination***************************************************
   const total = productsData?.meta?.total;
-
-  // useEffect(() => {
-  //   if (productsData?.data) {
-  //     setProducts(productsData?.data);
-  //     setDisplayedProducts(productsData?.data);
-  //   }
-  // }, [productsData, categories]);
-
   useEffect(() => {
     if (productsData?.data) {
-      const filteredProducts = productsData?.data.filter(
-        (product) => !selectedCategory || product.category === selectedCategory
-      );
       setProducts(productsData?.data);
-      setDisplayedProducts(filteredProducts);
+      setDisplayedProducts(productsData?.data);
     }
-  }, [productsData, selectedCategory]);
+  }, [productsData, categories]);
 
   if (isLoading)
     return (
@@ -127,7 +108,7 @@ const AllProductPage = () => {
   const handleSelectChangeCategory = (event: React.FormEvent) => {
     const form = event.target as HTMLFormElement;
     const selectedValue = form.value;
-    setSelectedCategoryFromForm(selectedValue);
+    setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
       (product: Product) => product.category === selectedValue
@@ -147,8 +128,7 @@ const AllProductPage = () => {
   };
   const handleReset = () => {
     setSearchText("");
-    // setSelectedCategory("");
-    setSelectedCategoryFromForm("");
+    setSelectedCategory("");
     setSelectedPriceAscDesc("");
     setDisplayedProducts(productsData?.data || []); // Reset to initial product list
   };

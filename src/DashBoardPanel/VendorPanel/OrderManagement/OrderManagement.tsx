@@ -29,7 +29,7 @@ const OrderManagement = () => {
     isLoading,
     isError,
     refetch: vendorRefech,
-  } = useOrderProductByVendorEmailQuery(email);
+  } = useOrderProductByVendorEmailQuery({ email, page, limit });
 
   // const { data: users } = useGetAllUserQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);

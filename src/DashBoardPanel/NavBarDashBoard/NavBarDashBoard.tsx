@@ -13,6 +13,7 @@ import { RootState } from "../../Redux/store";
 import { useAppDispatch } from "../../Redux/hooks";
 import { logout } from "../../Redux/features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
+import { clearViewedProducts } from "../../Redux/features/CartItem/viewSlice";
 
 type MenuItem = {
   key: string;
@@ -23,10 +24,10 @@ type MenuItem = {
 const adminItems: MenuItem[] = [
   { key: "1", icon: <PieChartOutlined />, label: "Dashboard" },
   { key: "2", icon: <DesktopOutlined />, label: "Manage Categories" },
-  { key: "3", icon: <DesktopOutlined />, label: "Manage Booking" },
-  { key: "4", icon: <DesktopOutlined />, label: "Manage Return" },
+  { key: "3", icon: <DesktopOutlined />, label: "Transaction Monitor" },
+  { key: "4", icon: <DesktopOutlined />, label: "Review Activities" },
   { key: "5", icon: <DesktopOutlined />, label: "User Management" },
-  { key: "6", icon: <DesktopOutlined />, label: "Report" },
+  // { key: "6", icon: <DesktopOutlined />, label: "Report" },
   { key: "7", icon: <DesktopOutlined />, label: "Homepage" },
 ];
 
@@ -41,7 +42,7 @@ const vendorItems: MenuItem[] = [
 const userItems: MenuItem[] = [
   { key: "1", icon: <PieChartOutlined />, label: "DashBoard" },
   { key: "2", icon: <DesktopOutlined />, label: "Purchase Management" },
-  { key: "3", icon: <ContainerOutlined />, label: "Payment Management" },
+  // { key: "3", icon: <ContainerOutlined />, label: "Payment Management" },
   { key: "4", icon: <ContainerOutlined />, label: "Homepage" },
 ];
 
@@ -59,6 +60,7 @@ const NavBarDashBoard = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearViewedProducts());
     navigate("/login");
   };
 
@@ -83,17 +85,17 @@ const NavBarDashBoard = () => {
             navigate("/DashBoard/admin/ManageCategory");
             break;
           case "3":
-            navigate("/DashBoard/ManageBooking");
+            navigate("/DashBoard/TransactionMonitor");
             break;
           case "4":
-            navigate("/DashBoard/ManageReturn");
+            navigate("/DashBoard/ReviewActivities");
             break;
           case "5":
             navigate("/DashBoard/admin/ManageUsers");
             break;
-          case "6":
-            navigate("/DashBoard/ReportGenerate");
-            break;
+          // case "6":
+          //   navigate("/DashBoard/ReportGenerate");
+          //   break;
           case "7":
             navigate("/");
             break;

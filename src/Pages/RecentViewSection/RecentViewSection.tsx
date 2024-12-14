@@ -10,25 +10,17 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import StarRatings from "react-star-ratings";
 import { NavLink } from "react-router-dom";
-import { useGetAllProductQuery } from "../../Redux/features/produtcs/productsApi";
+import { useGetAllFlashSaleProductQuery } from "../../Redux/features/produtcs/orderApi";
+import { useSelector } from "react-redux";
+import { useCurrentView } from "../../Redux/features/CartItem/viewSlice";
 
-interface Product {
-  _id: string;
-  name: string;
-  category: string;
-  price: number;
-  quantity: number;
-  Mimages: string;
-  ratings: number;
-}
-const BestSellingPage = () => {
+const RecentViewSection = () => {
   const swiperRef = useRef<SwiperType | null>(null);
 
-  const {
-    data: productsData,
-    isError,
-    isLoading,
-  } = useGetAllProductQuery(undefined);
+  const { viewedProducts } = useSelector(useCurrentView);
+
+  // Get the last 10 products (most recent views)
+  const productsData = [...viewedProducts].slice(-10).reverse();
 
   const handleMouseEnter = () => {
     swiperRef.current?.autoplay?.stop();
@@ -38,24 +30,12 @@ const BestSellingPage = () => {
     swiperRef.current?.autoplay?.start();
   };
 
-  if (isLoading) {
-    return (
-      <div className="text-center py-5">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return <div>Error loading products</div>;
-  }
-
-  const getRandomProducts = (products: Product[]) => {
+  const getRandomProducts = (products: any[]) => {
     const shuffled = [...products].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 8);
   };
 
-  const randomProducts = getRandomProducts(productsData.data);
+  const randomProducts = getRandomProducts(productsData);
 
   return (
     <div>
@@ -63,7 +43,7 @@ const BestSellingPage = () => {
         {/* title section */}
         <div className="flex flex-row justify-between py-5">
           <h1 className="text-xl md:text-3xl text-black font-bold pl-5">
-            Best Selling Products:
+            Recent View Products:
           </h1>
           <NavLink to="/products" className="activeNavLink ">
             <button className="btn btn-primary btn-sm flex flex-row justify-center align-middle items-center gap-1 mr-5">
@@ -117,7 +97,7 @@ const BestSellingPage = () => {
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {randomProducts.map((product: Product) => (
+                  {randomProducts.map((product: any) => (
                     <SwiperSlide key={product.productId}>
                       <motion.div
                         whileHover={{ scale: 1.05 }}
@@ -171,7 +151,7 @@ const BestSellingPage = () => {
         {/* product view section */}
         <div className="flex flex-row justify-between">
           <h1></h1>
-          <NavLink to="/products" className="activeNavLink ">
+          <NavLink to="/flashsale" className="activeNavLink ">
             <button className="btn btn-primary btn-sm flex flex-row justify-center align-middle items-center gap-1 mr-5">
               View More
               <FaLongArrowAltRight className="text-black" />
@@ -184,4 +164,4 @@ const BestSellingPage = () => {
   );
 };
 
-export default BestSellingPage;
+export default RecentViewSection;

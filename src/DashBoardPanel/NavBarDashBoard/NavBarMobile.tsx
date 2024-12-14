@@ -16,28 +16,60 @@ const adminMenu = (
       </NavLink>
     </li>
     <li>
-      <NavLink to="/DashBoard/ManageCars" className="activeNavLink ">
-        <button>Manage Car</button>
+      <NavLink to="/DashBoard/admin/ManageCategory" className="activeNavLink ">
+        <button>Manage Categories</button>
       </NavLink>
     </li>
     <li>
-      <NavLink to="/DashBoard/ManageBooking" className="activeNavLink ">
-        <button>Manage Booking</button>
+      <NavLink to="/DashBoard/TransactionMonitor" className="activeNavLink ">
+        <button>Transaction Monitor</button>
       </NavLink>
     </li>
     <li>
-      <NavLink to="/DashBoard/ManageReturn" className="activeNavLink ">
-        <button>Manage Return</button>
+      <NavLink to="/DashBoard/ReviewActivities" className="activeNavLink ">
+        <button>Review Activities</button>
       </NavLink>
     </li>
     <li>
-      <NavLink to="/DashBoard/ManageUsers" className="activeNavLink ">
+      <NavLink to="/DashBoard/admin/ManageUsers" className="activeNavLink ">
         <button>User Management</button>
       </NavLink>
     </li>
     <li>
-      <NavLink to="/DashBoard/ReportGenerate" className="activeNavLink ">
-        <button>Report</button>
+      <NavLink to="/" className="activeNavLink ">
+        <button>Homepage</button>
+      </NavLink>
+    </li>
+  </>
+);
+const vendorMenu = (
+  <>
+    <li>
+      <NavLink to="/DashBoard/user" className="activeNavLink ">
+        <button>DashBoard</button>
+      </NavLink>
+    </li>
+    <li>
+      <NavLink to="/DashBoard/vendor/ManageProducts" className="activeNavLink ">
+        <button>Manage Products</button>
+      </NavLink>
+    </li>
+    <li>
+      <NavLink
+        to="/DashBoard/vendor/OrderManagement"
+        className="activeNavLink "
+      >
+        <button>Order History</button>
+      </NavLink>
+    </li>
+    <li>
+      <NavLink to="/DashBoard/vendor/CustomerReview" className="activeNavLink ">
+        <button>Customer Reviews</button>
+      </NavLink>
+    </li>
+    <li>
+      <NavLink to="/" className="activeNavLink ">
+        <button>Homepage</button>
       </NavLink>
     </li>
   </>
@@ -50,13 +82,16 @@ const userMenu = (
       </NavLink>
     </li>
     <li>
-      <NavLink to="/DashBoard/BookingManagement" className="activeNavLink ">
-        <button>Booking Management</button>
+      <NavLink
+        to="/DashBoard/user/purchaseManagement"
+        className="activeNavLink "
+      >
+        <button>Purchase Management</button>
       </NavLink>
     </li>
     <li>
-      <NavLink to="/DashBoard/ManagePayment" className="activeNavLink ">
-        <button>Payment Management</button>
+      <NavLink to="/" className="activeNavLink ">
+        <button>Homepage</button>
       </NavLink>
     </li>
   </>
@@ -100,7 +135,13 @@ const NavBarMobile = () => {
               className="menu menu-sm dropdown-content bg-[#295F98]  rounded-box z-[10] mt-3 w-52 p-2 shadow"
             >
               <li>{email}</li>
-              {role === "admin" ? <>{adminMenu}</> : <>{userMenu}</>}
+              {role === "Admin" ? (
+                <>{adminMenu}</>
+              ) : role === "VENDOR" ? (
+                <>{vendorMenu}</>
+              ) : (
+                <>{userMenu}</>
+              )}
               {/* {adminMenu} */}
               <li>
                 <button onClick={handleLogout}>Logout</button>

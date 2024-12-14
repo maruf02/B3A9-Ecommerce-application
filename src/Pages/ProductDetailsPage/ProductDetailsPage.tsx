@@ -13,6 +13,7 @@ import {
 } from "../../Redux/features/CartItem/cartSlice";
 import SideBySideMagnifier from "../../shared/SideBySideMagnifier";
 import CommentSection from "./CommentSection";
+import RelatedProductSection from "./RelatedProductSection";
 
 type User = {
   userId: string;
@@ -23,6 +24,7 @@ type User = {
 const ProductDetailsPage = () => {
   const [requiredQty, setRequiredQty] = useState(1);
   const { productId } = useParams<{ productId: string }>();
+  const [isCommentsVisible, setIsCommentsVisible] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user as User);
   // Fetch product details
@@ -33,6 +35,7 @@ const ProductDetailsPage = () => {
   } = useGetProductByIdQuery(productId as string);
   const product = productsData?.data || {};
 
+  const category = product.category as string;
   // Fetch vendor details
   const { data: vendorData } = useGetVendorByEmailQuery(
     product.email as string
@@ -213,12 +216,34 @@ const ProductDetailsPage = () => {
         </div>
         {/* Right side portion */}
       </div>
-      <div>
+      {/* <div>
         <h1>comment</h1>
         <CommentSection
           productId={productId || ""}
           vendorId={vendor.vendorId}
         />
+      </div> */}
+      <div>
+        <h1 className="text-3xl font-semibold text-black">Comments:</h1>
+        {/* Button to toggle comment visibility */}
+        <div className="w-full flex flex-row justify-center">
+          <button
+            onClick={() => setIsCommentsVisible(!isCommentsVisible)}
+            className="btn btn-outline btn-primary mt-4 text-black"
+          >
+            {isCommentsVisible ? "Hide Comments" : "See All Comments & Reviews"}
+          </button>
+        </div>
+        {/* Conditionally render comment section */}
+        {isCommentsVisible && (
+          <CommentSection
+            productId={productId || ""}
+            vendorId={vendor.vendorId}
+          />
+        )}
+      </div>
+      <div>
+        <RelatedProductSection category={category || ""} />
       </div>
     </div>
   );

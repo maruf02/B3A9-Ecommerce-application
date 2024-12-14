@@ -1,6 +1,20 @@
-import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import { RootState } from "../Redux/store";
+import { useAppDispatch } from "../Redux/hooks";
+import { logout } from "../Redux/features/auth/authSlice";
+import { clearViewedProducts } from "../Redux/features/CartItem/viewSlice";
 
 const Navbar = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.auth.user) as User;
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(clearViewedProducts());
+    navigate("/login");
+  };
   // redux part for cart
 
   // console.log("objectPrice", total);
@@ -15,8 +29,8 @@ const Navbar = () => {
         </NavLink>
       </li>
       <li>
-        <NavLink to="/aboutus" className="activeNavLink ">
-          <button>About</button>
+        <NavLink to="/recentView" className="activeNavLink ">
+          <button>RecentView</button>
         </NavLink>
       </li>
 
@@ -123,11 +137,26 @@ const Navbar = () => {
             </ul>
           </div> */}
           <div className="mr-10">
-            <NavLink to="/login">
-              <button className="text-white btn bg-[#1A4870] hover:bg-[#5B99C2] btn-md justify-between w-full z-[10] ">
-                Login
-              </button>
-            </NavLink>
+            {user ? (
+              <>
+                {" "}
+                <button
+                  className="text-white btn bg-[#1A4870] hover:bg-[#5B99C2] btn-md justify-between w-full z-[10] "
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                {" "}
+                <NavLink to="/login">
+                  <button className="text-white btn bg-[#1A4870] hover:bg-[#5B99C2] btn-md justify-between w-full z-[10] ">
+                    Login
+                  </button>
+                </NavLink>
+              </>
+            )}
           </div>
         </div>
       </div>

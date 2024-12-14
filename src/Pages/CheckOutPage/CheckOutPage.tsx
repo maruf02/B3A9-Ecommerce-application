@@ -105,6 +105,16 @@ const CheckOutPage = () => {
     console.log(orderData);
   };
 
+  const handleCouponBlur = () => {
+    if (coupon === "amaarPay") {
+      setDiscountedPrice(totalPrice * 0.95);
+      Swal.fire("Coupon code correct. You get a 5% discount.");
+    } else if (coupon) {
+      setDiscountedPrice(totalPrice);
+      Swal.fire("Coupon code incorrect.");
+    }
+  };
+
   return (
     <div className="my-10 ">
       <h1 className="text-2xl text-black font-semibold text-center pb-5 underline">
@@ -195,17 +205,19 @@ const CheckOutPage = () => {
                 id="address"
                 required
                 className=" bg-white text-black input input-bordered input-primary input-sm"
-                onChange={(e) => {
-                  const input = e.target.value;
-                  setCoupon(input);
-                  if (input === "amaarPay") {
-                    setDiscountedPrice(totalPrice * 0.95);
-                    Swal.fire("cupon code correct. you get 5% discount");
-                  } else {
-                    setDiscountedPrice(totalPrice);
-                    Swal.fire("cupon code incorrect. ");
-                  }
-                }}
+                // onChange={(e) => {
+                //   const input = e.target.value;
+                //   setCoupon(input);
+                //   if (input === "amaarPay") {
+                //     setDiscountedPrice(totalPrice * 0.95);
+                //     Swal.fire("cupon code correct. you get 5% discount");
+                //   } else {
+                //     setDiscountedPrice(totalPrice);
+                //     Swal.fire("cupon code incorrect. ");
+                //   }
+                // }}
+                onChange={(e) => setCoupon(e.target.value)}
+                onBlur={handleCouponBlur}
               />
             </div>
 

@@ -32,7 +32,7 @@ const UserOrderManagement = () => {
     isLoading,
     isError,
     refetch: vendorRefech,
-  } = useOrderProductByUserEmailQuery(email);
+  } = useOrderProductByUserEmailQuery({ email, page, limit });
 
   // const { data: users } = useGetAllUserQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);

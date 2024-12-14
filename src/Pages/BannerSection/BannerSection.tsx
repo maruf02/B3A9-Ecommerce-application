@@ -3,13 +3,11 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Button, DatePicker, Input } from "antd";
 import dayjs from "dayjs";
 import { RangePickerProps } from "antd/es/date-picker";
 import { Swiper as SwiperType } from "swiper";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -21,16 +19,9 @@ const images = [
   "https://i.postimg.cc/tC68tQ11/pexels-soumil-kumar-4325-735911.jpg",
 ];
 
-const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-  // Can not select days before today and today
-  return current && current < dayjs().endOf("day");
-};
-
 const BannerSection = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState<dayjs.Dayjs | null>(null);
   const swiperRef = useRef<SwiperType | null>(null);
 
   const handleMouseEnter = () => {
@@ -45,8 +36,8 @@ const BannerSection = () => {
     }
   };
 
-  const handleBookNowClick = () => {
-    if (!location || !date) {
+  const handleBookNowClicks = () => {
+    if (!location) {
       Swal.fire("Please fill out both the location and date fields.");
       return;
     }
@@ -55,14 +46,6 @@ const BannerSection = () => {
       setLoading(false);
       navigate("/cars"); // Navigate to the cars page
     }, 2000); // 2 seconds delay
-  };
-
-  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(e.target.value);
-  };
-
-  const handleDateChange = (date: dayjs.Dayjs | null) => {
-    setDate(date);
   };
 
   // const handleBookNowClick = () => {
@@ -111,37 +94,6 @@ const BannerSection = () => {
                     </h1>
                     <div className="text-xl lg:text-3xl font-semibold text-[#5B99C2] mb-5">
                       Get Your Result by Searching your time and location
-                      <div className="pt-5">
-                        <Input
-                          placeholder="Enter location"
-                          className="w-2/6 mr-1"
-                          value={location}
-                          onChange={handleLocationChange}
-                          required
-                        />
-                        <DatePicker
-                          format="YYYY-MM-DD "
-                          disabledDate={disabledDate}
-                          value={date}
-                          onChange={handleDateChange}
-                          required
-
-                          // showTime={{
-                          //   defaultValue: dayjs("00:00:00", "HH:mm:ss"),
-                          // }}
-                        />
-                      </div>
-                      <Button
-                        type="primary"
-                        style={{
-                          backgroundColor: "#5B99C2",
-                          borderColor: "#5B99C2",
-                        }}
-                        className="mt-2"
-                        onClick={handleBookNowClick}
-                      >
-                        {loading ? <Spin /> : "Book Now"}
-                      </Button>
                     </div>
                   </div>
                 </div>

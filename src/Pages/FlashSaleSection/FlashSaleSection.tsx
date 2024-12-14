@@ -10,25 +10,16 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import StarRatings from "react-star-ratings";
 import { NavLink } from "react-router-dom";
-import { useGetAllProductQuery } from "../../Redux/features/produtcs/productsApi";
+import { useGetAllFlashSaleProductQuery } from "../../Redux/features/produtcs/orderApi";
 
-interface Product {
-  _id: string;
-  name: string;
-  category: string;
-  price: number;
-  quantity: number;
-  Mimages: string;
-  ratings: number;
-}
-const BestSellingPage = () => {
+const FlashSaleSection = () => {
   const swiperRef = useRef<SwiperType | null>(null);
 
   const {
     data: productsData,
     isError,
     isLoading,
-  } = useGetAllProductQuery(undefined);
+  } = useGetAllFlashSaleProductQuery(undefined);
 
   const handleMouseEnter = () => {
     swiperRef.current?.autoplay?.stop();
@@ -63,7 +54,7 @@ const BestSellingPage = () => {
         {/* title section */}
         <div className="flex flex-row justify-between py-5">
           <h1 className="text-xl md:text-3xl text-black font-bold pl-5">
-            Best Selling Products:
+            Flash Sale Products:
           </h1>
           <NavLink to="/products" className="activeNavLink ">
             <button className="btn btn-primary btn-sm flex flex-row justify-center align-middle items-center gap-1 mr-5">
@@ -171,7 +162,7 @@ const BestSellingPage = () => {
         {/* product view section */}
         <div className="flex flex-row justify-between">
           <h1></h1>
-          <NavLink to="/products" className="activeNavLink ">
+          <NavLink to="/flashsale" className="activeNavLink ">
             <button className="btn btn-primary btn-sm flex flex-row justify-center align-middle items-center gap-1 mr-5">
               View More
               <FaLongArrowAltRight className="text-black" />
@@ -184,4 +175,4 @@ const BestSellingPage = () => {
   );
 };
 
-export default BestSellingPage;
+export default FlashSaleSection;

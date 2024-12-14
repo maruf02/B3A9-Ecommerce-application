@@ -87,6 +87,8 @@ const ProductsSingleView = ({ product }) => {
         text: "Your previous cart items will be removed because the vendor is different. Do you want to continue?",
         icon: "warning",
         showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
         confirmButtonText: "Yes, switch vendor",
         cancelButtonText: "No",
       }).then((result) => {

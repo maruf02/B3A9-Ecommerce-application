@@ -15,6 +15,7 @@ import {
 } from "../../Redux/user/userApi";
 import { useForm } from "react-hook-form";
 import { uploadImageToCloudinary } from "../../shared/UploadImageToCloudinary";
+import { useGetfollowerByVendorIdQuery } from "../../Redux/features/produtcs/orderApi";
 
 interface User {
   userId: string;
@@ -31,6 +32,7 @@ const VendorDashBoard = () => {
   const { vendorId, shopName } = vendorData?.data || {};
   const { data: userData, refetch: userRefetch } =
     useGetUserByUserIdQuery(userId);
+  const { data: followerData } = useGetfollowerByVendorIdQuery(vendorId);
   const [updateUserById] = useUpdateUserMutation();
   const [updateShopNameByEmail] = useUpdateShopNameMutation();
   const [addShopName] = useAddShopNameMutation();
@@ -198,10 +200,10 @@ const VendorDashBoard = () => {
   // ************************************
 
   return (
-    <div className="border border-2 border-red-600 w-full h-full min-h-screen text-center align-middle">
+    <div className=" w-full h-full min-h-screen text-center align-middle">
       <div>
         {vendorData ? (
-          <div className="place-content-center">
+          <div className="place-content-center text-4xl font-bold py-3 underline">
             Shop Name:{vendorData.data.shopName}
           </div>
         ) : (
@@ -232,9 +234,9 @@ const VendorDashBoard = () => {
       </div>
       {/* view shop details portion */}
       {vendorData && (
-        <div className="border border-2 border-red-500 w-full h-full min-h-72 flex items-center justify-center">
+        <div className=" w-full h-full min-h-72 flex items-center justify-center">
           {/* view shop details portion */}
-          <div className=" w-3/4 text-black bg-[#B7B7B7] max-w-2xl shadow-xl mx-auto">
+          <div className=" w-3/4 text-black  max-w-2xl shadow-xl mx-auto">
             <div className="card-body">
               <h2 className="card-title">
                 Shop Name: {vendorData?.data?.shopName || "Name not available"}
@@ -249,7 +251,7 @@ const VendorDashBoard = () => {
                 Phone: {userData?.data?.phone || "Phone not available"}
               </h2>
               <h2 className="card-title">
-                Total Followers: {userData?.data?.follower?.length || 0}
+                Total Followers: {followerData?.data?.length || 0}
                 <button
                   className="btn btn-sm btn-primary"
                   onClick={openFollowerModal}
@@ -257,15 +259,7 @@ const VendorDashBoard = () => {
                   see all followers
                 </button>
               </h2>
-              <h1 className="card-title">
-                Total Following: {userData?.data?.following?.length || 0}
-                <button
-                  className="btn btn-sm btn-primary"
-                  onClick={openFollowingModal}
-                >
-                  see all following
-                </button>
-              </h1>
+
               <h1 className="card-title">
                 Change Password:{" "}
                 <button
@@ -477,21 +471,20 @@ const VendorDashBoard = () => {
           <div className="bg-[#B7B7B7] rounded-lg p-6 w-96 border border-2 border-primary">
             <h2 className="text-2xl font-bold mb-4 text-black">Followers</h2>
             <div className="space-y-4 text-black">
-              {userData?.data?.followerP?.length ? (
-                userData.data.followerP.map((follower: TUser) => (
+              {followerData?.data?.length ? (
+                followerData.data.map((follower: TUser) => (
                   <div
-                    key={follower._id}
+                    key={follower.followId}
                     className="flex items-center space-x-4"
                   >
                     <img
                       src={
-                        follower.profileImage ||
-                        "https://via.placeholder.com/50"
+                        follower.user.image || "https://via.placeholder.com/50"
                       }
                       alt="Follower Profile"
                       className="w-10 h-10 rounded-full"
                     />
-                    <span>{follower.name || "Unknown"}</span>
+                    <span>{follower.user.name || "Unknown"}</span>
                   </div>
                 ))
               ) : (

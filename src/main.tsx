@@ -31,6 +31,10 @@ import CheckOutPage from "./Pages/CheckOutPage/CheckOutPage.tsx";
 import CommentPage from "./Pages/CommentPage/CommentPage.tsx";
 import CustomerReviewsPage from "./Pages/CustomerReviewsPage/CustomerReviewsPage.tsx";
 import UserOrderManagement from "./DashBoardPanel/UserPanel/UserOrderManagement/UserOrderManagement.tsx";
+import ReviewActivities from "./DashBoardPanel/AdminPanel/ReviewActivities/ReviewActivities.tsx";
+import TransactionMonitor from "./DashBoardPanel/AdminPanel/TransactionMonitor/TransactionMonitor.tsx";
+import FlashSalePage from "./Pages/FlashSalePage/FlashSalePage.tsx";
+import RecentViewPage from "./Pages/RecentViewPage/RecentViewPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +58,14 @@ const router = createBrowserRouter([
       {
         path: "/shopPage/:shopName/:vendorId",
         element: <ShopPage />,
+      },
+      {
+        path: "/flashsale",
+        element: <FlashSalePage />,
+      },
+      {
+        path: "/recentView",
+        element: <RecentViewPage />,
       },
       {
         path: "/cartView",
@@ -96,6 +108,22 @@ const router = createBrowserRouter([
         element: (
           <AdminProtectRoute>
             <ManageCategory />
+          </AdminProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/ReviewActivities",
+        element: (
+          <AdminProtectRoute>
+            <ReviewActivities />
+          </AdminProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/TransactionMonitor",
+        element: (
+          <AdminProtectRoute>
+            <TransactionMonitor />
           </AdminProtectRoute>
         ),
       },

@@ -15,6 +15,7 @@ import storage from "redux-persist/lib/storage";
 import cartReducer from "./features/CartItem/cartSlice";
 import placeOrderReducer from "./features/CartItem/placeOrderSlice";
 import viewReducer from "./features/CartItem/viewSlice";
+import productReducer from "./features/produtcs/productsSlice";
 
 const persistConfig = {
   key: "auth",
@@ -33,7 +34,7 @@ const persistConfigPlaceOrder = {
 const persistConfigView = {
   key: "view",
   storage,
-  whitelist: ["viewData"],
+  whitelist: ["viewedProducts"],
 };
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 const persistedCartReducer = persistReducer(persistConfigCart, cartReducer);
@@ -53,7 +54,7 @@ export const store = configureStore({
     view: persistedViewReducer,
     // placeOrder: placeOrderReducer,
 
-    // product: productReducer,
+    product: productReducer,
     // placeOrder: placeOrderReducer,
   },
   middleware: (getDefaultMiddlewares) =>

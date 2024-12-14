@@ -75,10 +75,11 @@ const produtcsApi = baseApi.injectEndpoints({
 
     GetAllProduct: builder.query({
       query: () => ({
-        url: "/products",
+        url: "/productsS",
         method: "GET",
       }),
     }),
+
     GetProductById: builder.query({
       query: (productId: string) => ({
         url: `/products/${productId}`,
@@ -111,6 +112,12 @@ const produtcsApi = baseApi.injectEndpoints({
     GetProductByShopName: builder.query({
       query: (email: string) => ({
         url: `/productsByShopName/email/${email}`,
+        method: "GET",
+      }),
+    }),
+    GetProductsGetByCategory: builder.query({
+      query: (category: string) => ({
+        url: `/productsGetByCategory/${category}`,
         method: "GET",
       }),
     }),
@@ -157,4 +164,6 @@ export const {
   useDuplicateProductMutation,
   useGetProductByShopNamePaginateQuery,
   useGetProductByVendorIdPaginateQuery,
+  useLazyGetAllProductQuery,
+  useGetProductsGetByCategoryQuery,
 } = produtcsApi;
