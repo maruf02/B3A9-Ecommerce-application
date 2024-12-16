@@ -113,7 +113,7 @@ const NavBarMobile = () => {
     <div className="w-full">
       <div className="navbar  ">
         <div className="flex-1">
-          <a className="btn btn-ghost text-2xl font-semibold">SpeedeRex</a>
+          <a className="btn btn-ghost text-2xl font-semibold">PeraCommerce</a>
         </div>
         <div className="flex-none">
           <div className="dropdown dropdown-end"></div>

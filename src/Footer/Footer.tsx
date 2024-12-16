@@ -19,7 +19,7 @@ const Footer = () => {
             />
 
             <h2 className="text-3xl font-semibold  pb-2 text-center text-[#F9DBBA] ">
-              SpeedeRex
+              PeraCommerce
             </h2>
             <div className="flex flex-col md:flex-row justify-center items-center text-center gap-3 h-fit  pl-5 ">
               <div className="flex items-center text-center space-x-2">
@@ -66,8 +66,8 @@ const Footer = () => {
               </div>
             </div>
             <h2 className="text-base  text-white pb-2 text-center">
-              SpeedeRex © {todayYear} All Rights Reserved. Designed by SpeedeRex
-              Ltd.
+              PeraCommerce © {todayYear} All Rights Reserved. Designed by
+              PeraCommerce Ltd.
             </h2>
             <div className="flex flex-row gap-5 justify-center">
               <a

@@ -37,6 +37,7 @@ import FlashSalePage from "./Pages/FlashSalePage/FlashSalePage.tsx";
 import RecentViewPage from "./Pages/RecentViewPage/RecentViewPage.tsx";
 import ProductComparePage from "./Pages/ProductComparePage/ProductComparePage.tsx";
 import ResetPasswordPage from "./Pages/ResetPasswordPage/ResetPasswordPage.tsx";
+import VendorManagement from "./DashBoardPanel/AdminPanel/VendorManagement.tsx";
 
 const router = createBrowserRouter([
   {
@@ -142,6 +143,14 @@ const router = createBrowserRouter([
         element: (
           <AdminProtectRoute>
             <UserManagement />
+          </AdminProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/admin/ManageVendors",
+        element: (
+          <AdminProtectRoute>
+            <VendorManagement />
           </AdminProtectRoute>
         ),
       },

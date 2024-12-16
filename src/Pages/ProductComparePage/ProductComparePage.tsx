@@ -8,7 +8,7 @@ import { TProduct } from "../../types";
 const ProductComparePage = () => {
   const {
     data: productsData,
-    isError,
+
     isLoading,
   } = useGetAllProductQuery(undefined);
   const products = productsData?.data || [];

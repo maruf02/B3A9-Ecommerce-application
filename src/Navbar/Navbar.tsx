@@ -99,7 +99,9 @@ const Navbar = () => {
                 alt=""
                 className="w-14 h-14 rounded-2xl"
               />
-              <p className=" text-2xl font-bold text-[#F9DBBA] ">SpeedeRex</p>
+              <p className=" text-2xl font-bold text-[#F9DBBA] ">
+                PeraCommerce
+              </p>
             </div>
           </NavLink>
         </div>

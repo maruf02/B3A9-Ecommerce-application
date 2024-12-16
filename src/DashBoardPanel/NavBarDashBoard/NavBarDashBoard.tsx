@@ -27,7 +27,11 @@ const adminItems: MenuItem[] = [
   { key: "3", icon: <DesktopOutlined />, label: "Transaction Monitor" },
   { key: "4", icon: <DesktopOutlined />, label: "Review Activities" },
   { key: "5", icon: <DesktopOutlined />, label: "User Management" },
-  // { key: "6", icon: <DesktopOutlined />, label: "Report" },
+  {
+    key: "6",
+    icon: <DesktopOutlined />,
+    label: "Vendors Management",
+  },
   { key: "7", icon: <DesktopOutlined />, label: "Homepage" },
 ];
 
@@ -93,9 +97,9 @@ const NavBarDashBoard = () => {
           case "5":
             navigate("/DashBoard/admin/ManageUsers");
             break;
-          // case "6":
-          //   navigate("/DashBoard/ReportGenerate");
-          //   break;
+          case "6":
+            navigate("/DashBoard/admin/ManageVendors");
+            break;
           case "7":
             navigate("/");
             break;

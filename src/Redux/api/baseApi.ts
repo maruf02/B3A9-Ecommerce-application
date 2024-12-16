@@ -4,8 +4,8 @@ import { RootState } from "../store";
 export const baseApi = createApi({
   reducerPath: "baseAPi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api",
-    // baseUrl: "https://b3-a9-peracommerce-server.vercel.app/api",
+    // baseUrl: "http://localhost:3000/api",
+    baseUrl: "https://peracomerce.vercel.app/api",
     credentials: "include",
     // set token into heades as authorization name
     prepareHeaders: (headers, { getState }) => {

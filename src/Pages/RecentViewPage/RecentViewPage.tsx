@@ -2,8 +2,7 @@ import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import ProductsSingleView from "../../Components/AllProductPage/ProductsSingleView";
 import { useCurrentView } from "../../Redux/features/CartItem/viewSlice";
-import RecentViewSection from "../RecentViewSection/RecentViewSection";
-import ProductViwedSection from "../ProductViwedSection/ProductViwedSection";
+
 import { TProduct } from "../../types";
 
 const RecentViewPage = () => {

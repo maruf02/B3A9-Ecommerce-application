@@ -27,7 +27,7 @@ const AllProductSection = () => {
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
   const categories = categoryData?.data || [];
   // Lazy query hook
-  const [fetchProducts, { data, isLoading, isError, isFetching }] =
+  const [fetchProducts, { data, isLoading, isFetching }] =
     useLazyGetAllProductQuery();
 
   const fetchedProducts = data?.data || [];

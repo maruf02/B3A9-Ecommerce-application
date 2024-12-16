@@ -121,12 +121,14 @@ const LoginPage = () => {
     try {
       // Trigger the forgot password mutation
       await forgotPassword(email).unwrap();
+      setShowSuccessModal(false);
       Swal.fire({
         title: "Success!",
         text: "Check your email!",
         icon: "success",
       });
     } catch (error: any) {
+      setShowSuccessModal(false);
       Swal.fire({
         title: "Error!",
         text: "Email not found, please try again.",

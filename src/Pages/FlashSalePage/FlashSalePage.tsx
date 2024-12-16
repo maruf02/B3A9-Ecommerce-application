@@ -16,11 +16,8 @@ const FlashSalePage = () => {
   const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
 
   // redux part
-  const {
-    data: productsData,
-    isError,
-    isLoading,
-  } = useGetAllFlashSaleProductQuery(undefined);
+  const { data: productsData, isLoading } =
+    useGetAllFlashSaleProductQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
   const categories = categoryData?.data || [];
 

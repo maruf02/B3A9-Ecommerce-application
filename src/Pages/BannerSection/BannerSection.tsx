@@ -88,7 +88,7 @@ const BannerSection = () => {
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60"></div>
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white z-10">
                     <h1 className="text-2xl lg:text-5xl font-bold mb-5 text-[#F9DBBA]">
-                      Welcome To SpeedRex
+                      Welcome To PeraCommerce
                     </h1>
                     <div className="text-xl lg:text-3xl font-semibold text-[#5B99C2] mb-5">
                       Get Your Result by Searching your time and location

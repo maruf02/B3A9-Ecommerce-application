@@ -116,6 +116,47 @@ const orderApi = baseApi.injectEndpoints({
     ),
 
     // ************follow/Unfollow******************
+    // ************follow/Unfollow******************
+    getAllVendors: builder.query({
+      query: () => "/vendors",
+    }),
+
+    // Get vendor by ID
+    getVendorById: builder.query({
+      query: (vendorId) => `/vendors/${vendorId}`,
+    }),
+
+    // Get vendor by email
+    getVendorByEmail: builder.query({
+      query: (email) => `/vendors/email/${email}`,
+    }),
+
+    // Add a new vendor
+    createVendor: builder.mutation({
+      query: (vendorData) => ({
+        url: "/vendors",
+        method: "POST",
+        body: vendorData,
+      }),
+    }),
+
+    // Update vendor details
+    updateVendor: builder.mutation({
+      query: ({ vendorId, vendorData }) => ({
+        url: `/vendors/${vendorId}`,
+        method: "PUT",
+        body: vendorData,
+      }),
+    }),
+
+    // Delete a vendor
+    deleteVendor: builder.mutation({
+      query: (vendorId) => ({
+        url: `/vendors/${vendorId}`,
+        method: "DELETE",
+      }),
+    }),
+    // ************follow/Unfollow******************
     // ******************************
     // ******************************
   }),
@@ -140,4 +181,10 @@ export const {
   useGetAllLoginActivitiesQuery,
   useGetfollowerByVendorIdQuery,
   useGetAllFlashSaleProductQuery,
+  useCreateVendorMutation,
+  useDeleteVendorMutation,
+  useGetAllVendorsQuery,
+  useGetVendorByEmailQuery,
+  useGetVendorByIdQuery,
+  useUpdateVendorMutation,
 } = orderApi;

@@ -45,6 +45,8 @@ const ShopPage = () => {
   // console.log("vendorId", vendorId);
   const { data: followData, refetch: followStatusRefetch } =
     useFollowStatusQuery(vendorId);
+
+  console.log("followData", followData, vendorId);
   const { data: followerData, refetch: followCountRefetch } =
     useGetfollowerByVendorIdQuery(vendorId as string);
   const [startFollow] = useStartFollowMutation();

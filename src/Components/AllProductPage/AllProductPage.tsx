@@ -24,6 +24,7 @@ const AllProductPage = () => {
   const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
 
   console.log("displayedProducts", displayedProducts.length);
+  console.log(selectedCategoryFromForm);
 
   // const dispatch = useDispatch();
   const selectedCategory = useSelector(
