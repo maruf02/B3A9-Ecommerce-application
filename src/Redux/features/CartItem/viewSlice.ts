@@ -1,4 +1,3 @@
-// src/Redux/features/view/viewSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 
@@ -12,7 +11,6 @@ type Product = {
   ratings: number;
   mimage: string;
   description: string;
-  // Add other product properties as needed
 };
 
 type TViewState = {

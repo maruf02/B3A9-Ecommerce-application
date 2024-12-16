@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import {
@@ -13,6 +13,7 @@ import Swal from "sweetalert2";
 import { useGetUserByUserIdQuery } from "../../Redux/user/userApi";
 import { useGetVendorByIdQuery } from "../../Redux/features/vendor/vendorApi";
 import StarRatings from "react-star-ratings";
+import { TComment, TReplyComment } from "../../types";
 type pro = {
   productId: string;
   vendorId: string;
@@ -24,17 +25,13 @@ type User = {
 };
 
 const CommentSection = ({ productId, vendorId }: pro) => {
+  const [rating, setRating] = useState(0);
   const user = useSelector((state: RootState) => state.auth.user as User);
-  const {
-    data: userData,
-    error,
-    isLoading,
-  } = useGetUserByUserIdQuery(user.userId);
+  const { data: userData, isLoading } = useGetUserByUserIdQuery(user.userId);
   const { data: vendorData } = useGetVendorByIdQuery(vendorId);
   const {
     data: commentsData,
     isLoading: isCommentsLoading,
-    error: commentsError,
     refetch: refetchComments,
   } = useGetCommentsByPostIdQuery(productId, { skip: !productId });
   const [replyComment] = useReplyCommentMutation();
@@ -52,6 +49,22 @@ const CommentSection = ({ productId, vendorId }: pro) => {
   console.log("vendor", vendorData);
 
   const handlePostComment = async () => {
+    if (!comments) {
+      Swal.fire({
+        icon: "error",
+        title: "Comment is required!",
+        text: "Please enter your comment.",
+      });
+      return;
+    }
+    if (!rating) {
+      Swal.fire({
+        icon: "error",
+        title: "Rating is required!",
+        text: "Please provide a rating.",
+      });
+      return;
+    }
     if (!commentText.trim()) return;
     const newComment = {
       userId: user?.userId,
@@ -60,11 +73,12 @@ const CommentSection = ({ productId, vendorId }: pro) => {
       productId,
       vendorId,
       comment: commentText,
-      rating: 0,
+      rating: rating,
     };
     try {
       await postComment(newComment).unwrap();
       setCommentText("");
+      setRating(0);
       Swal.fire("Comment posted successfully");
       refetchComments();
     } catch (error) {
@@ -156,7 +170,7 @@ const CommentSection = ({ productId, vendorId }: pro) => {
   };
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading post details</div>;
+  // if (error) return <div>Error loading post details</div>;
 
   console.log("productId", productId);
   return (
@@ -164,6 +178,19 @@ const CommentSection = ({ productId, vendorId }: pro) => {
       <div className="w-2/3 flex flex-row justify-center ">
         <div className="mt-4 ">
           <h2 className="text-xl font-semibold mb-2 text-black">Comments</h2>
+          <div>
+            <label className=" text-black px-2">Ratings:</label>
+            <StarRatings
+              rating={rating}
+              starRatedColor="#f39c12"
+              starHoverColor="#f39c12"
+              changeRating={(newRating) => setRating(newRating)}
+              numberOfStars={5}
+              starDimension="20px"
+              starSpacing="2px"
+              name="rating"
+            />
+          </div>
           <div className="flex gap-2 mb-4">
             <input
               type="text"
@@ -182,8 +209,6 @@ const CommentSection = ({ productId, vendorId }: pro) => {
           </div>
           {isCommentsLoading ? (
             <div>Loading comments...</div>
-          ) : commentsError ? (
-            <div>Error loading comments</div>
           ) : (
             <div>
               {comments && comments.length > 0 ? (
@@ -295,7 +320,7 @@ const CommentSection = ({ productId, vendorId }: pro) => {
                               {replyingCommentId === comment.commentId && (
                                 <>
                                   {replies && replies.length > 0 ? (
-                                    replies.map((reply: TComment) => (
+                                    replies.map((reply: TReplyComment) => (
                                       <p
                                         key={reply.replyCommentId}
                                         className="pl-4 text-black"

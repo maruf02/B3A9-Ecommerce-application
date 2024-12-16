@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../Redux/hooks";
 
 import {
+  useForgotPasswordMutation,
   useLoginMutation,
   usePostLoginActivityMutation,
 } from "../../Redux/features/auth/authApi";
@@ -36,18 +37,19 @@ const LoginPage = () => {
   // const [form] = Form.useForm();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [resetLink, setResetLink] = useState("");
+  // const [resetLink, setResetLink] = useState("");
   const [email, setEmail] = useState("");
-  const [showResetLink, setShowResetLink] = useState(false);
+  // const [showResetLink, setShowResetLink] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { data: userData, isError } = useGetUserEmailQuery(email);
   const [updatePassword] = useUpdatePasswordMutation();
   const [login] = useLoginMutation();
   const [postLoginActivity] = usePostLoginActivityMutation();
+  const [forgotPassword] = useForgotPasswordMutation();
 
   // login portion
   console.log(userData);
-  const handleLogin = async (event: any) => {
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const form = event.target as HTMLFormElement;
@@ -108,7 +110,7 @@ const LoginPage = () => {
 
   // **************************************
 
-  const handleEmailConfirmForReset = (event: React.FormEvent) => {
+  const handleEmailConfirmForReset = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const form = event.target as HTMLFormElement;
@@ -116,17 +118,24 @@ const LoginPage = () => {
 
     setEmail(email);
 
+    try {
+      // Trigger the forgot password mutation
+      await forgotPassword(email).unwrap();
+      Swal.fire({
+        title: "Success!",
+        text: "Check your email!",
+        icon: "success",
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: "Email not found, please try again.",
+        icon: "error",
+      });
+    }
+
     // console.log("email", isError);
 
-    if (!isError) {
-      const randomToken = Math.random().toString(36).substr(2, 16); // Generating a random token
-      const generatedLink = `https://maruf-k20.com/reset-password?token=${randomToken}`;
-      setResetLink(generatedLink);
-      setShowResetLink(true);
-      setTimeout(() => {
-        setShowResetLink(false);
-      }, 10000);
-    }
     // console.log("object", userData);
   };
   // **************************************
@@ -296,14 +305,12 @@ const LoginPage = () => {
                                   account
                                 </p>
                               ) : (
-                                showResetLink && (
-                                  <button
-                                    onClick={handleResetPass}
-                                    className="text-green-500 text-xl"
-                                  >
-                                    Reset Link: {resetLink}
-                                  </button>
-                                )
+                                <button
+                                  onClick={handleResetPass}
+                                  className="text-green-500 text-xl"
+                                >
+                                  {/* Reset Link: {resetLink} */}
+                                </button>
                               )}
                             </div>
                           </dialog>

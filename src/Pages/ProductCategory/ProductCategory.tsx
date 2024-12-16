@@ -3,13 +3,14 @@ import { useGetAllCategoryQuery } from "../../Redux/features/produtcs/productsAp
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSelectedCategory } from "../../Redux/features/produtcs/productsSlice";
+import { TCategory } from "../../types";
 
 const ProductCategory = () => {
   const dispatch = useDispatch();
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
   const categories = categoryData?.data || [];
 
-  const handleCategorySelect = (category) => {
+  const handleCategorySelect = (category: string) => {
     dispatch(setSelectedCategory(category)); // Dispatch selected category
   };
   return (
@@ -30,28 +31,34 @@ const ProductCategory = () => {
           </div>
           <div className="border border-2 border-gray-400 "></div>
           <div className="flex flex-row justify-center flex-wrap gap-5 pt-8">
-            {categories.map((category, index) => (
-              <Link to="/products">
-                <div
-                  key={index}
-                  className="card bg-transparent w-60 shadow-xl"
-                  onClick={() => handleCategorySelect(category.categoryName)}
-                >
-                  <figure className="px-0 pt-0">
-                    <img
-                      src={category.categoryImage}
-                      alt={category.categoryName}
-                      className="w-80 h-60"
-                    />
-                  </figure>
-                  <div className=" ">
-                    <h2 className="text-xl text-black font-semibold text-center py-2">
-                      {category.categoryName}
-                    </h2>
+            {categories.length === 0 ? (
+              <p className="text-green-500 text-3xl font-semibold ">
+                Sorry, Nothing found!!
+              </p>
+            ) : (
+              categories.map((category: TCategory) => (
+                <Link to="/products">
+                  <div
+                    key={category.categoryId}
+                    className="card bg-transparent w-60 shadow-xl"
+                    onClick={() => handleCategorySelect(category.categoryName)}
+                  >
+                    <figure className="px-0 pt-0">
+                      <img
+                        src={category.categoryImage}
+                        alt={category.categoryName}
+                        className="w-80 h-60"
+                      />
+                    </figure>
+                    <div className=" ">
+                      <h2 className="text-xl text-black font-semibold text-center py-2">
+                        {category.categoryName}
+                      </h2>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))
+            )}
           </div>
         </div>
         {/* category section */}

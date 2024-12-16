@@ -16,20 +16,24 @@ import {
 import { useForm } from "react-hook-form";
 import { uploadImageToCloudinary } from "../../shared/UploadImageToCloudinary";
 import { useGetfollowerByVendorIdQuery } from "../../Redux/features/produtcs/orderApi";
+import { TFollowShop, TUser } from "../../types";
+import { useNavigate } from "react-router-dom";
 
-interface User {
-  userId: string;
+interface FormData {
+  shopName: string;
+  name: string;
   email: string;
-  role: string;
+  phone: string;
 }
 const VendorDashBoard = () => {
+  const navigate = useNavigate();
   const userDataToken =
-    (useSelector((state: RootState) => state.auth.user) as User) || null; // get user info from redux token
+    (useSelector((state: RootState) => state.auth.user) as TUser) || null; // get user info from redux token
   const { userId, email } = userDataToken;
   const { data: vendorData, refetch: vendorRefetch } = useGetVendorByEmailQuery(
     email as string
   );
-  const { vendorId, shopName } = vendorData?.data || {};
+  const { vendorId } = vendorData?.data || {};
   const { data: userData, refetch: userRefetch } =
     useGetUserByUserIdQuery(userId);
   const { data: followerData } = useGetfollowerByVendorIdQuery(vendorId);
@@ -42,17 +46,16 @@ const VendorDashBoard = () => {
   const [updatePassword] = useChangePasswordMutation();
   const [isModalOpen, setModalOpen] = useState(false);
   const [isFollowerModalOpen, setFollowerModalOpen] = useState(false);
-  const [isFollowingModalOpen, setFollowingModalOpen] = useState(false);
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
   const [isConfirmPasswordModalOpen, setConfirmPasswordModalOpen] =
     useState(false);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
 
   console.log("userData", userData);
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit } = useForm<FormData>();
   // *****************************
 
-  const handleAddShopname = async (event: any) => {
+  const handleAddShopname = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const form = event.target as HTMLFormElement;
@@ -76,6 +79,7 @@ const VendorDashBoard = () => {
         showConfirmButton: false,
         timer: 1500,
       });
+      navigate("/DashBoard/vendor/ManageProducts");
 
       vendorRefetch();
     } catch (error) {
@@ -101,7 +105,7 @@ const VendorDashBoard = () => {
     return { profileImageUrl };
   };
 
-  const onSubmit = async (data: TUser) => {
+  const onSubmit = async (data: FormData) => {
     const { profileImageUrl } = await handleImageUpload();
 
     const newUserData = {
@@ -134,8 +138,6 @@ const VendorDashBoard = () => {
 
   const openFollowerModal = () => setFollowerModalOpen(true);
   const closeFollowerModal = () => setFollowerModalOpen(false);
-  const openFollowingModal = () => setFollowingModalOpen(true);
-  const closeFollowingModal = () => setFollowingModalOpen(false);
 
   // password portiom
   const openPasswordModal = () => setPasswordModalOpen(true);
@@ -160,8 +162,8 @@ const VendorDashBoard = () => {
         openConfirmPasswordModal();
       }
       console.log("res", res);
-    } catch (err) {
-      const error = err as any;
+    } catch (err: any) {
+      const error = err;
       if (error.data?.message) {
         // console.error("Login error:", err.data.message);
         Swal.fire("Error", error.data.message as string, "error");
@@ -472,7 +474,7 @@ const VendorDashBoard = () => {
             <h2 className="text-2xl font-bold mb-4 text-black">Followers</h2>
             <div className="space-y-4 text-black">
               {followerData?.data?.length ? (
-                followerData.data.map((follower: TUser) => (
+                followerData.data.map((follower: TFollowShop) => (
                   <div
                     key={follower.followId}
                     className="flex items-center space-x-4"
@@ -494,44 +496,6 @@ const VendorDashBoard = () => {
             <div className="flex justify-end mt-4">
               <button
                 onClick={closeFollowerModal}
-                className="px-4 py-2 bg-primary text-white rounded-lg"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isFollowingModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-[#B7B7B7] rounded-lg p-6 w-96 border border-2 border-primary">
-            <h2 className="text-2xl font-bold mb-4 text-black">Following</h2>
-            <div className="space-y-4 text-black">
-              {userData?.data?.followingP?.length ? (
-                userData.data.followingP.map((following: TUser) => (
-                  <div
-                    key={following._id}
-                    className="flex items-center space-x-4"
-                  >
-                    <img
-                      src={
-                        following.profileImage ||
-                        "https://via.placeholder.com/50"
-                      }
-                      alt="Following Profile"
-                      className="w-10 h-10 rounded-full"
-                    />
-                    <span>{following.name || "Unknown"}</span>
-                  </div>
-                ))
-              ) : (
-                <p>No following found.</p>
-              )}
-            </div>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={closeFollowingModal}
                 className="px-4 py-2 bg-primary text-white rounded-lg"
               >
                 Close

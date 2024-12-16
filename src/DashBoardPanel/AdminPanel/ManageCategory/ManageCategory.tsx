@@ -9,12 +9,15 @@ import {
   useUpdateCategoryMutation,
 } from "../../../Redux/features/produtcs/productsApi";
 import { useState } from "react";
+import { TCategory } from "../../../types";
 
 const ManageCategory = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null
   );
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [selectedCategory, setSelectedCategory] = useState<TCategory | null>(
+    null
+  );
   const { data: categoryData, refetch } = useGetAllCategoryQuery(undefined);
   const [addCategory] = useCreateCategoryMutation();
   const [updateCategory] = useUpdateCategoryMutation();
@@ -85,7 +88,9 @@ const ManageCategory = () => {
     if (modal) {
       modal.showModal();
     }
-    const category = categories.find((c: any) => c.categoryId === categoryId);
+    const category = categories.find(
+      (c: TCategory) => c.categoryId === categoryId
+    );
     if (category) {
       setSelectedCategory(category);
     }
@@ -150,7 +155,7 @@ const ManageCategory = () => {
   };
 
   const handleDeleteCategory = (categoryId: string) => {
-    console.log(categoryId);
+    // console.log(categoryId);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -282,11 +287,13 @@ const ManageCategory = () => {
             {categories.length === 0 ? (
               <tr>
                 <td colSpan={2} className="text-center">
-                  No categories found
+                  <p className="text-green-500 text-2xl font-semibold ">
+                    Sorry, No Category found!! Please Add Category
+                  </p>
                 </td>
               </tr>
             ) : (
-              categories.map((category: any) => (
+              categories.map((category: TCategory) => (
                 <tr key={category.categoryId} className="hover:bg-gray-300">
                   <td>
                     <div className="font-semibold">{category.categoryName}</div>

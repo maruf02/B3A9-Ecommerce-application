@@ -1,4 +1,5 @@
 import { useGetAllLoginActivitiesQuery } from "../../../Redux/features/produtcs/orderApi";
+import { TLoginActivity } from "../../../types";
 
 const ReviewActivities = () => {
   const {
@@ -41,7 +42,7 @@ const ReviewActivities = () => {
                 </td>
               </tr>
             ) : (
-              logins.map((login: any) => (
+              logins.map((login: TLoginActivity) => (
                 <tr key={login.loginActivityId} className="hover:bg-gray-300">
                   <td>
                     <div className="font-semibold">{login.email}</div>

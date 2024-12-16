@@ -4,6 +4,16 @@ import "./../../assets/CustomCss/CustomCss.css";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import { useSignUpUserMutation } from "../../Redux/user/userApi";
+
+interface SignUpFormValues {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+  phone: string;
+  address?: string; // optional field since it's not required in your code
+}
+
 interface ErrorResponse {
   data?: {
     message?: string;
@@ -14,7 +24,7 @@ const SingUpPage = () => {
   const [form] = Form.useForm();
   const [signUp] = useSignUpUserMutation();
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: SignUpFormValues) => {
     // console.log("Success:", values);
     // console.log("object", values.name);
 

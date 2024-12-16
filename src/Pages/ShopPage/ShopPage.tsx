@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import {
   useGetAllCategoryQuery,
   useGetProductByVendorIdPaginateQuery,
-  useGetProductByVendorIdQuery,
 } from "../../Redux/features/produtcs/productsApi";
 import ProductsSingleView from "../../Components/AllProductPage/ProductsSingleView";
 import { useEffect, useState } from "react";
@@ -20,6 +19,7 @@ import {
   useStartUnfollowMutation,
 } from "../../Redux/features/produtcs/orderApi";
 import Swal from "sweetalert2";
+import { TCategory, TProduct, TUser } from "../../types";
 
 const ShopPage = () => {
   const [page, setPage] = useState(1);
@@ -29,34 +29,34 @@ const ShopPage = () => {
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
   const [searchText, setSearchText] = useState("");
   const [products, setProducts] = useState([]);
-  const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
-  const { vendorId, shopName } = useParams<{ vendorId: string }>();
-  const {
-    data: productsData,
-    isLoading,
-    isError,
-  } = useGetProductByVendorIdPaginateQuery({ vendorId, page, limit });
+  const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
+  const { vendorId, shopName } = useParams<{
+    vendorId: string;
+    shopName: string;
+  }>();
+  const { data: productsData, isLoading } =
+    useGetProductByVendorIdPaginateQuery({ vendorId, page, limit });
 
-  const user = useSelector((state: RootState) => state.auth.user as User);
-  const userId = user?.userId || [];
-  const userRole = user?.role || [];
+  const user = useSelector((state: RootState) => state.auth.user as TUser);
+  const userId = user?.userId;
+  // const userRole = user?.role || [];
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
-  const categories = categoryData?.data || {};
-  console.log("vendorId", vendorId);
+  const categories = categoryData?.data || [];
+  // console.log("vendorId", vendorId);
   const { data: followData, refetch: followStatusRefetch } =
     useFollowStatusQuery(vendorId);
   const { data: followerData, refetch: followCountRefetch } =
-    useGetfollowerByVendorIdQuery(vendorId);
+    useGetfollowerByVendorIdQuery(vendorId as string);
   const [startFollow] = useStartFollowMutation();
   const [startUnFollow] = useStartUnfollowMutation();
   const [localFollowStatus, setLocalFollowStatus] = useState(
     followData?.message || ""
   );
-  const produtcs = productsData?.data || {};
-  const follow = followData?.message || "";
-  console.log("produtcs", productsData);
+  // const produtcs = productsData?.data || {};
+  // const follow = followData?.message || "";
+  // console.log("produtcs", productsData);
 
-  console.log("followData", followData);
+  // console.log("followData", followData);
   if (productsData && products.length === 0) {
     setProducts(productsData.data);
     setDisplayedProducts(productsData.data);
@@ -78,7 +78,7 @@ const ShopPage = () => {
         <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
-  if (isError) return <div>Error loading products</div>;
+  // if (isError) return <div>Error loading products</div>;
 
   const handlePageChange = (page: number, pageSize: number) => {
     setPage(page);
@@ -96,7 +96,7 @@ const ShopPage = () => {
     setSearchText(searchText);
 
     const filteredProducts = products.filter(
-      (product: Product) =>
+      (product: TProduct) =>
         product.name.toLowerCase().includes(searchText) ||
         product.description.toLowerCase().includes(searchText)
     );
@@ -110,7 +110,7 @@ const ShopPage = () => {
     const maxPrice = parseFloat(form.MaxPrice.value) || Infinity;
 
     const filteredProducts = products.filter(
-      (product: Product) =>
+      (product: TProduct) =>
         product.price >= minPrice &&
         product.price <= maxPrice &&
         (!selectedCategory || product.category === selectedCategory)
@@ -124,7 +124,7 @@ const ShopPage = () => {
     setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
-      (product: Product) => product.category === selectedValue
+      (product: TProduct) => product.category === selectedValue
     );
     setDisplayedProducts(filteredProducts);
   };
@@ -152,7 +152,7 @@ const ShopPage = () => {
         <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
-  if (isError) return <div>Error loading products</div>;
+  // if (isError) return <div>Error loading products</div>;
 
   // console.log("Selected :", selectedCategory);
   // console.log("Selected :", selectedPriceAscDesc);
@@ -161,9 +161,9 @@ const ShopPage = () => {
     return <p>Loading...</p>;
   }
 
-  if (isError) {
-    return <p>Error fetching products</p>;
-  }
+  // if (isError) {
+  //   return <p>Error fetching products</p>;
+  // }
 
   if (!productsData || productsData.length === 0) {
     return <p>No products found for this vendor.</p>;
@@ -174,7 +174,7 @@ const ShopPage = () => {
       setLocalFollowStatus("Following"); // Update the local state
       followStatusRefetch();
       followCountRefetch();
-    } catch (error) {
+    } catch (error: any) {
       Swal.fire(`Error following: ${vendorId}`, error);
     }
   };
@@ -185,7 +185,7 @@ const ShopPage = () => {
       setLocalFollowStatus("NeedFollow"); // Update the local state
       followStatusRefetch();
       followCountRefetch();
-    } catch (error) {
+    } catch (error: any) {
       Swal.fire(`Error unfollowing: ${vendorId}`, error);
     }
   };
@@ -239,14 +239,16 @@ const ShopPage = () => {
               {localFollowStatus === "NeedFollow" ? (
                 <button
                   className="btn btn-primary"
-                  onClick={() => handleFollow(vendorId)}
+                  // onClick={() => handleFollow(vendorId)}
+                  onClick={() => vendorId && handleFollow(vendorId)}
                 >
                   Follow
                 </button>
               ) : (
                 <button
                   className="btn btn-primary"
-                  onClick={() => handleUnFollow(vendorId)}
+                  // onClick={() => handleUnFollow(vendorId)}
+                  onClick={() => vendorId && handleUnFollow(vendorId)}
                 >
                   UnFollow
                 </button>
@@ -370,8 +372,11 @@ const ShopPage = () => {
                   <option disabled selected>
                     Select Category
                   </option>
-                  {categories.map((category, index) => (
-                    <option key={index} value={category.categoryName}>
+                  {categories.map((category: TCategory) => (
+                    <option
+                      key={category.categoryId}
+                      value={category.categoryName}
+                    >
                       {category.categoryName}
                     </option>
                   ))}
@@ -441,7 +446,7 @@ const ShopPage = () => {
                   Sorry, Nothing found!!
                 </p>
               ) : (
-                displayedProducts.map((product: any) => (
+                displayedProducts.map((product: TProduct) => (
                   <ProductsSingleView
                     key={product.productId}
                     product={product}

@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
 import ProductsSingleView from "../../Components/AllProductPage/ProductsSingleView";
 import { useGetProductsGetByCategoryQuery } from "../../Redux/features/produtcs/productsApi";
-import RecentViewSection from "../RecentViewSection/RecentViewSection";
-import ProductViwedSection from "../ProductViwedSection/ProductViwedSection";
+import { TProduct } from "../../types";
 
 const RelatedProductSection = ({ category }: { category: string }) => {
-  const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
 
-  const {
-    data: productsData,
-    isError,
-    isLoading,
-  } = useGetProductsGetByCategoryQuery(category);
+  const { data: productsData, isLoading } =
+    useGetProductsGetByCategoryQuery(category);
 
   useEffect(() => {
     if (productsData) {
@@ -22,7 +17,7 @@ const RelatedProductSection = ({ category }: { category: string }) => {
   }, [productsData]);
 
   if (isLoading) return <p>Loading products...</p>;
-  if (isError) return <p>Error loading products</p>;
+  // if (isError) return <p>Error loading products</p>;
 
   return (
     <div className="w-full h-full min-h-screen py-10">

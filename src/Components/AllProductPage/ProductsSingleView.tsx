@@ -9,39 +9,38 @@ import {
   clearCart,
 } from "../../Redux/features/CartItem/cartSlice";
 import { useGetVendorByEmailQuery } from "../../Redux/features/vendor/vendorApi";
-import { toast } from "react-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { addProductToView } from "../../Redux/features/CartItem/viewSlice";
-interface Product {
+import { TUser } from "../../types";
+
+export type Product = {
   productId: string;
   email: string;
   name: string;
   price: number;
   category: string;
-  quantity: number;
-  ratings: number;
-  mimage: string;
   description: string;
-}
-
-type User = {
-  userId: string;
-  email: string;
-  // Add other user properties as needed
+  quantity: number;
+  mimage: string;
+  vendorId: string;
+  shopName: string;
+  requiredQty: number;
+  ratings: number;
 };
 
-interface ProductsSingleViewProps {
+type ProductsSingleViewProps = {
   product: Product;
-}
-const ProductsSingleView = ({ product }) => {
+};
+
+const ProductsSingleView: React.FC<ProductsSingleViewProps> = ({ product }) => {
   const dispatch = useAppDispatch();
   const [requiredQty, setRequiredQty] = useState(1);
   const cart = useAppSelector((state) => state.cart);
   const [isExpanded, setIsExpanded] = useState(false);
+  console.log(setRequiredQty);
   const {
     productId,
-    shopNameM,
     email,
     name,
     price,
@@ -49,20 +48,12 @@ const ProductsSingleView = ({ product }) => {
     description,
     quantity,
     mimage,
-    image2,
-    image3,
-    image4,
-    image5,
-    discount,
-    discountPrice,
   } = product;
 
-  const { data: vendorData, refetch: vendorRefetch } = useGetVendorByEmailQuery(
-    email as string
-  );
+  const { data: vendorData } = useGetVendorByEmailQuery(email as string);
   const vendor = vendorData?.data || {};
-  const user = useSelector((state: RootState) => state.auth.user as User);
-  const { vendorId } = vendor;
+  const user = useSelector((state: RootState) => state.auth.user as TUser);
+  // const { vendorId } = vendor;
 
   const toggleDescription = () => {
     setIsExpanded(!isExpanded);
@@ -124,7 +115,7 @@ const ProductsSingleView = ({ product }) => {
   // *************************************
 
   const handleAddView = (product: Product) => {
-    console.log("product", product);
+    // console.log("product", product);
     dispatch(addProductToView(product)); // Save product details in the view slice
   };
 

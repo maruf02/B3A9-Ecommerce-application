@@ -11,15 +11,18 @@ import "swiper/css/pagination";
 import StarRatings from "react-star-ratings";
 import { NavLink } from "react-router-dom";
 import { useGetAllFlashSaleProductQuery } from "../../Redux/features/produtcs/orderApi";
+import { TProduct } from "../../types";
 
 const FlashSaleSection = () => {
   const swiperRef = useRef<SwiperType | null>(null);
 
   const {
     data: productsData,
-    isError,
+    // isError,
     isLoading,
   } = useGetAllFlashSaleProductQuery(undefined);
+
+  const productsD = productsData?.data || [];
 
   const handleMouseEnter = () => {
     swiperRef.current?.autoplay?.stop();
@@ -37,16 +40,16 @@ const FlashSaleSection = () => {
     );
   }
 
-  if (isError) {
-    return <div>Error loading products</div>;
-  }
+  // if (isError) {
+  //   return <div>Error loading products</div>;
+  // }
 
-  const getRandomProducts = (products: Product[]) => {
+  const getRandomProducts = (products: TProduct[]) => {
     const shuffled = [...products].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 8);
   };
 
-  const randomProducts = getRandomProducts(productsData.data);
+  const randomProducts = getRandomProducts(productsD);
 
   return (
     <div>
@@ -73,7 +76,9 @@ const FlashSaleSection = () => {
           <div className="px-8 mt-5 w-full h-full my-10">
             <div className="flex flex-wrap justify-center align-middle gap-5">
               {randomProducts.length === 0 ? (
-                <p>Sorry, no products available</p>
+                <p className="text-green-500 text-3xl font-semibold ">
+                  Sorry, Nothing found!!
+                </p>
               ) : (
                 <Swiper
                   onSwiper={(swiperInstance) => {
@@ -108,7 +113,7 @@ const FlashSaleSection = () => {
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {randomProducts.map((product: Product) => (
+                  {randomProducts.map((product: TProduct) => (
                     <SwiperSlide key={product.productId}>
                       <motion.div
                         whileHover={{ scale: 1.05 }}

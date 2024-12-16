@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGetAllOrderQuery } from "../../../Redux/features/produtcs/orderApi";
 import { Pagination } from "antd";
+import { TOrder } from "../../../types";
 
 const TransactionMonitor = () => {
   const [page, setPage] = useState(1);
@@ -8,9 +9,11 @@ const TransactionMonitor = () => {
   const [orders, setOrders] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
 
+  console.log(orders);
+
   const {
     data: orderData,
-    isError,
+
     isLoading,
   } = useGetAllOrderQuery({ page, limit });
 
@@ -29,7 +32,7 @@ const TransactionMonitor = () => {
         <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
-  if (isError) return <div>Error loading products</div>;
+  // if (isError) return <div>Error loading products</div>;
 
   const handlePageChange = (page: number, pageSize: number) => {
     setPage(page);
@@ -62,11 +65,13 @@ const TransactionMonitor = () => {
             {displayedProducts.length === 0 ? (
               <tr>
                 <td colSpan={2} className="text-center">
-                  No categories found
+                  <p className="text-green-500 text-3xl font-semibold ">
+                    Sorry, No transaction found!!
+                  </p>
                 </td>
               </tr>
             ) : (
-              displayedProducts.map((order: any) => (
+              displayedProducts.map((order: TOrder) => (
                 <tr key={order.orderId} className="hover:bg-gray-300">
                   <td>
                     <div className="font-semibold">{order.shopName}</div>

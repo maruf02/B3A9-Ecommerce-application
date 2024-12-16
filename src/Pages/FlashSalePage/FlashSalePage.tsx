@@ -6,24 +6,14 @@ import { motion } from "framer-motion";
 import { useGetAllFlashSaleProductQuery } from "../../Redux/features/produtcs/orderApi";
 import { useGetAllCategoryQuery } from "../../Redux/features/produtcs/productsApi";
 import ProductsSingleView from "../../Components/AllProductPage/ProductsSingleView";
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  quantity: number;
-  ratings: number;
-  mimage: string;
-}
+import { TCategory, TProduct } from "../../types";
 
 const FlashSalePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
   const [searchText, setSearchText] = useState("");
-  const [products, setProducts] = useState([]);
-  const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<TProduct[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
 
   // redux part
   const {
@@ -38,7 +28,15 @@ const FlashSalePage = () => {
   console.log("products", productsData);
   console.log("displayedProducts", displayedProducts);
   // console.log(searchText);
-  if (productsData && products.length === 0) {
+  // if (productsData && products.length === 0) {
+  //   setProducts(productsData.data);
+  //   setDisplayedProducts(productsData.data);
+  // }
+
+  if (productsData && productsData.length > 0) {
+    setProducts(productsData.data);
+    setDisplayedProducts(productsData.data);
+  } else if (productsData && productsData.length === 0) {
     setProducts(productsData.data);
     setDisplayedProducts(productsData.data);
   }
@@ -46,7 +44,8 @@ const FlashSalePage = () => {
   useEffect(() => {
     if (productsData?.data) {
       const filteredProducts = productsData?.data.filter(
-        (product) => !selectedCategory || product.category === selectedCategory
+        (product: TProduct) =>
+          !selectedCategory || product.category === selectedCategory
       );
       setProducts(productsData?.data);
       setDisplayedProducts(filteredProducts);
@@ -59,7 +58,7 @@ const FlashSalePage = () => {
         <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
-  if (isError) return <div>Error loading products</div>;
+  // if (isError) return <div>Error loading products</div>;
 
   // pagination***************************************************
   // pagination***************************************************
@@ -71,7 +70,7 @@ const FlashSalePage = () => {
     setSearchText(searchText);
 
     const filteredProducts = products.filter(
-      (product: Product) =>
+      (product: TProduct) =>
         product.name.toLowerCase().includes(searchText) ||
         product.description.toLowerCase().includes(searchText)
     );
@@ -85,7 +84,7 @@ const FlashSalePage = () => {
     const maxPrice = parseFloat(form.MaxPrice.value) || Infinity;
 
     const filteredProducts = products.filter(
-      (product: Product) =>
+      (product: TProduct) =>
         product.price >= minPrice &&
         product.price <= maxPrice &&
         (!selectedCategory || product.category === selectedCategory)
@@ -99,7 +98,7 @@ const FlashSalePage = () => {
     setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
-      (product: Product) => product.category === selectedValue
+      (product: TProduct) => product.category === selectedValue
     );
     setDisplayedProducts(filteredProducts);
   };
@@ -127,7 +126,7 @@ const FlashSalePage = () => {
         <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
-  if (isError) return <div>Error loading products</div>;
+  // if (isError) return <div>Error loading products</div>;
 
   // console.log("Selected :", selectedCategory);
   // console.log("Selected :", selectedPriceAscDesc);
@@ -281,7 +280,7 @@ const FlashSalePage = () => {
                 <option disabled defaultValue="Select Category">
                   Select Category
                 </option>
-                {categories.map((category, index) => (
+                {categories.map((category: TCategory, index: number) => (
                   <option key={index} value={category.categoryName}>
                     {category.categoryName}
                   </option>
@@ -348,7 +347,7 @@ const FlashSalePage = () => {
                 Sorry, Nothing found!!
               </p>
             ) : (
-              displayedProducts.map((product: any) => (
+              displayedProducts.map((product: TProduct) => (
                 <ProductsSingleView
                   key={product.productId}
                   product={product}

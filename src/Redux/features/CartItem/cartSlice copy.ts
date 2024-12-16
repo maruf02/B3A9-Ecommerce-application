@@ -1,4 +1,3 @@
-// src/Redux/features/cart/cartSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 
@@ -6,13 +5,11 @@ type Vendor = {
   vendorId: string;
   shopName: string;
   email: string;
-  // Add other vendor properties as needed
 };
 
 type User = {
   userId: string;
   email: string;
-  // Add other user properties as needed
 };
 
 type Product = {
@@ -25,7 +22,6 @@ type Product = {
   price: number;
   quantity: number;
   requiredQty: number;
-  // Add other product properties as needed
 };
 
 type TCartState = {

@@ -3,8 +3,6 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import dayjs from "dayjs";
-import { RangePickerProps } from "antd/es/date-picker";
 import { Swiper as SwiperType } from "swiper";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -47,7 +45,7 @@ const BannerSection = () => {
       navigate("/cars"); // Navigate to the cars page
     }, 2000); // 2 seconds delay
   };
-
+  console.log(handleBookNowClicks, loading);
   // const handleBookNowClick = () => {
   //   if (!location || !date) {
   //     message.error("Please fill out both the location and date fields.");

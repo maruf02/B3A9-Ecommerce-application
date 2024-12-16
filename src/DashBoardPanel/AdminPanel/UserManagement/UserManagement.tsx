@@ -11,7 +11,6 @@ import {
   useGetAllUserQuery,
   useUpdateUserMutation,
 } from "../../../Redux/user/userApi";
-import { useDeleteCategoryMutation } from "../../../Redux/features/produtcs/productsApi";
 
 const UserManagement = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);

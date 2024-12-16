@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
-
 import { motion } from "framer-motion";
 import { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,9 +9,9 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import StarRatings from "react-star-ratings";
 import { NavLink } from "react-router-dom";
-import { useGetAllFlashSaleProductQuery } from "../../Redux/features/produtcs/orderApi";
 import { useSelector } from "react-redux";
 import { useCurrentView } from "../../Redux/features/CartItem/viewSlice";
+import { TProduct } from "../../types";
 
 const ProductViwedSection = () => {
   const swiperRef = useRef<SwiperType | null>(null);
@@ -20,7 +19,7 @@ const ProductViwedSection = () => {
   const { viewedProducts } = useSelector(useCurrentView);
 
   // Get the last 10 products (most recent views)
-  const productsData = [...viewedProducts].slice(-10).reverse();
+  const productsData = [...viewedProducts].slice(-10).reverse() as TProduct[];
 
   const handleMouseEnter = () => {
     swiperRef.current?.autoplay?.stop();
@@ -30,7 +29,7 @@ const ProductViwedSection = () => {
     swiperRef.current?.autoplay?.start();
   };
 
-  const getRandomProducts = (products: any[]) => {
+  const getRandomProducts = (products: TProduct[]) => {
     const shuffled = [...products].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 10);
   };
@@ -97,7 +96,7 @@ const ProductViwedSection = () => {
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {randomProducts.map((product: any) => (
+                  {randomProducts.map((product: TProduct) => (
                     <SwiperSlide key={product.productId}>
                       <motion.div
                         whileHover={{ scale: 1.05 }}

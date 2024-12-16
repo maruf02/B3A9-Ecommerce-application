@@ -21,7 +21,7 @@ import ManageProduct from "./DashBoardPanel/VendorPanel/ManageProduct/ManageProd
 import OrderManagement from "./DashBoardPanel/VendorPanel/OrderManagement/OrderManagement.tsx";
 import ManageCategory from "./DashBoardPanel/AdminPanel/ManageCategory/ManageCategory.tsx";
 import UserManagement from "./DashBoardPanel/AdminPanel/UserManagement/UserManagement.tsx";
-import SalesReport from "./DashBoardPanel/VendorPanel/SalesReport/SalesReport.tsx";
+
 import ShopPage from "./Pages/ShopPage/ShopPage.tsx";
 // import CheckOutPage from "./Pages/CheckOutPage/CheckOutPage.tsx";
 import AllProductPage from "./Components/AllProductPage/AllProductPage.tsx";
@@ -35,6 +35,8 @@ import ReviewActivities from "./DashBoardPanel/AdminPanel/ReviewActivities/Revie
 import TransactionMonitor from "./DashBoardPanel/AdminPanel/TransactionMonitor/TransactionMonitor.tsx";
 import FlashSalePage from "./Pages/FlashSalePage/FlashSalePage.tsx";
 import RecentViewPage from "./Pages/RecentViewPage/RecentViewPage.tsx";
+import ProductComparePage from "./Pages/ProductComparePage/ProductComparePage.tsx";
+import ResetPasswordPage from "./Pages/ResetPasswordPage/ResetPasswordPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "/products",
         element: <AllProductPage />,
+      },
+      {
+        path: "/compareProduct",
+        element: <ProductComparePage />,
       },
       {
         path: "/ProductDetailsView/:productId",
@@ -88,6 +94,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <SingUpPage />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPasswordPage />,
   },
 
   {
@@ -167,14 +177,7 @@ const router = createBrowserRouter([
           </VendorProtectRoute>
         ),
       },
-      {
-        path: "/DashBoard/SalesReport",
-        element: (
-          <VendorProtectRoute>
-            <SalesReport />
-          </VendorProtectRoute>
-        ),
-      },
+
       {
         path: "/DashBoard/user",
         element: (

@@ -5,21 +5,24 @@ import {
 } from "../../Redux/features/produtcs/productsApi";
 import ProductsSingleView from "../../Components/AllProductPage/ProductsSingleView";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { FaSearch, FaSortNumericDown } from "react-icons/fa";
 import { MdManageSearch, MdPriceCheck } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
+import { TCategory, TProduct } from "../../types";
 
 const AllProductSection = () => {
   const [page, setPage] = useState(1);
-  const [products, setProducts] = useState<any[]>([]);
-  const [displayedProducts, setDisplayedProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<TProduct[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
+
+  console.log(searchText, selectedPriceAscDesc);
 
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
   const categories = categoryData?.data || [];
@@ -62,9 +65,9 @@ const AllProductSection = () => {
     );
   }
 
-  if (isError) {
-    return <div>Error loading products</div>;
-  }
+  // if (isError) {
+  //   return <div>Error loading products</div>;
+  // }
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
@@ -73,7 +76,7 @@ const AllProductSection = () => {
     setSearchText(searchText);
 
     const filteredProducts = products.filter(
-      (product: Product) =>
+      (product: TProduct) =>
         product.name.toLowerCase().includes(searchText) ||
         product.description.toLowerCase().includes(searchText)
     );
@@ -87,7 +90,7 @@ const AllProductSection = () => {
     const maxPrice = parseFloat(form.MaxPrice.value) || Infinity;
 
     const filteredProducts = products.filter(
-      (product: Product) =>
+      (product: TProduct) =>
         product.price >= minPrice &&
         product.price <= maxPrice &&
         (!selectedCategory || product.category === selectedCategory)
@@ -101,7 +104,7 @@ const AllProductSection = () => {
     setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
-      (product: Product) => product.category === selectedValue
+      (product: TProduct) => product.category === selectedValue
     );
     setDisplayedProducts(filteredProducts);
   };
@@ -240,7 +243,7 @@ const AllProductSection = () => {
                 <option disabled defaultValue="Select Category">
                   Select Category
                 </option>
-                {categories.map((category, index) => (
+                {categories.map((category: TCategory, index: number) => (
                   <option key={index} value={category.categoryName}>
                     {category.categoryName}
                   </option>
@@ -323,7 +326,7 @@ const AllProductSection = () => {
                     Sorry, Nothing found!!
                   </p>
                 ) : (
-                  displayedProducts.map((product: any, index: number) => (
+                  displayedProducts.map((product: TProduct, index: number) => (
                     <ProductsSingleView
                       key={`${product.productId}-${index}`}
                       product={product}

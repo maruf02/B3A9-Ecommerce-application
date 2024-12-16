@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { RootState } from "../../Redux/store";
 import { useCreateOrderMutation } from "../../Redux/features/produtcs/orderApi";
@@ -16,7 +15,7 @@ interface ApiError {
 
 const CheckOutPage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const orderData = useSelector((state: RootState) => state.order.orderData);
   const [createOrder] = useCreateOrderMutation();
 
@@ -36,7 +35,7 @@ const CheckOutPage = () => {
   const [coupon, setCoupon] = useState("");
   const [discountedPrice, setDiscountedPrice] = useState(totalPrice);
 
-  const handlePaymentSubmit = async (event: any) => {
+  const handlePaymentSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const finalPrice = discountedPrice;
     console.log("object");
@@ -47,7 +46,7 @@ const CheckOutPage = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, Proceed  it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -94,11 +93,11 @@ const CheckOutPage = () => {
 
         // ************************
 
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
+        // Swal.fire({
+        //   title: "Deleted!",
+        //   text: "Your file has been deleted.",
+        //   icon: "success",
+        // });
       }
     });
 
@@ -203,7 +202,6 @@ const CheckOutPage = () => {
                 name="address"
                 placeholder="Enter your Address"
                 id="address"
-                required
                 className=" bg-white text-black input input-bordered input-primary input-sm"
                 // onChange={(e) => {
                 //   const input = e.target.value;

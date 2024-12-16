@@ -3,26 +3,15 @@ import { FaSearch, FaSortNumericDown } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { MdManageSearch, MdPriceCheck } from "react-icons/md";
 import { motion } from "framer-motion";
-
 import ProductsSingleView from "./ProductsSingleView";
 import {
   useGetAllCategoryQuery,
   useGetAllProductQueryQuery,
 } from "../../Redux/features/produtcs/productsApi";
 import { Pagination } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  quantity: number;
-  ratings: number;
-  mimage: string;
-}
+import { TCategory, TProduct } from "../../types";
 
 const AllProductPage = () => {
   const [page, setPage] = useState(1);
@@ -32,9 +21,11 @@ const AllProductPage = () => {
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
   const [searchText, setSearchText] = useState("");
   const [products, setProducts] = useState([]);
-  const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
 
-  const dispatch = useDispatch();
+  console.log("displayedProducts", displayedProducts.length);
+
+  // const dispatch = useDispatch();
   const selectedCategory = useSelector(
     (state: RootState) => state.product.selectedCategory
   );
@@ -48,14 +39,22 @@ const AllProductPage = () => {
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
   const categories = categoryData?.data || [];
 
-  console.log("categories", categories);
-  console.log("products", productsData);
-  console.log("displayedProducts", displayedProducts);
+  // console.log("categories", categories);
+  // console.log("products", productsData);
+  // console.log("displayedProducts", displayedProducts);
   // console.log(searchText);
-  if (productsData && products.length === 0) {
+
+  if (productsData && productsData.length > 0) {
+    setProducts(productsData.data);
+    setDisplayedProducts(productsData.data);
+  } else if (productsData && productsData.length === 0) {
     setProducts(productsData.data);
     setDisplayedProducts(productsData.data);
   }
+  // if (productsData && products.length === 0) {
+  //   setProducts(productsData.data);
+  //   setDisplayedProducts(productsData.data);
+  // }
 
   // pagination***************************************************
   // pagination***************************************************
@@ -71,7 +70,8 @@ const AllProductPage = () => {
   useEffect(() => {
     if (productsData?.data) {
       const filteredProducts = productsData?.data.filter(
-        (product) => !selectedCategory || product.category === selectedCategory
+        (product: TProduct) =>
+          !selectedCategory || product.category === selectedCategory
       );
       setProducts(productsData?.data);
       setDisplayedProducts(filteredProducts);
@@ -102,7 +102,7 @@ const AllProductPage = () => {
     setSearchText(searchText);
 
     const filteredProducts = products.filter(
-      (product: Product) =>
+      (product: TProduct) =>
         product.name.toLowerCase().includes(searchText) ||
         product.description.toLowerCase().includes(searchText)
     );
@@ -116,7 +116,7 @@ const AllProductPage = () => {
     const maxPrice = parseFloat(form.MaxPrice.value) || Infinity;
 
     const filteredProducts = products.filter(
-      (product: Product) =>
+      (product: TProduct) =>
         product.price >= minPrice &&
         product.price <= maxPrice &&
         (!selectedCategory || product.category === selectedCategory)
@@ -130,7 +130,7 @@ const AllProductPage = () => {
     setSelectedCategoryFromForm(selectedValue);
 
     const filteredProducts = products.filter(
-      (product: Product) => product.category === selectedValue
+      (product: TProduct) => product.category === selectedValue
     );
     setDisplayedProducts(filteredProducts);
   };
@@ -311,7 +311,7 @@ const AllProductPage = () => {
                 <option disabled defaultValue="Select Category">
                   Select Category
                 </option>
-                {categories.map((category, index) => (
+                {categories.map((category: TCategory, index: number) => (
                   <option key={index} value={category.categoryName}>
                     {category.categoryName}
                   </option>
@@ -378,7 +378,7 @@ const AllProductPage = () => {
                 Sorry, Nothing found!!
               </p>
             ) : (
-              displayedProducts.map((product: any) => (
+              displayedProducts.map((product: TProduct) => (
                 <ProductsSingleView
                   key={product.productId}
                   product={product}

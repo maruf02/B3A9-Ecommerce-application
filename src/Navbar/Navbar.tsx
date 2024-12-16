@@ -4,17 +4,19 @@ import { RootState } from "../Redux/store";
 import { useAppDispatch } from "../Redux/hooks";
 import { logout } from "../Redux/features/auth/authSlice";
 import { clearViewedProducts } from "../Redux/features/CartItem/viewSlice";
+import { TUser } from "../types";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state: RootState) => state.auth.user) as User;
+  const user = useSelector((state: RootState) => state.auth.user) as TUser;
 
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearViewedProducts());
     navigate("/login");
   };
+
   // redux part for cart
 
   // console.log("objectPrice", total);
@@ -40,14 +42,25 @@ const Navbar = () => {
         </NavLink>
       </li>
       <li>
+        <NavLink to="/compareProduct" className="activeNavLink ">
+          <button>Compare</button>
+        </NavLink>
+      </li>
+      <li>
         <NavLink to="/cartView" className="activeNavLink ">
           <button>Cart</button>
         </NavLink>
       </li>
       <li>
-        <NavLink to="/DashBoard" className="activeNavLink ">
-          <button>DashBoard</button>
-        </NavLink>
+        {user ? (
+          <NavLink to={`/DashBoard/${user?.role}`} className="activeNavLink ">
+            <button>DashBoard</button>
+          </NavLink>
+        ) : (
+          <NavLink to="/login" className="activeNavLink ">
+            <button>DashBoard</button>
+          </NavLink>
+        )}
       </li>
     </>
   );

@@ -1,38 +1,38 @@
 import { useEffect, useState } from "react";
-import { Pagination, Select } from "antd";
+import { Pagination } from "antd";
 import { useSelector } from "react-redux";
 import { IoMdClose } from "react-icons/io";
 import { RootState } from "../../../Redux/store";
-import {
-  useOrderProductByUserEmailQuery,
-  useOrderProductByVendorEmailQuery,
-} from "../../../Redux/features/produtcs/orderApi";
+import { useOrderProductByUserEmailQuery } from "../../../Redux/features/produtcs/orderApi";
 import { useGetAllCategoryQuery } from "../../../Redux/features/produtcs/productsApi";
 import { FaSearch, FaSortNumericDown } from "react-icons/fa";
 import { MdManageSearch, MdPriceCheck } from "react-icons/md";
+import { TCategory, TProduct, TUser } from "../../../types";
 
 const UserOrderManagement = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchText, setSearchText] = useState("");
-  const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
-  const [products, setProducts] = useState([]);
-  const [displayedProducts, setDisplayedProducts] = useState([]);
-  console.log("products", products);
+  const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState<
+    string | null
+  >(null);
+  const [products, setProducts] = useState<TProduct[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
+  // console.log("products", products);
   const userDataToken =
-    (useSelector((state: RootState) => state.auth.user) as User) || null; // get user info from redux token
+    (useSelector((state: RootState) => state.auth.user) as TUser) || null; // get user info from redux token
 
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  console.log(searchText, selectedPriceAscDesc);
   // const { data: productData, refetch: productsRefech } =
   //   useGetProductByShopNameQuery(userDataToken.email);
   const email = userDataToken?.email;
-  const {
-    data: productData,
-    isLoading,
-    isError,
-    refetch: vendorRefech,
-  } = useOrderProductByUserEmailQuery({ email, page, limit });
+  const { data: productData, isLoading } = useOrderProductByUserEmailQuery({
+    email,
+    page,
+    limit,
+  });
 
   // const { data: users } = useGetAllUserQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
@@ -58,7 +58,7 @@ const UserOrderManagement = () => {
         <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
-  if (isError) return <div>Error loading products</div>;
+  // if (isError) return <div>Error loading products</div>;
 
   const handlePageChange = (page: number, pageSize: number) => {
     setPage(page);
@@ -71,16 +71,16 @@ const UserOrderManagement = () => {
   // ******************************************************************
   //  *****************search function**************************
   //    *****************search function**************************
-  const handleSearch = (event) => {
+  const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const searchText = form.SearchText.value.toLowerCase();
     setSearchText(searchText);
-    console.log("searchText", searchText);
+    // console.log("searchText", searchText);
     event.preventDefault();
     const filteredProducts = products.filter(
-      (product: any) =>
-        product.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      (product: TProduct) =>
+        product.product.name.toLowerCase().includes(searchText.toLowerCase()) ||
         product.product.description
           .toLowerCase()
           .includes(searchText.toLowerCase())
@@ -88,34 +88,57 @@ const UserOrderManagement = () => {
     setDisplayedProducts(filteredProducts);
   };
 
-  const handleSortByPriceRange = (event) => {
+  const handleSortByPriceRange = (event: React.FormEvent) => {
     event.preventDefault();
-    const form = event.target;
+    const form = event.target as HTMLFormElement;
     const minPrice = parseFloat(form.MinPrice.value) || 0;
     const maxPrice = parseFloat(form.MaxPrice.value) || Infinity;
 
     const filteredProducts = products.filter(
-      (product: any) =>
+      (product: TProduct) =>
         product.price >= minPrice &&
         product.price <= maxPrice &&
-        (!selectedCategory || product.product.category === selectedCategory)
+        (!selectedCategory || product.category === selectedCategory)
     );
 
     setDisplayedProducts(filteredProducts);
   };
 
-  const handleSelectChangeCategoryFilter = (event) => {
-    const selectedValue = event.target.value;
+  // const handleSelectChangeCategoryFilter = (event: React.FormEvent) => {
+  //   const selectedValue = event.target.value as HTMLFormElement;
+  //   setSelectedCategory(selectedValue);
+
+  //   const filteredProducts = products.filter(
+  //     (product) => product.product.category === selectedValue
+  //   );
+  //   setDisplayedProducts(filteredProducts);
+  // };
+
+  // const handleSelectChangePriceAscDesc = (event: React.FormEvent) => {
+  //   const selectedValue = event.target.value as HTMLFormElement;
+  //   setSelectedPriceAscDesc(selectedValue);
+
+  //   const sortedProducts = [...displayedProducts].sort((a, b) =>
+  //     selectedValue === "asc" ? a.price - b.price : b.price - a.price
+  //   );
+  //   setDisplayedProducts(sortedProducts);
+  // };
+
+  const handleSelectChangeCategoryFilter = (event: React.FormEvent) => {
+    const form = event.target as HTMLFormElement;
+    const selectedValue = form.value;
+    // console.log(selectedValue);
     setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
-      (product) => product.product.category === selectedValue
+      (product: TProduct) => product.product.category === selectedValue
     );
     setDisplayedProducts(filteredProducts);
   };
 
-  const handleSelectChangePriceAscDesc = (event) => {
-    const selectedValue = event.target.value;
+  const handleSelectChangePriceAscDesc = (event: React.FormEvent) => {
+    const form = event.target as HTMLFormElement;
+    const selectedValue = form.value;
     setSelectedPriceAscDesc(selectedValue);
 
     const sortedProducts = [...displayedProducts].sort((a, b) =>
@@ -241,7 +264,7 @@ const UserOrderManagement = () => {
               className="select select-bordered w-full  bg-[#1A4870] "
             >
               <option disabled>Select Category</option>
-              {categories.map((category: any, index: string) => (
+              {categories.map((category: TCategory) => (
                 <option key={category.categoryId} value={category.categoryName}>
                   {category.categoryName}
                 </option>
@@ -306,7 +329,7 @@ const UserOrderManagement = () => {
             {displayedProducts.length === 0 ? (
               <div>sorry</div>
             ) : (
-              displayedProducts.map((product: any, index: number) => (
+              displayedProducts.map((product: TProduct) => (
                 <>
                   <tr key={product.productId} className="hover:bg-gray-300">
                     <td>
@@ -364,6 +387,13 @@ const UserOrderManagement = () => {
             )}
           </tbody>
         </table>
+        {displayedProducts.length === 0 && (
+          <div className="w-full text-center">
+            <p className="text-green-500 text-2xl font-semibold ">
+              Sorry, No Purchase Product found!!
+            </p>
+          </div>
+        )}
       </div>
       {/* table view */}
 

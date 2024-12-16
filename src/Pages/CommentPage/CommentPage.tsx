@@ -21,24 +21,24 @@ const CommentPage = () => {
   );
   const orderData = useSelector((state: RootState) => state.order.orderData);
   const userEmail = orderData?.user?.email || "";
-  const user = orderData?.user || [];
+  // const user = orderData?.user || [];
   const { data: userData } = useGetUserEmailQuery(userEmail || "");
   const [createComment] = useCreateCommentMutation();
   const userId = orderData?.user?.userId || "";
   const userName = userData?.data?.name || "";
   const vendorId = orderData?.vendor?.vendorId || "";
-  const vendorEmail = orderData?.vendor?.email || "";
-  const shopName = orderData?.vendor?.shopName || "";
+  // const vendorEmail = orderData?.vendor?.email || "";
+  // const shopName = orderData?.vendor?.shopName || "";
 
-  const totalItems = orderData?.totalItems || 0;
+  // const totalItems = orderData?.totalItems || 0;
 
-  const items = orderData?.items || [];
-  const userInfo = userData?.data || [];
+  // const items = orderData?.items || [];
+  // const userInfo = userData?.data || [];
 
-  const products = orderData?.items || [];
+  // const products = orderData?.items || [];
   const totalPrice = orderData?.totalPrice || 0;
 
-  const handleComment = async (event: any, productId: string) => {
+  const handleComment = async (event: React.FormEvent, productId: string) => {
     event.preventDefault();
     // const form = event.target as HTMLFormElement;
     const comment = comments[productId] || "";

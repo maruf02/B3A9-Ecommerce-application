@@ -10,14 +10,14 @@ import {
   useDuplicateProductMutation,
   useGetAllCategoryQuery,
   useGetProductByShopNamePaginateQuery,
-  useGetProductByShopNameQuery,
   useUpdateProductMutation,
 } from "../../../Redux/features/produtcs/productsApi";
-import { Pagination, Select } from "antd";
+import { Pagination } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store";
 import { useGetVendorByEmailQuery } from "../../../Redux/features/vendor/vendorApi";
 import { IoMdClose } from "react-icons/io";
+import { TCategory, TProduct, TUser } from "../../../types";
 
 const ManageProduct = () => {
   const [page, setPage] = useState(1);
@@ -25,35 +25,33 @@ const ManageProduct = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
   const [products, setProducts] = useState([]);
-  const [displayedProducts, setDisplayedProducts] = useState([]);
-  console.log("products", products);
+  const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
+  console.log(searchText, selectedPriceAscDesc);
   const userDataToken =
-    (useSelector((state: RootState) => state.auth.user) as User) || null; // get user info from redux token
+    (useSelector((state: RootState) => state.auth.user) as TUser) || null;
 
   const [selectedproductId, setSelectedproductId] = useState<string | null>(
     null
   );
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<TProduct | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDiscount, setSelectedDiscount] = useState("");
   const [selectedIsFlashSale, setSelectedIsFlashSale] = useState("");
   const email = userDataToken?.email;
-  const { data: vendorData, refetch: vendorRefech } =
-    useGetVendorByEmailQuery(email);
+  const { data: vendorData } = useGetVendorByEmailQuery(email);
   // const { data: productData, refetch: productsRefech } =
   //   useGetProductByShopNameQuery(userDataToken.email);
   const vendorId = vendorData?.data?.vendorId;
-  console.log("vendorData", vendorData);
+  // console.log("vendorData", vendorData);
   const {
     data: productData,
     isLoading,
-    isError,
     refetch: productsRefech,
   } = useGetProductByShopNamePaginateQuery({ vendorId, page, limit });
 
   // const { data: users } = useGetAllUserQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
-  const [addProductItem, {}] = useCreateProductMutation();
+  const [addProductItem] = useCreateProductMutation();
   const [duplicateProductItem] = useDuplicateProductMutation();
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
@@ -270,7 +268,7 @@ const ManageProduct = () => {
     if (modal) {
       modal.showModal();
     }
-    const product = produtcs.find((p: any) => p.productId === productId);
+    const product = produtcs.find((p: TProduct) => p.productId === productId);
     if (product) {
       setSelectedProduct(product);
       setSelectedCategory(product.category);
@@ -292,9 +290,9 @@ const ManageProduct = () => {
     const image3 = form.image3.files[0];
     const image4 = form.image4.files[0];
     const image5 = form.image5.files[0];
-    const discount = selectedDiscount || selectedProduct.discount;
+    const discount = selectedDiscount || selectedProduct?.discount;
     const discountPrice = parseFloat(form.discountPrice.value);
-    const isFlashSale = selectedIsFlashSale || selectedProduct.isFlashSale;
+    const isFlashSale = selectedIsFlashSale || selectedProduct?.isFlashSale;
 
     const description = form.description.value;
 
@@ -477,7 +475,7 @@ const ManageProduct = () => {
     if (modal) {
       modal.showModal();
     }
-    const product = produtcs.find((p: any) => p.productId === productId);
+    const product = produtcs.find((p: TProduct) => p.productId === productId);
     if (product) {
       setSelectedProduct(product);
       setSelectedCategory(product.category);
@@ -500,9 +498,9 @@ const ManageProduct = () => {
     const image3 = form.image3.files[0];
     const image4 = form.image4.files[0];
     const image5 = form.image5.files[0];
-    const discount = selectedDiscount || selectedProduct.discount;
+    const discount = selectedDiscount || selectedProduct?.discount;
     const discountPrice = parseFloat(form.discountPrice.value);
-    const isFlashSale = selectedIsFlashSale || selectedProduct.isFlashSale;
+    const isFlashSale = selectedIsFlashSale || selectedProduct?.isFlashSale;
 
     const description = form.description.value;
 
@@ -738,7 +736,7 @@ const ManageProduct = () => {
         <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
-  if (isError) return <div>Error loading products</div>;
+  // if (isError) return <div>Error loading products</div>;
 
   const handlePageChange = (page: number, pageSize: number) => {
     setPage(page);
@@ -751,7 +749,7 @@ const ManageProduct = () => {
   // ******************************************************************
   //  *****************search function**************************
   //    *****************search function**************************
-  const handleSearch = (event) => {
+  const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const searchText = form.SearchText.value.toLowerCase();
@@ -759,21 +757,21 @@ const ManageProduct = () => {
     console.log("searchText", searchText);
     event.preventDefault();
     const filteredProducts = products.filter(
-      (product: any) =>
+      (product: TProduct) =>
         product.name.toLowerCase().includes(searchText.toLowerCase()) ||
         product.description.toLowerCase().includes(searchText.toLowerCase())
     );
     setDisplayedProducts(filteredProducts);
   };
 
-  const handleSortByPriceRange = (event) => {
+  const handleSortByPriceRange = (event: React.FormEvent) => {
     event.preventDefault();
-    const form = event.target;
+    const form = event.target as HTMLFormElement;
     const minPrice = parseFloat(form.MinPrice.value) || 0;
     const maxPrice = parseFloat(form.MaxPrice.value) || Infinity;
 
     const filteredProducts = products.filter(
-      (product: any) =>
+      (product: TProduct) =>
         product.price >= minPrice &&
         product.price <= maxPrice &&
         (!selectedCategory || product.category === selectedCategory)
@@ -781,18 +779,20 @@ const ManageProduct = () => {
     setDisplayedProducts(filteredProducts);
   };
 
-  const handleSelectChangeCategoryFilter = (event) => {
-    const selectedValue = event.target.value;
+  const handleSelectChangeCategoryFilter = (event: React.FormEvent) => {
+    const form = event.target as HTMLFormElement;
+    const selectedValue = form.value;
     setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
-      (product) => product.category === selectedValue
+      (product: TProduct) => product.category === selectedValue
     );
     setDisplayedProducts(filteredProducts);
   };
 
-  const handleSelectChangePriceAscDesc = (event) => {
-    const selectedValue = event.target.value;
+  const handleSelectChangePriceAscDesc = (event: React.FormEvent) => {
+    const form = event.target as HTMLFormElement;
+    const selectedValue = form.value;
     setSelectedPriceAscDesc(selectedValue);
 
     const sortedProducts = [...displayedProducts].sort((a, b) =>
@@ -920,7 +920,7 @@ const ManageProduct = () => {
               <option disabled selected>
                 Select Category
               </option>
-              {categories.map((category: any, index: string) => (
+              {categories.map((category: TCategory) => (
                 <option key={category.categoryId} value={category.categoryName}>
                   {category.categoryName}
                 </option>
@@ -1090,7 +1090,7 @@ const ManageProduct = () => {
                     <option value="" disabled>
                       Select Category
                     </option>
-                    {categories.map((category: any, index: number) => (
+                    {categories.map((category: TCategory, index: number) => (
                       <option key={index} value={category.categoryName}>
                         {category.categoryName}
                       </option>
@@ -1294,7 +1294,7 @@ const ManageProduct = () => {
                     <option value="" disabled>
                       Select Category
                     </option>
-                    {categories.map((category: any, index: number) => (
+                    {categories.map((category: TCategory, index: number) => (
                       <option key={index} value={category.categoryName}>
                         {category.categoryName}
                       </option>
@@ -1486,7 +1486,7 @@ const ManageProduct = () => {
                     <option value="" disabled>
                       Select Category
                     </option>
-                    {categories.map((category: any, index: number) => (
+                    {categories.map((category: TCategory, index: number) => (
                       <option key={index} value={category.categoryName}>
                         {category.categoryName}
                       </option>
@@ -1579,7 +1579,7 @@ const ManageProduct = () => {
             {displayedProducts.length === 0 ? (
               <div>sorry</div>
             ) : (
-              displayedProducts.map((product: any, index: number) => (
+              displayedProducts.map((product: TProduct, index: number) => (
                 <>
                   <tr key={index} className="hover:bg-gray-300">
                     <td>
@@ -1657,6 +1657,13 @@ const ManageProduct = () => {
             )}
           </tbody>
         </table>
+        {displayedProducts.length === 0 && (
+          <div className="w-full text-center">
+            <p className="text-green-500 text-2xl font-semibold ">
+              Sorry, No Product found!! Please Add some product to your Shop
+            </p>
+          </div>
+        )}
       </div>
       {/* table view */}
 

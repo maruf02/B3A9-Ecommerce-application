@@ -5,7 +5,7 @@ export const baseApi = createApi({
   reducerPath: "baseAPi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000/api",
-    // baseUrl: "https://car-rental-server5.vercel.app/api",
+    // baseUrl: "https://b3-a9-peracommerce-server.vercel.app/api",
     credentials: "include",
     // set token into heades as authorization name
     prepareHeaders: (headers, { getState }) => {

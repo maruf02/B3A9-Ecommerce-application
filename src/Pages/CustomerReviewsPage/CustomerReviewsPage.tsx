@@ -1,10 +1,6 @@
-import { FaCopy, FaEdit, FaSearch, FaSortNumericDown } from "react-icons/fa";
-import { MdDeleteForever, MdManageSearch, MdPriceCheck } from "react-icons/md";
 import { useEffect, useState } from "react";
-
-import { Pagination, Select } from "antd";
+import { Pagination } from "antd";
 import { useSelector } from "react-redux";
-
 import { IoMdClose } from "react-icons/io";
 import {
   useGetAllCategoryQuery,
@@ -13,43 +9,42 @@ import {
 import { useGetVendorByEmailQuery } from "../../Redux/features/vendor/vendorApi";
 import { RootState } from "../../Redux/store";
 import { Link } from "react-router-dom";
+import { TCategory, TProduct, TUser } from "../../types";
+import { FaSearch, FaSortNumericDown } from "react-icons/fa";
+import { MdManageSearch, MdPriceCheck } from "react-icons/md";
 
 const CustomerReviewsPage = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchText, setSearchText] = useState("");
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
-  const [products, setProducts] = useState([]);
-  const [displayedProducts, setDisplayedProducts] = useState([]);
-  console.log("products", products);
+  const [products, setProducts] = useState<TProduct[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
+  console.log(searchText, selectedPriceAscDesc);
   const userDataToken =
-    (useSelector((state: RootState) => state.auth.user) as User) || null; // get user info from redux token
+    (useSelector((state: RootState) => state.auth.user) as TUser) || null; // get user info from redux token
 
   const [selectedCategory, setSelectedCategory] = useState("");
 
   // const { data: productData, refetch: productsRefech } =
   //   useGetProductByShopNameQuery(userDataToken.email);
   const email = userDataToken?.email;
-  const { data: vendorData, refetch: vendorRefech } =
-    useGetVendorByEmailQuery(email);
+  const { data: vendorData } = useGetVendorByEmailQuery(email);
 
   const vendorId = vendorData?.data?.vendorId;
-  const {
-    data: productData,
-    isLoading,
-    isError,
-    refetch: productsRefech,
-  } = useGetProductByShopNamePaginateQuery({ vendorId, page, limit });
+  const { data: productData, isLoading } = useGetProductByShopNamePaginateQuery(
+    { vendorId, page, limit }
+  );
 
   // const { data: users } = useGetAllUserQuery(undefined);
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
 
-  const produtcs = productData?.data || [];
+  // const produtcs = productData?.data || [];
   // const productsData = produtcs?.result || 0;
   // const displayedProductsData = displayedProducts?.result || 0;
   const total = productData?.meta?.total;
   const categories = categoryData?.data || [];
-  const vendor = vendorData?.data || [];
+  // const vendor = vendorData?.data || [];
 
   // pagination***************************************************
   // pagination***************************************************
@@ -67,7 +62,7 @@ const CustomerReviewsPage = () => {
         <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
-  if (isError) return <div>Error loading products</div>;
+  // if (isError) return <div>Error loading products</div>;
 
   const handlePageChange = (page: number, pageSize: number) => {
     setPage(page);
@@ -80,7 +75,7 @@ const CustomerReviewsPage = () => {
   // ******************************************************************
   //  *****************search function**************************
   //    *****************search function**************************
-  const handleSearch = (event) => {
+  const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const searchText = form.SearchText.value.toLowerCase();
@@ -88,21 +83,21 @@ const CustomerReviewsPage = () => {
     console.log("searchText", searchText);
     event.preventDefault();
     const filteredProducts = products.filter(
-      (product: any) =>
+      (product: TProduct) =>
         product.name.toLowerCase().includes(searchText.toLowerCase()) ||
         product.description.toLowerCase().includes(searchText.toLowerCase())
     );
     setDisplayedProducts(filteredProducts);
   };
 
-  const handleSortByPriceRange = (event) => {
+  const handleSortByPriceRange = (event: React.FormEvent) => {
     event.preventDefault();
-    const form = event.target;
+    const form = event.target as HTMLFormElement;
     const minPrice = parseFloat(form.MinPrice.value) || 0;
     const maxPrice = parseFloat(form.MaxPrice.value) || Infinity;
 
     const filteredProducts = products.filter(
-      (product: any) =>
+      (product: TProduct) =>
         product.price >= minPrice &&
         product.price <= maxPrice &&
         (!selectedCategory || product.category === selectedCategory)
@@ -110,8 +105,9 @@ const CustomerReviewsPage = () => {
     setDisplayedProducts(filteredProducts);
   };
 
-  const handleSelectChangeCategoryFilter = (event) => {
-    const selectedValue = event.target.value;
+  const handleSelectChangeCategoryFilter = (event: React.FormEvent) => {
+    const form = event.target as HTMLFormElement;
+    const selectedValue = form.value;
     setSelectedCategory(selectedValue);
 
     const filteredProducts = products.filter(
@@ -120,8 +116,9 @@ const CustomerReviewsPage = () => {
     setDisplayedProducts(filteredProducts);
   };
 
-  const handleSelectChangePriceAscDesc = (event) => {
-    const selectedValue = event.target.value;
+  const handleSelectChangePriceAscDesc = (event: React.FormEvent) => {
+    const form = event.target as HTMLFormElement;
+    const selectedValue = form.value;
     setSelectedPriceAscDesc(selectedValue);
 
     const sortedProducts = [...displayedProducts].sort((a, b) =>
@@ -247,7 +244,7 @@ const CustomerReviewsPage = () => {
               className="select select-bordered w-full  bg-[#1A4870] "
             >
               <option disabled>Select Category</option>
-              {categories.map((category: any, index: string) => (
+              {categories.map((category: TCategory) => (
                 <option key={category.categoryId} value={category.categoryName}>
                   {category.categoryName}
                 </option>
@@ -315,7 +312,7 @@ const CustomerReviewsPage = () => {
             {displayedProducts.length === 0 ? (
               <div>sorry</div>
             ) : (
-              displayedProducts.map((product: any, index: number) => (
+              displayedProducts.map((product: TProduct) => (
                 <>
                   <tr key={product.productId} className="hover:bg-gray-300">
                     <td>
@@ -378,6 +375,13 @@ const CustomerReviewsPage = () => {
             )}
           </tbody>
         </table>
+        {displayedProducts.length === 0 && (
+          <div className="w-full text-center">
+            <p className="text-green-500 text-2xl font-semibold ">
+              Sorry, No Customer Review Found to your Shop
+            </p>
+          </div>
+        )}
       </div>
       {/* table view */}
 

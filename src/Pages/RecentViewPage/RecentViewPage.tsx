@@ -1,17 +1,19 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import ProductsSingleView from "../../Components/AllProductPage/ProductsSingleView";
 import { useCurrentView } from "../../Redux/features/CartItem/viewSlice";
 import RecentViewSection from "../RecentViewSection/RecentViewSection";
 import ProductViwedSection from "../ProductViwedSection/ProductViwedSection";
+import { TProduct } from "../../types";
 
 const RecentViewPage = () => {
   // Access viewed products from Redux store
   const { viewedProducts } = useSelector(useCurrentView);
 
   // Get the last 10 products (most recent views)
-  const displayedProducts = [...viewedProducts].slice(-10).reverse();
+  const displayedProducts = [...viewedProducts]
+    .slice(-10)
+    .reverse() as TProduct[];
 
   return (
     <div className="w-full h-full min-h-screen">
@@ -61,8 +63,8 @@ const RecentViewPage = () => {
       </motion.div>
       {/* ****************all product shown********************************************* */}
       <div>
-        <RecentViewSection />
-        <ProductViwedSection />
+        {/* <RecentViewSection />
+        <ProductViwedSection /> */}
       </div>
     </div>
   );

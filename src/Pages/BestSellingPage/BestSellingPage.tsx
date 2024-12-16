@@ -11,25 +11,13 @@ import "swiper/css/pagination";
 import StarRatings from "react-star-ratings";
 import { NavLink } from "react-router-dom";
 import { useGetAllProductQuery } from "../../Redux/features/produtcs/productsApi";
+import { TProduct } from "../../types";
 
-interface Product {
-  _id: string;
-  name: string;
-  category: string;
-  price: number;
-  quantity: number;
-  Mimages: string;
-  ratings: number;
-}
 const BestSellingPage = () => {
   const swiperRef = useRef<SwiperType | null>(null);
 
-  const {
-    data: productsData,
-    isError,
-    isLoading,
-  } = useGetAllProductQuery(undefined);
-
+  const { data: productsData, isLoading } = useGetAllProductQuery(undefined);
+  const productsD = productsData?.data || [];
   const handleMouseEnter = () => {
     swiperRef.current?.autoplay?.stop();
   };
@@ -46,16 +34,16 @@ const BestSellingPage = () => {
     );
   }
 
-  if (isError) {
-    return <div>Error loading products</div>;
-  }
+  // if (isError) {
+  //   return <div>Error loading products</div>;
+  // }
 
-  const getRandomProducts = (products: Product[]) => {
+  const getRandomProducts = (products: TProduct[]) => {
     const shuffled = [...products].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 8);
   };
 
-  const randomProducts = getRandomProducts(productsData.data);
+  const randomProducts = getRandomProducts(productsD);
 
   return (
     <div>
@@ -82,7 +70,9 @@ const BestSellingPage = () => {
           <div className="px-8 mt-5 w-full h-full my-10">
             <div className="flex flex-wrap justify-center align-middle gap-5">
               {randomProducts.length === 0 ? (
-                <p>Sorry, no products available</p>
+                <p className="text-green-500 text-3xl font-semibold ">
+                  Sorry, Nothing found!!
+                </p>
               ) : (
                 <Swiper
                   onSwiper={(swiperInstance) => {
@@ -117,7 +107,7 @@ const BestSellingPage = () => {
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {randomProducts.map((product: Product) => (
+                  {randomProducts.map((product: TProduct) => (
                     <SwiperSlide key={product.productId}>
                       <motion.div
                         whileHover={{ scale: 1.05 }}

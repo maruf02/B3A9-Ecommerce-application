@@ -5,21 +5,19 @@ import BestSellingPage from "../../Pages/BestSellingPage/BestSellingPage";
 import ProductCategory from "../../Pages/ProductCategory/ProductCategory";
 import { FaArrowUp } from "react-icons/fa";
 import { BiSolidOffer } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FlashSaleSection from "../../Pages/FlashSaleSection/FlashSaleSection";
-import RecentViewSection from "../../Pages/RecentViewSection/RecentViewSection";
 
 const Homepage = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const navigate = useNavigate();
 
-  // Handle scroll event to show/hide the button
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 300) {
-        setShowScrollButton(true); // Show button if scrolled down 300px
+        setShowScrollButton(true);
       } else {
-        setShowScrollButton(false); // Hide button if less than 300px
+        setShowScrollButton(false);
       }
     };
 
@@ -30,11 +28,10 @@ const Homepage = () => {
     };
   }, []);
 
-  // Scroll to top function
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth", // Smooth scroll to top
+      behavior: "smooth",
     });
   };
 
@@ -54,7 +51,6 @@ const Homepage = () => {
       <TestimonialSection /> */}
       {showScrollButton && (
         <div className="fixed bottom-5 right-5 flex flex-row-reverse gap-4">
-          {/* Scroll to Top Button */}
           <button
             onClick={scrollToTop}
             className="p-3 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition-all"
@@ -62,7 +58,6 @@ const Homepage = () => {
             <FaArrowUp className="text-lg" />
           </button>
 
-          {/* Flash Sale Button */}
           <button
             onClick={goToFlashSale}
             data-tip="Flash Sale"
