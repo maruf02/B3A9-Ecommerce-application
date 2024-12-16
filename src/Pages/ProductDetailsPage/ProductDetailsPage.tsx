@@ -28,11 +28,9 @@ const ProductDetailsPage = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user as User);
   // Fetch product details
-  const {
-    data: productsData,
-    isLoading,
-    isError,
-  } = useGetProductByIdQuery(productId as string);
+  const { data: productsData, isLoading } = useGetProductByIdQuery(
+    productId as string
+  );
   const product = productsData?.data || {};
 
   const category = product.category as string;
@@ -123,14 +121,15 @@ const ProductDetailsPage = () => {
 
   const images = [
     product.mimage,
-    product.images2,
-    product.images3,
-    product.images4,
-    product.images5,
-  ];
+    product.image2,
+    product.image3,
+    product.image4,
+    product.image5,
+  ].filter(Boolean);
 
+  console.log(images);
   if (isLoading) return <div>Loading...</div>;
-  if (isError || !product) return <div>Error loading product</div>;
+  // if (isError || !product) return <div>Error loading product</div>;
 
   return (
     <div className="my-10 h-full lg:h-[700px] min-h-screen md:min-h-full">

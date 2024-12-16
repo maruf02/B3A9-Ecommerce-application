@@ -192,6 +192,8 @@ const ShopPage = () => {
     }
   };
 
+  console.log("localFollowStatus", followData, vendorId);
+
   return (
     <div>
       <div className="w-full h-full min-h-screen">
@@ -241,18 +243,18 @@ const ShopPage = () => {
               {localFollowStatus === "NeedFollow" ? (
                 <button
                   className="btn btn-primary"
-                  // onClick={() => handleFollow(vendorId)}
-                  onClick={() => vendorId && handleFollow(vendorId)}
-                >
-                  Follow
-                </button>
-              ) : (
-                <button
-                  className="btn btn-primary"
                   // onClick={() => handleUnFollow(vendorId)}
                   onClick={() => vendorId && handleUnFollow(vendorId)}
                 >
                   UnFollow
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primary"
+                  // onClick={() => handleFollow(vendorId)}
+                  onClick={() => vendorId && handleFollow(vendorId)}
+                >
+                  Follow
                 </button>
               )}
             </div>
