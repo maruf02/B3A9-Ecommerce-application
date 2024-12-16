@@ -24,22 +24,37 @@ This is PeraCommerce e-Commerce website project. This is a little e-Commerce man
 
 ## Features
 
-- Api for Create books
-- Api for get all books
-- Api for get books by book ID
-- Api for update book by book ID
-- Api for Delete book by book ID
-- Api for Create member
-- Api for get all members
-- Api for get members by member ID
-- Api for update members by member ID
-- Api for Delete members by member ID
-- Api for borrow book
-- Api for return book
-- Api for get all borrow book
-- Api for get all overdue book
+### Admin:
+
+- admin can create, block, update user and vendor
+- admin can manage all operation
+- admin can manage all transaction for selling item
+
+### Vendor
+
+- Vendor can create their shp name and shop details
+- vendor can add their product and manage inventory
+- vendor can see their sales product
+- vendor can reply customer comment
+
+### User
+
+- user can add product their card
+- they can purchase their card product
+- they can payment price using by amaarPay secure payment system
+- they can see their recent viewed product
+- they can buy product shop wise
+
+### and many other features
 
 ## Technology Stack
+
+- Frontend:
+
+  - React
+  - Redux
+  - TypeScript
+  - nodemailer
 
 - Backend:
   - Node js
