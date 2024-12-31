@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../../Redux/features/produtcs/productsApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +14,9 @@ import {
 import SideBySideMagnifier from "../../shared/SideBySideMagnifier";
 import CommentSection from "./CommentSection";
 import RelatedProductSection from "./RelatedProductSection";
+import SkeletonCard from "../../shared/SkeletonCard";
+import { useGetCommentsByPostIdQuery } from "../../Redux/features/produtcs/orderApi";
+import { TComment } from "../../types";
 
 type User = {
   userId: string;
@@ -23,6 +26,7 @@ type User = {
 
 const ProductDetailsPage = () => {
   const [requiredQty, setRequiredQty] = useState(1);
+  const [averageRating, setAverageRating] = useState<number>(0);
   const { productId } = useParams<{ productId: string }>();
   const [isCommentsVisible, setIsCommentsVisible] = useState(false);
   const dispatch = useDispatch();
@@ -33,6 +37,10 @@ const ProductDetailsPage = () => {
   );
   const product = productsData?.data || {};
 
+  const { data: commentsData } = useGetCommentsByPostIdQuery(productId, {
+    skip: !productId,
+  });
+  const comments = commentsData?.data || [];
   const category = product.category as string;
   // Fetch vendor details
   const { data: vendorData } = useGetVendorByEmailQuery(
@@ -128,8 +136,46 @@ const ProductDetailsPage = () => {
   ].filter(Boolean);
 
   console.log(images);
-  if (isLoading) return <div>Loading...</div>;
+
   // if (isError || !product) return <div>Error loading product</div>;
+
+  const handleToggleComments = () => {
+    if (!user) {
+      // Show SweetAlert message if userId is not found
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "You need to log in to see the comments and reviews.",
+        confirmButtonText: "Okay",
+      });
+      return;
+    }
+
+    // Toggle comment visibility
+    setIsCommentsVisible(!isCommentsVisible);
+  };
+
+  useEffect(() => {
+    if (comments.length > 0) {
+      const totalRating = comments.reduce(
+        (sum: number, comment: TComment) => sum + comment.rating,
+        0
+      );
+      setAverageRating(totalRating / comments.length);
+    } else {
+      setAverageRating(0);
+    }
+  }, [comments]);
+
+  if (isLoading)
+    return (
+      <div className="w-full min-h-screen flex flex-wrap justify-center gap-5 py-5">
+        {/* Render 6 skeleton cards as placeholders */}
+        {Array.from({ length: 5 }).map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
+      </div>
+    );
 
   return (
     <div className="my-10 h-full lg:h-[700px] min-h-screen md:min-h-full">
@@ -160,7 +206,7 @@ const ProductDetailsPage = () => {
             <h1 className="text-xl">
               rating:
               <StarRatings
-                rating={product.ratings}
+                rating={product.ratings || averageRating || 4.5}
                 starRatedColor="#f39c12"
                 numberOfStars={5}
                 name="rating"
@@ -227,7 +273,7 @@ const ProductDetailsPage = () => {
         {/* Button to toggle comment visibility */}
         <div className="w-full flex flex-row justify-center">
           <button
-            onClick={() => setIsCommentsVisible(!isCommentsVisible)}
+            onClick={handleToggleComments}
             className="btn btn-outline btn-primary mt-4 text-black"
           >
             {isCommentsVisible ? "Hide Comments" : "See All Comments & Reviews"}

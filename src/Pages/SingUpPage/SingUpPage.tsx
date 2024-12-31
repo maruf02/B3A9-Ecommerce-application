@@ -85,12 +85,18 @@ const SingUpPage = () => {
           </div>
         </div>
         <main className="mt-0 transition-all duration-200 ease-soft-in-out">
-          <section>
-            <div className="relative flex items-center p-0 overflow-hidden bg-center bg-cover min-h-75-screen">
+          <section
+            className="w-full h-full min-h-screen  bg-black  bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage:
+                "url('https://images.pexels.com/photos/952670/pexels-photo-952670.jpeg')",
+            }}
+          >
+            <div className="relative flex items-center p-0 overflow-hidden bg-center bg-cover min-h-screen">
               <div className="container z-10">
                 <div className="flex flex-wrap mt-0 -mx-3">
-                  <div className="flex flex-col w-full max-w-full px-3 mx-auto md:flex-0 shrink-0 md:w-6/12 lg:w-6/12 xl:w-5/12">
-                    <div className="relative flex flex-col min-w-0 mt-32 break-words bg-transparent border-0 shadow-none rounded-2xl bg-clip-border">
+                  <div className="flex flex-col w-full max-w-full px-3 mx-auto md:flex-0 shrink-0 md:w-6/12 lg:w-6/12 xl:w-5/12 bg-white card   shadow-xl">
+                    <div className="relative flex flex-col min-w-0  break-words bg-transparent border-0 shadow-none rounded-2xl bg-clip-border">
                       <div className="p-6 pb-0 mb-0 bg-transparent border-b-0 rounded-t-2xl">
                         <h3 className="relative z-10 font-bold text-transparent bg-gradient-to-tl from-blue-600 to-cyan-400 bg-clip-text">
                           Welcome to join
@@ -118,7 +124,7 @@ const SingUpPage = () => {
                               },
                             ]}
                           >
-                            <Input className="lg:ml-16 lg:w-9/12" />
+                            <Input className="text-right" />
                           </Form.Item>
 
                           <Form.Item
@@ -135,7 +141,7 @@ const SingUpPage = () => {
                               },
                             ]}
                           >
-                            <Input className="lg:ml-16 lg:w-9/12" />
+                            <Input className="" />
                           </Form.Item>
 
                           <Form.Item
@@ -149,7 +155,7 @@ const SingUpPage = () => {
                             ]}
                             hasFeedback
                           >
-                            <Input.Password className="lg:ml-10 lg:w-9/12" />
+                            <Input.Password className="" />
                           </Form.Item>
 
                           <Form.Item
@@ -179,7 +185,7 @@ const SingUpPage = () => {
                               }),
                             ]}
                           >
-                            <Input.Password className="lg:w-10/12" />
+                            <Input.Password className="" />
                           </Form.Item>
                           <Form.Item
                             name="role"
@@ -203,7 +209,7 @@ const SingUpPage = () => {
                                 { value: "USER", label: "USER" },
                                 { value: "VENDOR", label: "VENDOR" },
                               ]}
-                              className="lg:w-8/12"
+                              className=""
                             />
                           </Form.Item>
                           <Form.Item
@@ -216,7 +222,7 @@ const SingUpPage = () => {
                               },
                             ]}
                           >
-                            <Input className="lg:ml-6 lg:w-10/12" />
+                            <Input className="" />
                           </Form.Item>
                           <div>
                             <Form.Item
@@ -235,21 +241,23 @@ const SingUpPage = () => {
                                 },
                               ]}
                             >
-                              <Checkbox className="ml-2">
-                                <p
-                                  onClick={() => {
-                                    const modal = document.getElementById(
-                                      "term&condition"
-                                    ) as HTMLDialogElement;
-                                    if (modal) {
-                                      modal.showModal();
-                                    }
-                                  }}
-                                  className="pt-4 text-green-600"
-                                >
-                                  I agree to the terms and conditions
-                                </p>
-                              </Checkbox>
+                              <div className=" flex flex-row gap-2 items-center justify-start align-middle">
+                                <Checkbox>
+                                  <p
+                                    onClick={() => {
+                                      const modal = document.getElementById(
+                                        "term&condition"
+                                      ) as HTMLDialogElement;
+                                      if (modal) {
+                                        modal.showModal();
+                                      }
+                                    }}
+                                    className=" text-green-600"
+                                  >
+                                    I agree to the terms and conditions
+                                  </p>
+                                </Checkbox>
+                              </div>
                             </Form.Item>
                           </div>
                           <Form.Item>
@@ -302,17 +310,6 @@ const SingUpPage = () => {
                           </button>
                         </p>
                       </div>
-                    </div>
-                  </div>
-                  <div className="w-full max-w-full px-3 lg:flex-0 shrink-0 md:w-6/12">
-                    <div className="absolute top-0 hidden w-3/5 h-full -mr-32 overflow-hidden -skew-x-10 -right-40 rounded-bl-xl md:block">
-                      <div
-                        className="absolute inset-x-0 top-0 z-0 h-full -ml-16 bg-cover skew-x-10"
-                        style={{
-                          backgroundImage:
-                            "url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp)",
-                        }}
-                      ></div>
                     </div>
                   </div>
                 </div>

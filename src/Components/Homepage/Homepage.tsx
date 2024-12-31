@@ -7,6 +7,10 @@ import { FaArrowUp } from "react-icons/fa";
 import { BiSolidOffer } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import FlashSaleSection from "../../Pages/FlashSaleSection/FlashSaleSection";
+// import OfferSection from "../../Pages/OfferSection/OfferSection";
+import NewArrivaleSection from "../../Pages/NewArrivaleSection/NewArrivaleSection";
+import NewsLetterSection from "../../Pages/NewsLetterSection/NewsLetterSection";
+import OfferBaner from "../../Pages/BannerSection/OfferBaner";
 
 const Homepage = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -41,11 +45,14 @@ const Homepage = () => {
   return (
     <div>
       <BannerSection />
+      <OfferBaner />
       <BestSellingPage />
+      <NewArrivaleSection />
       <ProductCategory />
       <FlashSaleSection />
 
       <AllProductSection />
+      <NewsLetterSection />
       {/* <FeatureCar />
       <WhyChooseUsSection />
       <TestimonialSection /> */}

@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { RootState } from "../../Redux/store";
 import { removeProductFromCart } from "../../Redux/features/CartItem/cartSlice";
 import { setOrderData } from "../../Redux/features/CartItem/placeOrderSlice";
+import { useGetCouponByVendorIdQuery } from "../../Redux/features/vendor/vendorApi";
 
 const CartViewPage = () => {
   const dispatch = useDispatch();
@@ -18,17 +19,29 @@ const CartViewPage = () => {
   );
   const savedUser = useSelector((state: RootState) => state.cart.savedUser);
 
-  console.log("savedUser", savedUser);
+  console.log("savedUser", savedVendors);
+  const [vendors, setVendors] = useState(savedVendors);
+
+  const vendorId = vendors?.vendorId;
+  const { data: couponData } = useGetCouponByVendorIdQuery(vendorId ?? "", {
+    skip: !vendorId, // Skip the query if vendorId is undefined
+  });
+  const couponCode = couponData?.data[0]?.couponCode || [];
+
   const [cartItems, setCartItems] = useState(savedProducts);
+
   const [totalPrice, setTotalPrice] = useState(0);
   const [isPlaceOrderDisabled, setIsPlaceOrderDisabled] = useState(false);
-  console.log("cartItems", cartItems);
+  console.log("cartItems", couponCode);
   // Recalculate total price and check stock after every update
   useEffect(() => {
     calculateTotalPrice();
     checkIfExceedsStock();
   }, [cartItems]);
 
+  useEffect(() => {
+    setVendors(savedVendors);
+  }, [savedVendors]);
   // Handle quantity change
   const handleQtyChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -217,8 +230,11 @@ const CartViewPage = () => {
           </motion.div>
 
           <div className="flex flex-col mx-auto w-5/12 px-5 py-2 h-32 gap-5  justify-center my-10">
-            <h1 className="text-2xl text-black font-semibold text-center mb-3 underline">
+            <h1 className="text-2xl text-black font-semibold text-center   underline">
               Total price: ${totalPrice.toFixed(2)}
+            </h1>
+            <h1 className="text-xl text-blue-700  text-center  ">
+              Use Coupon "{couponCode}" For discount!!
             </h1>
             <div className="text-center">
               {isPlaceOrderDisabled && (

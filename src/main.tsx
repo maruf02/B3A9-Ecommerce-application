@@ -38,6 +38,13 @@ import RecentViewPage from "./Pages/RecentViewPage/RecentViewPage.tsx";
 import ProductComparePage from "./Pages/ProductComparePage/ProductComparePage.tsx";
 import ResetPasswordPage from "./Pages/ResetPasswordPage/ResetPasswordPage.tsx";
 import VendorManagement from "./DashBoardPanel/AdminPanel/VendorManagement.tsx";
+import AllShopPage from "./Components/AllShopPage/AllShopPage.tsx";
+import WishListPage from "./Pages/WishListPage/WishListPage.tsx";
+import UserProfile from "./DashBoardPanel/UserPanel/UserProfile/UserProfile.tsx";
+import AdminProfilePage from "./DashBoardPanel/AdminPanel/AdminProfilePage/AdminProfilePage.tsx";
+import VendorProfilePage from "./DashBoardPanel/VendorPanel/VendorProfilePage/VendorProfilePage.tsx";
+import CouponManagement from "./DashBoardPanel/VendorPanel/CouponManagement/CouponManagement.tsx";
+import NewsLetterPage from "./DashBoardPanel/AdminPanel/NewsLetterPage/NewsLetterPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: "/products",
         element: <AllProductPage />,
+      },
+      {
+        path: "/shop",
+        element: <AllShopPage />,
       },
       {
         path: "/compareProduct",
@@ -73,6 +84,10 @@ const router = createBrowserRouter([
       {
         path: "/recentView",
         element: <RecentViewPage />,
+      },
+      {
+        path: "/wishList",
+        element: <WishListPage />,
       },
       {
         path: "/cartView",
@@ -111,6 +126,14 @@ const router = createBrowserRouter([
         element: (
           <AdminProtectRoute>
             <AdminDashBoard />
+          </AdminProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/admin/adminProfile",
+        element: (
+          <AdminProtectRoute>
+            <AdminProfilePage />
           </AdminProtectRoute>
         ),
       },
@@ -155,10 +178,34 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/DashBoard/admin/newsLetter",
+        element: (
+          <AdminProtectRoute>
+            <NewsLetterPage />
+          </AdminProtectRoute>
+        ),
+      },
+      {
         path: "/DashBoard/vendor",
         element: (
           <VendorProtectRoute>
             <VendorDashBoard />
+          </VendorProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/vendor/vendorProfile",
+        element: (
+          <VendorProtectRoute>
+            <VendorProfilePage />
+          </VendorProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/vendor/coupon",
+        element: (
+          <VendorProtectRoute>
+            <CouponManagement />
           </VendorProtectRoute>
         ),
       },
@@ -192,6 +239,22 @@ const router = createBrowserRouter([
         element: (
           <UserProtectRoute>
             <UserDashBoard />
+          </UserProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/user/userProfile",
+        element: (
+          <UserProtectRoute>
+            <UserProfile />
+          </UserProtectRoute>
+        ),
+      },
+      {
+        path: "/DashBoard/user/cartView",
+        element: (
+          <UserProtectRoute>
+            <CartViewPage />
           </UserProtectRoute>
         ),
       },

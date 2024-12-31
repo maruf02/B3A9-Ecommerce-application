@@ -27,9 +27,10 @@ export type TShopName = {
   image?: string;
   isBlock: string;
   isDeleted: boolean;
-  createdAt: Date;
+  createdAt: string;
   updatedAt: Date;
   userId: string;
+  productCount: number;
 };
 
 export type TProduct = {
@@ -70,6 +71,19 @@ export type TCategory = {
   categoryName: string;
   categoryImage: string;
   image: string;
+  isDeleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type TCoupon = {
+  couponId: string;
+  vendorId: string;
+  couponCode: string;
+  discountAmount: number;
+  startedDate: string;
+  endDate: string;
+  isActive: boolean;
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;

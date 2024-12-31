@@ -1,16 +1,23 @@
 import { useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
-import { TUser } from "../../types";
+import Swal from "sweetalert2";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { RootState } from "../../../Redux/store";
+import { TFollowShop, TUser } from "../../../types";
+import {
+  useAddShopNameMutation,
+  useGetVendorByEmailQuery,
+  useUpdateShopNameMutation,
+} from "../../../Redux/features/vendor/vendorApi";
 import {
   useChangePasswordMutation,
   useGetUserByUserIdQuery,
   useUpdateUserMutation,
-} from "../../Redux/user/userApi";
-import Swal from "sweetalert2";
-import { useState } from "react";
-import { useLoginMutation } from "../../Redux/features/auth/authApi";
-import { useForm } from "react-hook-form";
-import { uploadImageToCloudinary } from "../../shared/UploadImageToCloudinary";
+} from "../../../Redux/user/userApi";
+import { useGetfollowerByVendorIdQuery } from "../../../Redux/features/produtcs/orderApi";
+import { useLoginMutation } from "../../../Redux/features/auth/authApi";
+import { uploadImageToCloudinary } from "../../../shared/UploadImageToCloudinary";
 
 interface FormData {
   shopName: string;
@@ -19,36 +26,83 @@ interface FormData {
   phone: string;
 }
 
-const UserDashBoard = () => {
+const VendorProfilePage = () => {
+  const navigate = useNavigate();
   const userDataToken =
-    (useSelector((state: RootState) => state.auth.user) as TUser) || null;
-  const { userId } = userDataToken;
-
+    (useSelector((state: RootState) => state.auth.user) as TUser) || null; // get user info from redux token
+  const { userId, email } = userDataToken;
+  const { data: vendorData, refetch: vendorRefetch } = useGetVendorByEmailQuery(
+    email as string
+  );
+  const { vendorId } = vendorData?.data || {};
   const { data: userData, refetch: userRefetch } =
     useGetUserByUserIdQuery(userId);
+  const { data: followerData } = useGetfollowerByVendorIdQuery(vendorId);
   const [updateUserById] = useUpdateUserMutation();
+  const [updateShopNameByEmail] = useUpdateShopNameMutation();
+  const [addShopName] = useAddShopNameMutation();
+
+  // *****************************
   const [loginUser] = useLoginMutation();
   const [updatePassword] = useChangePasswordMutation();
-
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isFollowerModalOpen, setFollowerModalOpen] = useState(false);
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
   const [isConfirmPasswordModalOpen, setConfirmPasswordModalOpen] =
     useState(false);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
 
+  console.log("userData", userData);
   const { register, handleSubmit } = useForm<FormData>();
+  // *****************************
 
+  const handleAddShopname = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const form = event.target as HTMLFormElement;
+    const shopName = form.shopName.value;
+    const email = userDataToken.email;
+    const userId = userDataToken.userId;
+
+    if (!email || !userId) {
+      Swal.fire("Error", "User is not authenticated.", "error");
+      return;
+    }
+    const shopData = { shopName };
+    // console.log(shopData);
+    try {
+      await addShopName(shopData).unwrap();
+      // console.log("Product added:", response);
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your work has been saved",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      navigate("/DashBoard/vendor/ManageProducts");
+
+      vendorRefetch();
+    } catch (error) {
+      console.error("Failed to add product:", error);
+      Swal.fire(
+        "Error",
+        // error?.data?.message || "Failed to add shop name",
+        "Failed to add shop name",
+        "error"
+      );
+    }
+  };
+
+  // ************************************
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
-  const openPasswordModal = () => setPasswordModalOpen(true);
-  const closePasswordModal = () => setPasswordModalOpen(false);
-  const openConfirmPasswordModal = () => setConfirmPasswordModalOpen(true);
-  const closeConfirmPasswordModal = () => setConfirmPasswordModalOpen(false);
 
   const handleImageUpload = async () => {
     const profileImageUrl = profileImageFile
       ? await uploadImageToCloudinary(profileImageFile)
-      : userData?.data?.image;
+      : vendorData?.data?.image;
+    console.log("profileImageUrl", profileImageUrl);
     return { profileImageUrl };
   };
 
@@ -59,41 +113,69 @@ const UserDashBoard = () => {
       name: data.name,
       email: data.email,
       phone: data.phone,
-      image: profileImageUrl, // Ensure this is sent for the profile image update
     };
+    const newShopName = {
+      shopName: data.shopName,
+      image: profileImageUrl,
+    };
+
+    console.log("updateinfo", newUserData, newShopName, userId, vendorId);
+
+    console.log("Updated User Data:", newUserData);
 
     await updateUserById({
       userId: userId,
       userModifyData: newUserData,
     }).unwrap();
-
+    await updateShopNameByEmail({
+      shopId: vendorId,
+      shopModifyData: newShopName,
+    });
+    vendorRefetch();
     userRefetch();
     closeModal();
-    Swal.fire("Updated!");
+    Swal.fire("updated");
   };
+
+  const openFollowerModal = () => setFollowerModalOpen(true);
+  const closeFollowerModal = () => setFollowerModalOpen(false);
+
+  // password portiom
+  const openPasswordModal = () => setPasswordModalOpen(true);
+  const closePasswordModal = () => setPasswordModalOpen(false);
+  const openConfirmPasswordModal = () => setConfirmPasswordModalOpen(true);
+  const closeConfirmPasswordModal = () => setConfirmPasswordModalOpen(false);
 
   const handlePasswordCheck = async (event: React.FormEvent) => {
     event.preventDefault();
+
     const form = event.target as HTMLFormElement;
     const email = form.email.value;
     const password = form.password.value;
     const userInfo = { email, password };
+    console.log("userInfo", userInfo);
 
     try {
       const res = await loginUser(userInfo).unwrap();
       if (res.success) {
-        Swal.fire("Password match");
+        Swal.fire("password match");
         closePasswordModal();
         openConfirmPasswordModal();
       }
+      console.log("res", res);
     } catch (err: any) {
       const error = err;
       if (error.data?.message) {
+        // console.error("Login error:", err.data.message);
         Swal.fire("Error", error.data.message as string, "error");
       } else {
+        // console.error("Login error:", err);
         Swal.fire("Error", "An unexpected error occurred.", "error");
       }
     }
+
+    // closePasswordModal();
+    // openConfirmPasswordModal();
   };
 
   const handlePassChange = async (event: React.FormEvent) => {
@@ -105,6 +187,7 @@ const UserDashBoard = () => {
     const newPassword = form.newPassword.value;
 
     const userInfo = { email, oldPassword, newPassword };
+    console.log("User Info:", userInfo);
 
     try {
       const res = await updatePassword(userInfo).unwrap();
@@ -113,19 +196,56 @@ const UserDashBoard = () => {
         setConfirmPasswordModalOpen(false);
       }
     } catch (error) {
+      console.error("Password change error:", error);
       Swal.fire("Error", "Failed to update password.", "error");
     }
   };
+  // ************************************
 
   return (
-    <div className="w-full h-full min-h-screen text-center align-middle">
-      {/* User Details */}
-      {userData && (
-        <div className="w-full h-full min-h-72 flex items-center justify-center">
-          <div className="w-3/4 text-black max-w-2xl shadow-xl mx-auto">
+    <div className=" w-full h-full min-h-screen text-center align-middle">
+      <div>
+        {vendorData ? (
+          <div className="place-content-center text-4xl font-bold py-3 underline">
+            Shop Name:{vendorData.data.shopName}
+          </div>
+        ) : (
+          <div className="place-content-center">
+            <div>
+              <form onSubmit={handleAddShopname}>
+                <label className="mb-2 ml-1 font-bold text-xs text-slate-700">
+                  Shop Name
+                </label>
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    name="shopName"
+                    required
+                    className="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow"
+                    placeholder="Enter Your Shop Name"
+                  />
+                </div>
+                <div className="flex justify-center my-5  ">
+                  <button className="flex text-white btn hover:bg-[#1A4870] bg-[#5B99C2] btn-md justify-center w-full text-2xl pb-1 ">
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+      {/* view shop details portion */}
+      {vendorData && (
+        <div className=" w-full h-full min-h-72 flex items-center justify-center">
+          {/* view shop details portion */}
+          <div className=" w-3/4 text-black  max-w-2xl shadow-xl mx-auto">
             <div className="card-body">
               <h2 className="card-title">
-                Name: {userData?.data?.name || "Name not available"}
+                Shop Name: {vendorData?.data?.shopName || "Name not available"}
+              </h2>
+              <h2 className="card-title">
+                Shop owner Name: {userData?.data?.name || "Name not available"}
               </h2>
               <h2 className="card-title">
                 Email: {userData?.data?.email || "Email not available"}
@@ -133,9 +253,18 @@ const UserDashBoard = () => {
               <h2 className="card-title">
                 Phone: {userData?.data?.phone || "Phone not available"}
               </h2>
+              <h2 className="card-title">
+                Total Followers: {followerData?.data?.length || 0}
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={openFollowerModal}
+                >
+                  see all followers
+                </button>
+              </h2>
 
               <h1 className="card-title">
-                Change Password:
+                Change Password:{" "}
                 <button
                   onClick={openPasswordModal}
                   className="btn btn-sm btn-primary"
@@ -143,14 +272,13 @@ const UserDashBoard = () => {
                   Change password
                 </button>
               </h1>
-
-              {/* Change password modal */}
+              {/* change password modal option */}
               {isPasswordModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+                <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-50 ">
                   <form onSubmit={handlePasswordCheck}>
                     <div className="bg-[#B7B7B7] rounded-lg p-6 w-96 border border-2 border-primary">
                       <h2 className="text-2xl font-bold mb-4">
-                        Enter Current Password
+                        Enter New Password
                       </h2>
                       <div>
                         <label>Email</label>
@@ -179,7 +307,11 @@ const UserDashBoard = () => {
                           Cancel
                         </button>
                         <button
-                          type="submit"
+                          // onClick={() => {
+                          //   closePasswordModal();
+                          //   openConfirmPasswordModal(); // Open second modal
+                          // }}
+                          // onClick={handlePasswordCheck}
                           className="px-4 py-2 bg-primary text-white rounded-lg"
                         >
                           Confirm
@@ -190,7 +322,6 @@ const UserDashBoard = () => {
                 </div>
               )}
 
-              {/* Confirm password modal */}
               {isConfirmPasswordModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                   <form onSubmit={handlePassChange}>
@@ -209,7 +340,7 @@ const UserDashBoard = () => {
                         />
                       </div>
                       <div>
-                        <label>Old Password:</label>
+                        <label>old Password:</label>
                         <input
                           type="password"
                           name="oldPassword"
@@ -233,10 +364,7 @@ const UserDashBoard = () => {
                         >
                           Cancel
                         </button>
-                        <button
-                          type="submit"
-                          className="px-4 py-2 bg-primary text-white rounded-lg"
-                        >
+                        <button className="px-4 py-2 bg-primary text-white rounded-lg">
                           Update
                         </button>
                       </div>
@@ -244,9 +372,11 @@ const UserDashBoard = () => {
                   </form>
                 </div>
               )}
-
+              {/* change password modal option */}
               <img
-                src={userData?.data?.image || "https://via.placeholder.com/150"}
+                src={
+                  vendorData?.data?.image || "https://via.placeholder.com/150"
+                }
                 alt="Profile"
                 className="w-32 h-32 rounded-full"
               />
@@ -261,7 +391,7 @@ const UserDashBoard = () => {
         </div>
       )}
 
-      {/* Update Profile Modal */}
+      {/* Simple Modal  update all info portion*/}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-80">
           <div className="bg-[#B7B7B7] rounded-lg p-6 w-96 border border-2 border-primary">
@@ -270,7 +400,17 @@ const UserDashBoard = () => {
             </h2>
             <form onSubmit={handleSubmit(onSubmit)} className="text-black">
               <div>
-                <label>Name:</label>
+                <label>Shop Name:</label>
+                <input
+                  type="text"
+                  {...register("shopName", { required: true })}
+                  className="input input-bordered input-sm input-primary max-w-xl mb-4 bg-white text-black ml-2"
+                  // readOnly
+                  defaultValue={vendorData.data.shopName}
+                />
+              </div>
+              <div>
+                <label>Owner Name:</label>
                 <input
                   type="text"
                   {...register("name", { required: true })}
@@ -288,24 +428,28 @@ const UserDashBoard = () => {
                   defaultValue={userData?.data?.email || ""}
                 />
               </div>
+
               <div>
                 <label>Phone:</label>
                 <input
                   type="text"
                   {...register("phone", { required: true })}
                   className="input input-bordered input-sm input-primary max-w-xl mb-4 bg-white text-black ml-2"
-                  defaultValue={userData?.data?.phone || ""}
+                  defaultValue={userData?.data?.phone || "dfd"}
                 />
               </div>
               <div>
                 <label>Profile Image:</label>
                 <input
                   type="file"
-                  onChange={(e) =>
-                    setProfileImageFile(e.target.files?.[0] || null)
-                  }
+                  // onChange={(e) => setProfileImageFile(e.target.files[0])}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) setProfileImageFile(file);
+                  }}
                 />
               </div>
+
               <div className="flex justify-end mt-4">
                 <button
                   onClick={closeModal}
@@ -324,8 +468,44 @@ const UserDashBoard = () => {
           </div>
         </div>
       )}
+
+      {isFollowerModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-[#B7B7B7] rounded-lg p-6 w-96 border border-2 border-primary">
+            <h2 className="text-2xl font-bold mb-4 text-black">Followers</h2>
+            <div className="space-y-4 text-black">
+              {followerData?.data?.length ? (
+                followerData.data.map((follower: TFollowShop) => (
+                  <div
+                    key={follower.followId}
+                    className="flex items-center space-x-4"
+                  >
+                    <img
+                      src={
+                        follower.user.image || "https://via.placeholder.com/50"
+                      }
+                      alt="Follower Profile"
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <span>{follower.user.name || "Unknown"}</span>
+                  </div>
+                ))
+              ) : (
+                <p>No followers found.</p>
+              )}
+            </div>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={closeFollowerModal}
+                className="px-4 py-2 bg-primary text-white rounded-lg"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-
-export default UserDashBoard;
+export default VendorProfilePage;

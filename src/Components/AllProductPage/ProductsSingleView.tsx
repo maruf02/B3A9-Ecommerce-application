@@ -13,6 +13,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { addProductToView } from "../../Redux/features/CartItem/viewSlice";
 import { TUser } from "../../types";
+import { FaRegHeart } from "react-icons/fa";
+import { addProductToWishList } from "../../Redux/features/CartItem/wishListSlice";
 
 export type Product = {
   productId: string;
@@ -37,7 +39,7 @@ const ProductsSingleView: React.FC<ProductsSingleViewProps> = ({ product }) => {
   const dispatch = useAppDispatch();
   const [requiredQty, setRequiredQty] = useState(1);
   const cart = useAppSelector((state) => state.cart);
-  const [isExpanded, setIsExpanded] = useState(false);
+  // const [isExpanded, setIsExpanded] = useState(false);
   console.log(setRequiredQty);
   const {
     productId,
@@ -45,7 +47,7 @@ const ProductsSingleView: React.FC<ProductsSingleViewProps> = ({ product }) => {
     name,
     price,
     category,
-    description,
+    // description,
     quantity,
     mimage,
   } = product;
@@ -55,11 +57,11 @@ const ProductsSingleView: React.FC<ProductsSingleViewProps> = ({ product }) => {
   const user = useSelector((state: RootState) => state.auth.user as TUser);
   // const { vendorId } = vendor;
 
-  const toggleDescription = () => {
-    setIsExpanded(!isExpanded);
-  };
+  // const toggleDescription = () => {
+  //   setIsExpanded(!isExpanded);
+  // };
 
-  const truncatedDescription = description.slice(0, 200);
+  // const truncatedDescription = description.slice(0, 200);
 
   // *************************************
   const handleAddToCart = () => {
@@ -118,6 +120,16 @@ const ProductsSingleView: React.FC<ProductsSingleViewProps> = ({ product }) => {
     // console.log("product", product);
     dispatch(addProductToView(product)); // Save product details in the view slice
   };
+  const handleAddWish = (product: Product) => {
+    // console.log("product", product);
+    dispatch(addProductToWishList(product));
+    Swal.fire({
+      title: "Success!",
+      text: "Product added to your wishlist.",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  };
 
   return (
     <div className=" ">
@@ -129,17 +141,24 @@ const ProductsSingleView: React.FC<ProductsSingleViewProps> = ({ product }) => {
         transition={{ duration: 0.5 }}
         // className="text-center"
       >
-        <div className="card glass w-80 ">
+        <div className="card glass w-72 ">
           <figure>
             <img src={mimage} alt="car!" className="w-80 h-60" />
           </figure>
           <div className=" my-5 ">
             <div className="space-y-0 pl-5">
-              <div className="badge badge-outline">{category}</div>
-              <h2 className="card-title m-0 py-2 text-2xl w-full h-20">
+              <div className="w-full flex flex-row justify-between">
+                <div className="badge badge-outline ">{category}</div>
+                <div className="pr-5">
+                  <button onClick={() => handleAddWish(product)}>
+                    <FaRegHeart className="w-5 h-5 text-red-800" />
+                  </button>
+                </div>
+              </div>
+              <h2 className="card-title m-0 py-2 text-lg w-full h-20">
                 {name}
               </h2>
-              <p className="m-0 text-md">QTY: {quantity}pcs</p>
+              {/* <p className="m-0 text-md">QTY: {quantity}pcs</p> */}
               <div className="flex justify-between align-middle pr-5 pb-3">
                 <p className="m-0 text-md">Price: {price}</p>
 
@@ -153,7 +172,7 @@ const ProductsSingleView: React.FC<ProductsSingleViewProps> = ({ product }) => {
                   starSpacing="1px"
                 />
               </div>
-              <p className="min-h-40 h-fit">
+              {/* <p className="min-h-40 h-fit">
                 Description:{" "}
                 {isExpanded ? description : `${truncatedDescription}...`}
                 {description.length > 200 && (
@@ -164,7 +183,7 @@ const ProductsSingleView: React.FC<ProductsSingleViewProps> = ({ product }) => {
                     {isExpanded ? "See Less" : "See More"}
                   </button>
                 )}
-              </p>
+              </p> */}
             </div>
 
             <div className=" container mx-auto   mt-3   w-full flex flex-row gap-2">

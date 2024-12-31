@@ -20,6 +20,8 @@ import {
 } from "../../Redux/features/produtcs/orderApi";
 import Swal from "sweetalert2";
 import { TCategory, TProduct, TUser } from "../../types";
+import { useGetVendorByIdQuery } from "../../Redux/features/vendor/vendorApi";
+import SkeletonCard from "../../shared/SkeletonCard";
 
 const ShopPage = () => {
   const [page, setPage] = useState(1);
@@ -36,7 +38,9 @@ const ShopPage = () => {
   }>();
   const { data: productsData, isLoading } =
     useGetProductByVendorIdPaginateQuery({ vendorId, page, limit });
-
+  const { data: vendorData } = useGetVendorByIdQuery(vendorId as string);
+  console.log(vendorData);
+  const vendor = vendorData?.data || [];
   const user = useSelector((state: RootState) => state.auth.user as TUser);
   const userId = user?.userId;
   // const userRole = user?.role || [];
@@ -76,8 +80,11 @@ const ShopPage = () => {
 
   if (isLoading)
     return (
-      <div className="text-center py-5">
-        <span className="loading loading-spinner loading-lg"></span>
+      <div className="w-full min-h-screen flex flex-wrap justify-center gap-5 py-5">
+        {/* Render 6 skeleton cards as placeholders */}
+        {Array.from({ length: 5 }).map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
       </div>
     );
   // if (isError) return <div>Error loading products</div>;
@@ -200,7 +207,7 @@ const ShopPage = () => {
         {/* ****************************************************************************************************** */}
         {/* Product welcome banner section */}
         <div
-          className="hero h-32"
+          className="hero h-36"
           style={{
             backgroundImage:
               "url(https://i.postimg.cc/tgj1Lp4Q/pexels-pixabay-531880.jpg)",
@@ -209,10 +216,21 @@ const ShopPage = () => {
           <div className="hero-overlay bg-opacity-40"></div>
           <div className="hero-content text-neutral-content text-center">
             <div className="max-w-lg">
-              <h1 className="mb-2 text-5xl font-bold text-white">{shopName}</h1>
-              <h1 className="  text-2xl lg:text-3xl font-bold text-white">
-                Buy your Suitable Product & Enjoy
-              </h1>
+              <div className="mb-2 text-5xl font-bold text-white">
+                <div className="flex flex-row items-end justify-center gap-2">
+                  <p>
+                    <img
+                      src={vendor.image}
+                      alt=""
+                      className="w-16 h-16 rounded-full"
+                    />
+                  </p>
+                  <p> {shopName}</p>
+                </div>
+                {/* <h1 className="mb-5 text-3xl font-bold text-white">
+                  Buy your Suitable Product & Enjoy
+                </h1> */}
+              </div>
             </div>
           </div>
         </div>
@@ -227,7 +245,7 @@ const ShopPage = () => {
           </div>
           {/* ****************************************************************************************************** */}
           {/* title bar left section */}
-          <div className="w-full  flex flex-row justify-between pb-5 ">
+          <div className="w-full  flex flex-row justify-between pb-5 px-16">
             <div>
               <a className=" text-4xl font-bold underline pl-3">
                 ALL PRODUCTS -
@@ -236,7 +254,7 @@ const ShopPage = () => {
                 </span>
               </a>
             </div>
-            <div className="flex flex-row gap-2 align-middle">
+            <div className="flex flex-row gap-2 align-middle pr-4">
               <span className="text-blue-500 font-bold text-lg">
                 FollowedBY: {followerData?.data?.length || 0}
               </span>

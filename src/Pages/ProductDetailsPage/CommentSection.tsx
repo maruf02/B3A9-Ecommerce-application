@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import {
@@ -26,6 +26,7 @@ type User = {
 
 const CommentSection = ({ productId, vendorId }: pro) => {
   const [rating, setRating] = useState(0);
+  const [averageRating, setAverageRating] = useState<number>(0);
   const user = useSelector((state: RootState) => state.auth.user as User);
   const { data: userData, isLoading } = useGetUserByUserIdQuery(user.userId);
   const { data: vendorData } = useGetVendorByIdQuery(vendorId);
@@ -169,6 +170,18 @@ const CommentSection = ({ productId, vendorId }: pro) => {
     // Swal.fire(`Reply submitted for comment ID: ${commentId} `);
   };
 
+  useEffect(() => {
+    if (comments.length > 0) {
+      const totalRating = comments.reduce(
+        (sum: number, comment: TComment) => sum + comment.rating,
+        0
+      );
+      setAverageRating(totalRating / comments.length);
+    } else {
+      setAverageRating(0);
+    }
+  }, [comments]);
+
   if (isLoading) return <div>Loading...</div>;
   // if (error) return <div>Error loading post details</div>;
 
@@ -177,7 +190,9 @@ const CommentSection = ({ productId, vendorId }: pro) => {
     <div className="w-screen h-fit flex   justify-center bg-gray-200">
       <div className="w-2/3 flex flex-row justify-center ">
         <div className="mt-4 ">
-          <h2 className="text-xl font-semibold mb-2 text-black">Comments</h2>
+          <h2 className="text-xl font-semibold mb-2 text-black">
+            Comments: Average Rating - {averageRating.toFixed(1)}/5
+          </h2>
           <div>
             <label className=" text-black px-2">Ratings:</label>
             <StarRatings

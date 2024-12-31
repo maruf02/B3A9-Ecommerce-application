@@ -12,6 +12,7 @@ import { Pagination } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { TCategory, TProduct } from "../../types";
+import SkeletonCard from "../../shared/SkeletonCard";
 
 const AllProductPage = () => {
   const [page, setPage] = useState(1);
@@ -30,11 +31,14 @@ const AllProductPage = () => {
   const selectedCategory = useSelector(
     (state: RootState) => state.product.selectedCategory
   );
+  // const selectedSearchText = useSelector(
+  //   (state: RootState) => state.product.searchText
+  // );
 
   // redux part
   const {
     data: productsData,
-    isError,
+
     isLoading,
   } = useGetAllProductQueryQuery({ page, limit });
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
@@ -79,13 +83,24 @@ const AllProductPage = () => {
     }
   }, [productsData, selectedCategory]);
 
-  if (isLoading)
-    return (
-      <div className="text-center py-5">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  if (isError) return <div>Error loading products</div>;
+  // useEffect(() => {
+  //   if (productsData?.data) {
+  //     const filteredBySearchText = products.filter(
+  //       (product: TProduct) =>
+  //         product.name.toLowerCase().includes(searchText.toLowerCase()) ||
+  //         product.description.toLowerCase().includes(searchText.toLowerCase())
+  //     );
+  //     setDisplayedProducts(filteredBySearchText);
+  //   }
+  // }, [searchText, products]);
+
+  // if (isLoading)
+  //   return (
+  //     <div className="text-center py-5">
+  //       <span className="loading loading-spinner loading-lg"></span>
+  //     </div>
+  //   );
+  // if (isError) return <div>Error loading products</div>;
 
   const handlePageChange = (page: number, pageSize: number) => {
     setPage(page);
@@ -154,13 +169,23 @@ const AllProductPage = () => {
     setDisplayedProducts(productsData?.data || []); // Reset to initial product list
   };
 
+  // if (isLoading)
+  //   return (
+  //     <div className="text-center py-5">
+  //       <span className="loading loading-spinner loading-lg"></span>
+  //     </div>
+  //   );
+
   if (isLoading)
     return (
-      <div className="text-center py-5">
-        <span className="loading loading-spinner loading-lg"></span>
+      <div className="w-full min-h-screen flex flex-wrap justify-center gap-5 py-5">
+        {/* Render 6 skeleton cards as placeholders */}
+        {Array.from({ length: 10 }).map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
       </div>
     );
-  if (isError) return <div>Error loading products</div>;
+  // if (isError) return <div>Error loading products</div>;
 
   // console.log("Selected :", selectedCategory);
   // console.log("Selected :", selectedPriceAscDesc);
@@ -202,161 +227,7 @@ const AllProductPage = () => {
         {/* title bar left section */}
         {/* ****************************************************************************************************** */}
         {/* ****************************************************************************************************** */}
-        {/* title bar right section */}
-        <div className="flex-none gap-2">
-          {/******************  search *******************/}
-          <form onSubmit={handleSearch}>
-            <div className="dropdown dropdown-bottom text-white dropdown-hover lg:hidden">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn  btn-sm bg-[#1A4870]"
-              >
-                <FaSearch className=" text-xl text-[#F9DBBA]" />
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu border-[#1F316F]  bg-[#1A4870] rounded-box z-[1] w-auto p-2 shadow"
-              >
-                <input
-                  type="text"
-                  name="SearchText"
-                  placeholder="Search By Name/Category"
-                  className="input input-bordered input-primary w-72 max-w-md bg-inherit text-white"
-                />
-                <button className="btn btn-sm bg-[#1A4870] text-white mt-2 ">
-                  Search
-                </button>
-              </ul>
-            </div>
-          </form>
-          {/* ********************* */}
-          <form onSubmit={handleSearch}>
-            <div className="hidden lg:block">
-              <label className="input flex items-center gap-2 bg-[#1A4870] w-auto h-auto">
-                <FaSearch className=" text-xl text-[#F9DBBA]" />
-                <input
-                  type="text"
-                  name="SearchText"
-                  className="input input-sm input-bordered input-[#1A4870] w-60 max-w-md   text-white"
-                  placeholder="Search By Name/Category"
-                />
-                <button className="btn btn-sm bg-[#1A4870] text-white ">
-                  Search
-                </button>
-              </label>
-            </div>
-          </form>
-          {/* ********************************** */}
 
-          {/******************  search *******************/}
-
-          {/* //////// filter by price range /////// */}
-          <form onSubmit={handleSortByPriceRange}>
-            <div className="dropdown md:dropdown-end  text-white dropdown-hover ">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-sm bg-[#1A4870]"
-              >
-                <span className="hidden lg:block text-white">
-                  Filter By Price Range
-                </span>
-                <MdPriceCheck className=" text-3xl text-[#F9DBBA]" />
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu  border-2 border-[#1F316F]  bg-[#1A4870] rounded-box z-[1] w-auto p-2 shadow"
-              >
-                <div className="flex    items-baseline ">
-                  <label className="pr-5 text-md">MinPrice:</label>
-                  <input
-                    type="number"
-                    name="MinPrice"
-                    placeholder="Type here"
-                    className="input input-bordered input-primary  input-sm w-24 max-w-xs text-white bg-inherit"
-                  />
-                </div>
-                <div className="flex items-baseline mt-2 ">
-                  <label className="pr-5 text-md">MaxPrice:</label>
-                  <input
-                    type="number"
-                    name="MaxPrice"
-                    placeholder="Type here"
-                    className="input input-bordered input-primary  input-sm w-24 max-w-xs text-white bg-inherit"
-                  />
-                </div>
-                <button className="btn btn-sm bg-[#1A4870] text-white  h-2 mt-2">
-                  <span className=" text-white">Apply</span>
-                </button>
-              </ul>
-            </div>
-          </form>
-          {/* ////////////////////// */}
-          {/* *******filter by category******** */}
-          <div className="dropdown dropdown-bottom dropdown-end text-white dropdown-hover">
-            <div tabIndex={0} role="button" className="btn btn-sm bg-[#1A4870]">
-              <span className="hidden lg:block text-white">
-                Filter By Category
-              </span>
-              <MdManageSearch className=" text-3xl text-[#F9DBBA]" />
-            </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu border-[#1F316F]  bg-[#1A4870] rounded-box z-[1] w-52 p-2 shadow"
-            >
-              <select
-                onChange={handleSelectChangeCategory}
-                className="select select-bordered w-full  bg-[#1A4870] "
-              >
-                <option disabled defaultValue="Select Category">
-                  Select Category
-                </option>
-                {categories.map((category: TCategory, index: number) => (
-                  <option key={index} value={category.categoryName}>
-                    {category.categoryName}
-                  </option>
-                ))}
-              </select>
-            </ul>
-          </div>
-          {/* *******filter by category******** */}
-          {/* *******filter by price sort low to hight******** */}
-          <div className="dropdown dropdown-bottom dropdown-end text-white dropdown-hover">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-sm  bg-[#1A4870]"
-            >
-              <span className="hidden lg:block text-white">Sort By Price</span>
-              <FaSortNumericDown className=" text-2xl text-[#F9DBBA]" />
-            </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu border-[#1F316F]  bg-[#1A4870] rounded-box z-[1] w-52 p-2 shadow"
-            >
-              <select
-                onChange={handleSelectChangePriceAscDesc}
-                className="select select-bordered w-full bg-[#1A4870]"
-              >
-                <option disabled>Select Option</option>
-                <option value="asc">Price Low to High</option>
-                <option value="desc">Price High to Low</option>
-              </select>
-            </ul>
-          </div>
-          {/* *******filter by category******** */}
-          {/* reset button */}
-          <button
-            onClick={handleReset}
-            className="btn btn-sm bg-[#1A4870] text-white "
-          >
-            <span className="hidden lg:block text-white">Reset</span>
-            <IoMdClose className=" text-2xl text-[#F9DBBA]" />
-          </button>
-          {/* reset button */}
-        </div>
-        {/* title bar right section */}
         {/* ****************************************************************************************************** */}
       </div>
       {/* title bar section */}
@@ -364,33 +235,207 @@ const AllProductPage = () => {
       {/* ****************************************************************************************************** */}
       {/* ************************************all product shown****************************************************************** */}
       <div className="border border-2  "></div>
-      {/* ****************all product shown********************************************* */}
-      <motion.div
-        // whileHover={{ scale: 1.05 }}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 2 }}
-        // className="text-center"
-      >
-        <div className=" px-8 mt-5  w-full h-full my-10   text-black">
-          <div className="flex flex-wrap justify-center align-middle gap-5   ">
-            {displayedProducts.length === 0 ? (
-              <p className="text-green-500 text-3xl font-semibold ">
-                Sorry, Nothing found!!
-              </p>
-            ) : (
-              displayedProducts.map((product: TProduct) => (
-                <ProductsSingleView
-                  key={product.productId}
-                  product={product}
-                ></ProductsSingleView>
-              ))
-            )}
+      {/* title bar right section */}
+      <div className=" w-full h-full flex flex-row gap-0 px-12  ">
+        <div className="w-2/12  pl-8">
+          <div className="w-full flex flex-col flex-none gap-2">
+            {/******************  search *******************/}
+            <form onSubmit={handleSearch}>
+              <div className="dropdown dropdown-bottom text-white dropdown-hover lg:hidden">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn  btn-sm bg-[#1A4870]"
+                >
+                  <FaSearch className=" text-xl text-[#F9DBBA]" />
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu border-[#1F316F]  bg-[#1A4870] rounded-box z-[1] w-auto p-2 shadow"
+                >
+                  <input
+                    type="text"
+                    name="SearchText"
+                    placeholder="Search By Name/Category"
+                    className="input input-bordered input-primary w-72 max-w-md bg-inherit text-white"
+                  />
+                  <button className="btn btn-sm bg-[#1A4870] text-white mt-2 ">
+                    Search
+                  </button>
+                </ul>
+              </div>
+            </form>
+            {/* ********************* */}
+            <div className=" ">
+              <form onSubmit={handleSearch}>
+                <div className="hidden lg:block">
+                  <label className=" flex items-center gap-2 bg-[#1A4870] w-auto h-auto rounded-lg">
+                    {/* <FaSearch className=" text-xl text-[#F9DBBA]" /> */}
+                    <input
+                      type="text"
+                      name="SearchText"
+                      className="input input-sm input-bordered input-[#1A4870] bg-[#1A4870] w-60 max-w-md   text-white"
+                      placeholder="Search By Name/Category"
+                    />
+                    <button className="btn btn-sm bg-[#1A4870] text-white ">
+                      Search
+                    </button>
+                  </label>
+                </div>
+              </form>
+            </div>
+            {/* ********************************** */}
+
+            {/******************  search *******************/}
+
+            {/* //////// filter by price range /////// */}
+            <form onSubmit={handleSortByPriceRange}>
+              <div className="dropdown md:dropdown-end  text-white dropdown-hover ">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-sm bg-[#1A4870]"
+                >
+                  <span className="hidden lg:block text-white">
+                    Filter By Price Range
+                  </span>
+                  <MdPriceCheck className=" text-3xl text-[#F9DBBA]" />
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu  border-2 border-[#1F316F]  bg-[#1A4870] rounded-box z-[1] w-auto p-2 shadow"
+                >
+                  <div className="flex    items-baseline ">
+                    <label className="pr-5 text-md">MinPrice:</label>
+                    <input
+                      type="number"
+                      name="MinPrice"
+                      placeholder="Type here"
+                      className="input input-bordered input-primary  input-sm w-24 max-w-xs text-white bg-inherit"
+                    />
+                  </div>
+                  <div className="flex items-baseline mt-2 ">
+                    <label className="pr-5 text-md">MaxPrice:</label>
+                    <input
+                      type="number"
+                      name="MaxPrice"
+                      placeholder="Type here"
+                      className="input input-bordered input-primary  input-sm w-24 max-w-xs text-white bg-inherit"
+                    />
+                  </div>
+                  <button className="btn btn-sm bg-[#1A4870] text-white  h-2 mt-2">
+                    <span className=" text-white">Apply</span>
+                  </button>
+                </ul>
+              </div>
+            </form>
+            {/* ////////////////////// */}
+            {/* *******filter by category******** */}
+            <div className="dropdown dropdown-bottom dropdown-end text-white dropdown-hover">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-sm bg-[#1A4870]"
+              >
+                <span className="hidden lg:block text-white">
+                  Filter By Category
+                </span>
+                <MdManageSearch className=" text-3xl text-[#F9DBBA]" />
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu border-[#1F316F]  bg-[#1A4870] rounded-box z-[1] w-52 p-2 shadow"
+              >
+                <select
+                  onChange={handleSelectChangeCategory}
+                  className="select select-bordered w-full  bg-[#1A4870] "
+                >
+                  <option disabled defaultValue="Select Category">
+                    Select Category
+                  </option>
+                  {categories.map((category: TCategory, index: number) => (
+                    <option key={index} value={category.categoryName}>
+                      {category.categoryName}
+                    </option>
+                  ))}
+                </select>
+              </ul>
+            </div>
+            {/* *******filter by category******** */}
+            {/* *******filter by price sort low to hight******** */}
+            <div className="dropdown dropdown-bottom dropdown-end text-white dropdown-hover">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-sm  bg-[#1A4870]"
+              >
+                <span className="hidden lg:block text-white">
+                  Sort By Price
+                </span>
+                <FaSortNumericDown className=" text-2xl text-[#F9DBBA]" />
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu border-[#1F316F]  bg-[#1A4870] rounded-box z-[1] w-52 p-2 shadow"
+              >
+                <select
+                  onChange={handleSelectChangePriceAscDesc}
+                  className="select select-bordered w-full bg-[#1A4870]"
+                >
+                  <option disabled>Select Option</option>
+                  <option value="asc">Price Low to High</option>
+                  <option value="desc">Price High to Low</option>
+                </select>
+              </ul>
+            </div>
+            {/* *******filter by category******** */}
+            {/* reset button */}
+            <button
+              onClick={handleReset}
+              className="btn btn-sm bg-[#1A4870] text-white w-fit"
+            >
+              <span className="hidden lg:block text-white">Reset</span>
+              <IoMdClose className=" text-2xl text-[#F9DBBA]" />
+            </button>
+            {/* reset button */}
           </div>
-          {/* *********************** */}
         </div>
-      </motion.div>
-      {/* ****************all product shown********************************************* */}
+
+        {/* title bar right section */}
+        {/* ****************all product shown********************************************* */}
+        <div className="w-10/12  ">
+          <div className="w-full">
+            <motion.div
+              // whileHover={{ scale: 1.05 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2 }}
+              // className="text-center"
+            >
+              <div className=" px-0 mt-5  w-full h-full my-10   text-black">
+                <div className="flex flex-wrap justify-center align-middle gap-5   ">
+                  {displayedProducts.length === 0 ? (
+                    <p className="text-green-500 text-3xl font-semibold ">
+                      Sorry, Nothing found!!
+                    </p>
+                  ) : (
+                    displayedProducts.map((product: TProduct) => (
+                      <ProductsSingleView
+                        key={product.productId}
+                        product={product}
+                      ></ProductsSingleView>
+                    ))
+                  )}
+                </div>
+                {/* *********************** */}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+        {/* ****************all product shown********************************************* */}
+      </div>
+      {/* ****************************************************************************************************** */}
+      {/* ****************************************************************************************************** */}
 
       <div className="container mx-auto w-full flex   justify-center  my-10">
         {/* Pagination */}

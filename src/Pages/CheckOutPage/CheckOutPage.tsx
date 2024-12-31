@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { RootState } from "../../Redux/store";
 import { useCreateOrderMutation } from "../../Redux/features/produtcs/orderApi";
 import { clearCart } from "../../Redux/features/CartItem/cartSlice";
+import { useGetCouponByVendorIdQuery } from "../../Redux/features/vendor/vendorApi";
 
 interface ApiError {
   data?: {
@@ -19,6 +20,15 @@ const CheckOutPage = () => {
   const orderData = useSelector((state: RootState) => state.order.orderData);
   const [createOrder] = useCreateOrderMutation();
 
+  const vendorId = orderData?.vendor?.vendorId || "";
+  const { data: couponData } = useGetCouponByVendorIdQuery(vendorId ?? "", {
+    skip: !vendorId, // Skip the query if vendorId is undefined
+  });
+
+  console.log(couponData);
+  const couponCode = couponData?.data[0]?.couponCode || [];
+  const discountAmount = couponData?.data[0]?.discountAmount || [];
+
   // Extract user, vendor, and items from orderData
   const user = orderData?.user;
 
@@ -26,7 +36,7 @@ const CheckOutPage = () => {
 
   const userId = orderData?.user?.userId || "";
   const userEmail = orderData?.user?.email || "";
-  const vendorId = orderData?.vendor?.vendorId || "";
+
   const vendorEmail = orderData?.vendor?.email || "";
   const shopName = orderData?.vendor?.shopName || "";
   const products = orderData?.items || [];
@@ -105,9 +115,11 @@ const CheckOutPage = () => {
   };
 
   const handleCouponBlur = () => {
-    if (coupon === "amaarPay") {
-      setDiscountedPrice(totalPrice * 0.95);
-      Swal.fire("Coupon code correct. You get a 5% discount.");
+    if (coupon === couponCode) {
+      const discountAmountss = totalPrice * (discountAmount / 100);
+      const discountedPrice = totalPrice - discountAmountss;
+      setDiscountedPrice(discountedPrice);
+      Swal.fire(`Coupon code correct. You get a ${discountAmount}% discount.`);
     } else if (coupon) {
       setDiscountedPrice(totalPrice);
       Swal.fire("Coupon code incorrect.");
@@ -138,7 +150,7 @@ const CheckOutPage = () => {
             Total Price: ${discountedPrice.toFixed(2)}
           </div>
           <div className="text-lg text-blue-500 font-medium ">
-            Use cupon "amaarPay" for less 5%.
+            Use coupon "{couponCode}" for less {discountAmount}%.
           </div>
         </div>
         {/* left */}

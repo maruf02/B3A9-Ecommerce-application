@@ -1,78 +1,73 @@
 import { motion } from "framer-motion";
 import {
   useGetAllCategoryQuery,
-  useGetAllProductQueryQuery,
+  useLazyGetAllProductQuery,
 } from "../../Redux/features/produtcs/productsApi";
 import ProductsSingleView from "../../Components/AllProductPage/ProductsSingleView";
 
 import { useEffect, useState } from "react";
-
+import InfiniteScroll from "react-infinite-scroll-component";
 import { FaSearch, FaSortNumericDown } from "react-icons/fa";
 import { MdManageSearch, MdPriceCheck } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { TCategory, TProduct } from "../../types";
-// import { Pagination } from "antd";
-import SkeletonCard from "../../shared/SkeletonCard";
-import { NavLink } from "react-router-dom";
 
 const AllProductSection = () => {
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
   const [products, setProducts] = useState<TProduct[]>([]);
   const [displayedProducts, setDisplayedProducts] = useState<TProduct[]>([]);
+  const [hasMore, setHasMore] = useState(true);
 
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceAscDesc, setSelectedPriceAscDesc] = useState("");
 
-  console.log(searchText, selectedPriceAscDesc, setLimit, setPage);
+  console.log(searchText, selectedPriceAscDesc);
 
   const { data: categoryData } = useGetAllCategoryQuery(undefined);
   const categories = categoryData?.data || [];
   // Lazy query hook
-  const { data: productsData, isLoading } = useGetAllProductQueryQuery({
-    page,
-    limit,
-  });
+  const [fetchProducts, { data, isLoading, isFetching }] =
+    useLazyGetAllProductQuery();
 
-  if (productsData && productsData.length > 0) {
-    setProducts(productsData.data);
-    setDisplayedProducts(productsData.data);
-  } else if (productsData && productsData.length === 0) {
-    setProducts(productsData.data);
-    setDisplayedProducts(productsData.data);
-  }
-  // const total = productsData?.meta?.total;
+  const fetchedProducts = data?.data || [];
 
+  // Append new products to the products state
   useEffect(() => {
-    if (productsData?.data) {
-      const filteredProducts = productsData?.data.filter(
-        (product: TProduct) =>
-          !selectedCategory || product.category === selectedCategory
-      );
-      setProducts(productsData?.data);
-      setDisplayedProducts(filteredProducts);
+    if (fetchedProducts.length > 0) {
+      setProducts((prevProducts) => [...prevProducts, ...fetchedProducts]);
+      setDisplayedProducts((prevProducts) => [
+        ...prevProducts,
+        ...fetchedProducts,
+      ]);
+      if (fetchedProducts.length < 10) setHasMore(false); // If less than 10 items, assume no more
     }
-  }, [productsData, selectedCategory]);
+  }, [fetchedProducts]);
 
-  if (isLoading)
+  const fetchNextPage = () => {
+    if (!isFetching && hasMore) {
+      setPage((prevPage) => prevPage + 1); // Increment page to load the next batch
+    }
+  };
+
+  // Fetch products when the page changes
+  useEffect(() => {
+    if (hasMore) {
+      fetchProducts(page); // Trigger fetch based on page number
+    }
+  }, [page, fetchProducts, hasMore]);
+
+  if (isLoading) {
     return (
-      <div className="w-full min-h-screen flex flex-wrap justify-center gap-5 py-5">
-        {/* Render 6 skeleton cards as placeholders */}
-        {Array.from({ length: 10 }).map((_, index) => (
-          <SkeletonCard key={index} />
-        ))}
+      <div className="text-center py-5">
+        <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
+  }
 
-  // const handlePageChange = (page: number, pageSize: number) => {
-  //   setPage(page);
-  //   if (pageSize && pageSize !== limit) {
-  //     setLimit(pageSize);
-  //   }
-  // };
-  // pagination***************************************************
-  // pagination***************************************************
+  // if (isError) {
+  //   return <div>Error loading products</div>;
+  // }
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
@@ -139,7 +134,7 @@ const AllProductSection = () => {
       </div>
       {/* title bar right section */}
       <div className="navbar mt-2  flex flex-col md:flex-row gap-2     flex-wrap">
-        <div className="flex-none gap-2 hidden">
+        <div className="flex-none gap-2">
           {/******************  search *******************/}
           <form onSubmit={handleSearch}>
             <div className="dropdown dropdown-bottom text-white dropdown-hover lg:hidden">
@@ -306,20 +301,40 @@ const AllProductSection = () => {
       >
         <div className=" px-0 mt-5  w-full h-full my-10   text-black">
           <div className="flex flex-wrap justify-center align-middle gap-5   ">
-            {/* ************************** */}
-            {displayedProducts.length === 0 ? (
-              <p className="text-green-500 text-3xl font-semibold ">
-                Sorry, Nothing found!!
-              </p>
-            ) : (
-              displayedProducts.map((product: TProduct) => (
-                <ProductsSingleView
-                  key={product.productId}
-                  product={product}
-                ></ProductsSingleView>
-              ))
-            )}
-            {/* ************************** */}
+            <InfiniteScroll
+              dataLength={displayedProducts.length}
+              next={fetchNextPage} // Function to fetch next set of data
+              hasMore={hasMore} // Whether there are more posts to fetch
+              loader={
+                <div className="flex justify-center items-center py-4">
+                  <div className="spinner-border text-blue-500" role="status">
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </div>
+              }
+              endMessage={
+                <p className="text-center text-gray-500">
+                  No more products to load
+                </p>
+              }
+              scrollThreshold={0.95} // Trigger next page when scroll is 95% down
+              scrollableTarget="scrollableDiv" // Target scroll container
+            >
+              <div className="flex flex-wrap justify-center align-middle gap-5">
+                {displayedProducts.length === 0 ? (
+                  <p className="text-green-500 text-3xl font-semibold">
+                    Sorry, Nothing found!!
+                  </p>
+                ) : (
+                  displayedProducts.map((product: TProduct, index: number) => (
+                    <ProductsSingleView
+                      key={`${product.productId}-${index}`}
+                      product={product}
+                    />
+                  ))
+                )}
+              </div>
+            </InfiniteScroll>
           </div>
 
           {/* *********************** */}
@@ -330,23 +345,6 @@ const AllProductSection = () => {
       {/* Loading Spinner */}
 
       {/* ****************all product shown********************************************* */}
-      <NavLink to="/products" className="block w-full">
-        <div className="container mx-auto w-full flex flex-row  justify-center  m-5  ">
-          <button className="btn btn-primary btn-md rounded-lg px-10 text-2xl">
-            See All Product
-          </button>
-
-          {/* Pagination */}
-          {/* <Pagination
-          current={page}
-          pageSize={limit}
-          total={total}
-          onChange={handlePageChange}
-          showSizeChanger={true}
-          pageSizeOptions={["1", "2", "3", "5", "10", "20"]}
-        /> */}
-        </div>
-      </NavLink>
     </div>
   );
 };

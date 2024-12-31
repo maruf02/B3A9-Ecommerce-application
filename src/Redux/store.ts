@@ -16,6 +16,7 @@ import cartReducer from "./features/CartItem/cartSlice";
 import placeOrderReducer from "./features/CartItem/placeOrderSlice";
 import viewReducer from "./features/CartItem/viewSlice";
 import productReducer from "./features/produtcs/productsSlice";
+import wishListReducer from "./features/CartItem/wishListSlice";
 
 const persistConfig = {
   key: "auth",
@@ -36,6 +37,13 @@ const persistConfigView = {
   storage,
   whitelist: ["viewedProducts"],
 };
+
+const persistConfigWishList = {
+  key: "wishList",
+  storage,
+  whitelist: ["wishListProducts"], // Persist the wishlist products
+};
+
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 const persistedCartReducer = persistReducer(persistConfigCart, cartReducer);
 const persistedplaceOrderReducer = persistReducer(
@@ -43,6 +51,10 @@ const persistedplaceOrderReducer = persistReducer(
   placeOrderReducer
 );
 const persistedViewReducer = persistReducer(persistConfigView, viewReducer);
+const persistedWishListReducer = persistReducer(
+  persistConfigWishList,
+  wishListReducer
+);
 
 export const store = configureStore({
   reducer: {
@@ -52,6 +64,7 @@ export const store = configureStore({
     cart: persistedCartReducer,
     order: persistedplaceOrderReducer,
     view: persistedViewReducer,
+    wishList: persistedWishListReducer,
     // placeOrder: placeOrderReducer,
 
     product: productReducer,

@@ -1,16 +1,16 @@
 import { useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
-import { TUser } from "../../types";
+import Swal from "sweetalert2";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { RootState } from "../../../Redux/store";
+import { TUser } from "../../../types";
 import {
   useChangePasswordMutation,
   useGetUserByUserIdQuery,
   useUpdateUserMutation,
-} from "../../Redux/user/userApi";
-import Swal from "sweetalert2";
-import { useState } from "react";
-import { useLoginMutation } from "../../Redux/features/auth/authApi";
-import { useForm } from "react-hook-form";
-import { uploadImageToCloudinary } from "../../shared/UploadImageToCloudinary";
+} from "../../../Redux/user/userApi";
+import { useLoginMutation } from "../../../Redux/features/auth/authApi";
+import { uploadImageToCloudinary } from "../../../shared/UploadImageToCloudinary";
 
 interface FormData {
   shopName: string;
@@ -19,7 +19,7 @@ interface FormData {
   phone: string;
 }
 
-const UserDashBoard = () => {
+const AdminProfilePage = () => {
   const userDataToken =
     (useSelector((state: RootState) => state.auth.user) as TUser) || null;
   const { userId } = userDataToken;
@@ -327,5 +327,4 @@ const UserDashBoard = () => {
     </div>
   );
 };
-
-export default UserDashBoard;
+export default AdminProfilePage;

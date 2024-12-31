@@ -9,9 +9,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import StarRatings from "react-star-ratings";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useGetAllFlashSaleProductQuery } from "../../Redux/features/produtcs/orderApi";
 import { TProduct } from "../../types";
+import SkeletonCard from "../../shared/SkeletonCard";
+import { TbCurrencyTaka } from "react-icons/tb";
 
 const FlashSaleSection = () => {
   const swiperRef = useRef<SwiperType | null>(null);
@@ -32,13 +34,15 @@ const FlashSaleSection = () => {
     swiperRef.current?.autoplay?.start();
   };
 
-  if (isLoading) {
+  if (isLoading)
     return (
-      <div className="text-center py-5">
-        <span className="loading loading-spinner loading-lg"></span>
+      <div className="w-full min-h-screen flex flex-wrap justify-center gap-5 py-5">
+        {/* Render 6 skeleton cards as placeholders */}
+        {Array.from({ length: 5 }).map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
       </div>
     );
-  }
 
   // if (isError) {
   //   return <div>Error loading products</div>;
@@ -53,20 +57,20 @@ const FlashSaleSection = () => {
 
   return (
     <div>
-      <div className="w-full h-full my-5">
+      <div className="w-full h-full my-5 px-10">
         {/* title section */}
         <div className="flex flex-row justify-between py-5">
           <h1 className="text-xl md:text-3xl text-black font-bold pl-5">
             Flash Sale Products:
           </h1>
-          <NavLink to="/products" className="activeNavLink ">
+          <NavLink to="/flashsale" className="activeNavLink ">
             <button className="btn btn-primary btn-sm flex flex-row justify-center align-middle items-center gap-1 mr-5">
               View More
               <FaLongArrowAltRight className="text-black" />
             </button>
           </NavLink>
         </div>
-        <div className="border border-2 border-gray-400 "></div>
+        <div className="border border-2 border-gray-400 mx-5"></div>
         {/* product view section */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -120,42 +124,47 @@ const FlashSaleSection = () => {
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                       >
-                        <div className="card glass w-80">
-                          <figure>
-                            <img
-                              src={product.mimage}
-                              alt="product"
-                              className="w-80 h-60"
-                            />
-                          </figure>
-                          <div className="my-5">
-                            <div className="space-y-0 pl-5">
-                              <div className="badge badge-outline">
-                                {product.category}
-                              </div>
-                              <h2 className="card-title m-0 py-2 text-2xl w-full h-20">
-                                {product.name}
-                              </h2>
-                              <p className="m-0 text-md">
-                                QTY: {product.quantity}pcs
-                              </p>
-                              <div className="flex justify-between align-middle pr-5 pb-3">
-                                <p className="m-0 text-md">
-                                  Price: {product.price}
-                                </p>
-
-                                <StarRatings
-                                  rating={product.ratings}
-                                  starRatedColor="#f39c12"
-                                  numberOfStars={5}
-                                  name="rating"
-                                  starDimension="18px"
-                                  starSpacing="1px"
+                        <Link to={`/ProductDetailsView/${product.productId}`}>
+                          <div className="card glass w-64">
+                            <div className="w-full h-52">
+                              <figure>
+                                <img
+                                  src={product.mimage}
+                                  alt="product"
+                                  className="w-full h-52"
                                 />
+                              </figure>
+                            </div>
+                            <div className="my-5">
+                              <div className="space-y-0 pl-5">
+                                <div className="badge badge-outline">
+                                  {product.category}
+                                </div>
+                                <h2 className="card-title m-0 py-1 text-lg w-full h-20">
+                                  {product.name}
+                                </h2>
+                                {/* <p className="m-0 text-md">
+                                QTY: {product.quantity}pcs
+                              </p> */}
+                                <div className="flex justify-between align-middle pr-5 pb-3">
+                                  <p className="m-0 text-md flex flex-row items-center">
+                                    Price:
+                                    <TbCurrencyTaka /> {product.price}
+                                  </p>
+
+                                  <StarRatings
+                                    rating={product.ratings}
+                                    starRatedColor="#f39c12"
+                                    numberOfStars={5}
+                                    name="rating"
+                                    starDimension="18px"
+                                    starSpacing="1px"
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       </motion.div>
                     </SwiperSlide>
                   ))}
@@ -165,7 +174,7 @@ const FlashSaleSection = () => {
           </div>
         </motion.div>
         {/* product view section */}
-        <div className="flex flex-row justify-between">
+        {/* <div className="flex flex-row justify-between">
           <h1></h1>
           <NavLink to="/flashsale" className="activeNavLink ">
             <button className="btn btn-primary btn-sm flex flex-row justify-center align-middle items-center gap-1 mr-5">
@@ -173,7 +182,7 @@ const FlashSaleSection = () => {
               <FaLongArrowAltRight className="text-black" />
             </button>
           </NavLink>
-        </div>
+        </div> */}
         {/* product view section */}
       </div>
     </div>
