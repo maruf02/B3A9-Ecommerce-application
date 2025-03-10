@@ -32,7 +32,7 @@ const ProductCategory = () => {
         className="text-center"
       >
         {/* category section */}
-        <div className="w-full h-full px-10 ">
+        <div className="w-full h-full md:px-10 ">
           {/* title section */}
           <div className="flex flex-row justify-between py-5">
             <h1 className="text-xl md:text-3xl text-black font-bold pl-5">
@@ -40,7 +40,7 @@ const ProductCategory = () => {
             </h1>
           </div>
           <div className="border border-2 border-gray-400 mx-5 "></div>
-          <div className="flex flex-row justify-center flex-wrap gap-5 pt-8">
+          <div className="flex flex-row justify-center flex-wrap gap-10 py-8">
             {categories.length === 0 ? (
               <p className="text-green-500 text-3xl font-semibold ">
                 Sorry, Nothing found!!
@@ -50,7 +50,7 @@ const ProductCategory = () => {
                 <Link to="/products">
                   <div
                     key={category.categoryId}
-                    className="card bg-transparent w-48 h-48 shadow-xl"
+                    className="  bg-transparent w-48 h-48  "
                     onClick={() => handleCategorySelect(category.categoryName)}
                   >
                     <figure className="px-0 pt-0">

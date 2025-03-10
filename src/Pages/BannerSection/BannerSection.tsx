@@ -54,7 +54,7 @@ const BannerSection = () => {
   //   }
 
   const onSearch = () => {
-    console.log("dfjgjp;");
+    navigate("/products");
   };
   return (
     <div>
@@ -91,22 +91,22 @@ const BannerSection = () => {
                     className="object-cover w-full h-[500px]"
                   />
 
-                  <div className="absolute top-1/3 left-0 md:left-[30%]   text-left text-white z-10 px-12  ">
-                    <h1 className="text-2xl lg:text-5xl font-bold pb-0 text-black">
+                  <div className="absolute top-1/3 left-0 md:left-[30%] lg:left-0   text-left text-white z-10 px-12  ">
+                    <h1 className="text-base md:text-2xl lg:text-5xl font-bold pb-0 text-black">
                       Welcome To PeraCommerce
                     </h1>
-                    <div className="text-xl lg:text-3xl font-semibold text-black  ">
+                    <div className="text-base md:text-xl lg:text-3xl font-semibold text-black  ">
                       Upgrade Your Tech & Life, Shop Now for the Latest
                       Accessories!
                     </div>
-                    <div className="text-xl lg:text-3xl font-semibold text-black  ">
+                    <div className="text-base md:text-xl lg:text-3xl font-semibold text-black  ">
                       Exclusive Deals on Top-Notch Gadgets – Limited Time Offer!
                     </div>
                     <div className="text-xl lg:text-3xl font-semibold text-black my-5">
                       <Search
                         placeholder="search What you want!!!"
                         onSearch={onSearch}
-                        style={{ width: 400, height: "10px" }}
+                        style={{ width: 300, height: "10px" }}
                       />
                     </div>
                     <NavLink to="/products" className="block w-full">

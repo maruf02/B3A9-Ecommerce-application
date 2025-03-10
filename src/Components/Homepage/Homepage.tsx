@@ -43,7 +43,7 @@ const Homepage = () => {
     navigate("/flashsale");
   };
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <BannerSection />
       <OfferBaner />
       <BestSellingPage />
@@ -57,7 +57,7 @@ const Homepage = () => {
       <WhyChooseUsSection />
       <TestimonialSection /> */}
       {showScrollButton && (
-        <div className="fixed bottom-5 right-5 flex flex-row-reverse gap-4">
+        <div className="fixed md:bottom-5 md:right-5 flex flex-row-reverse gap-4">
           <button
             onClick={scrollToTop}
             className="p-3 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition-all"

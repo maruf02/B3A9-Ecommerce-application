@@ -245,9 +245,9 @@ const ShopPage = () => {
           </div>
           {/* ****************************************************************************************************** */}
           {/* title bar left section */}
-          <div className="w-full  flex flex-row justify-between pb-5 px-16">
+          <div className="w-full  flex flex-col md:flex-row lg:flex-row justify-between gap-5 pb-5 px-16">
             <div>
-              <a className=" text-4xl font-bold underline pl-3">
+              <a className="  md:text-4xl font-bold underline pl-3">
                 ALL PRODUCTS -
                 <span className="text-blue-600 text-4xl uppercase pl-2">
                   {shopName}

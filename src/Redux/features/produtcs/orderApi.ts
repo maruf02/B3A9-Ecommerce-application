@@ -36,6 +36,9 @@ const orderApi = baseApi.injectEndpoints({
       }),
     }),
 
+    orderAllProductByVendorEmail: builder.query({
+      query: (email) => `/ordersByVendorEmail/${email}`,
+    }),
     orderProductByVendorEmail: builder.query({
       query: ({ email, page, limit }) =>
         `/ordersProductByVendorEmail/${email}?page=${page}&limit=${limit}`,
@@ -187,4 +190,5 @@ export const {
   useGetVendorByEmailQuery,
   useGetVendorByIdQuery,
   useUpdateVendorMutation,
+  useOrderAllProductByVendorEmailQuery,
 } = orderApi;

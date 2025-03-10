@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaSearch, FaSortNumericDown } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { MdManageSearch, MdPriceCheck } from "react-icons/md";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import ProductsSingleView from "./ProductsSingleView";
 import {
   useGetAllCategoryQuery,
@@ -405,31 +405,31 @@ const AllProductPage = () => {
         {/* ****************all product shown********************************************* */}
         <div className="w-10/12  ">
           <div className="w-full">
-            <motion.div
+            {/* <motion.div
               // whileHover={{ scale: 1.05 }}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 2 }}
               // className="text-center"
-            >
-              <div className=" px-0 mt-5  w-full h-full my-10   text-black">
-                <div className="flex flex-wrap justify-center align-middle gap-5   ">
-                  {displayedProducts.length === 0 ? (
-                    <p className="text-green-500 text-3xl font-semibold ">
-                      Sorry, Nothing found!!
-                    </p>
-                  ) : (
-                    displayedProducts.map((product: TProduct) => (
-                      <ProductsSingleView
-                        key={product.productId}
-                        product={product}
-                      ></ProductsSingleView>
-                    ))
-                  )}
-                </div>
-                {/* *********************** */}
+            > */}
+            <div className=" px-0 mt-5  w-full h-full my-10   text-black">
+              <div className="flex flex-wrap justify-center align-middle gap-5   ">
+                {displayedProducts.length === 0 ? (
+                  <p className="text-green-500 text-3xl font-semibold ">
+                    Sorry, Nothing found!!
+                  </p>
+                ) : (
+                  displayedProducts.map((product: TProduct) => (
+                    <ProductsSingleView
+                      key={product.productId}
+                      product={product}
+                    ></ProductsSingleView>
+                  ))
+                )}
               </div>
-            </motion.div>
+              {/* *********************** */}
+            </div>
+            {/* </motion.div> */}
           </div>
         </div>
         {/* ****************all product shown********************************************* */}

@@ -58,6 +58,7 @@ export type TProduct = {
   image4: string;
   image5: string;
   discount: string;
+  totalPrice: number;
   discountPrice: number;
   isFlashSale: string;
   isDeleted: boolean;

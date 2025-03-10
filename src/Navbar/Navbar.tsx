@@ -54,7 +54,7 @@ const Navbar = () => {
           <button>Home</button>
         </NavLink>
       </li>
-      <li>
+      {/* <li>
         <NavLink to="/recentView" className="activeNavLink ">
           <button>RecentView</button>
         </NavLink>
@@ -63,7 +63,7 @@ const Navbar = () => {
         <NavLink to="/wishList" className="activeNavLink ">
           <button>WishList</button>
         </NavLink>
-      </li>
+      </li> */}
 
       {/* <li>
         <NavLink to="/products" className="activeNavLink ">
@@ -167,6 +167,16 @@ const Navbar = () => {
           <button>Cart</button>
         </NavLink>
       </li>
+      {/* <li>
+        <NavLink to="/recentView" className="activeNavLink ">
+          <button>RecentView</button>
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/wishList" className="activeNavLink ">
+          <button>WishList</button>
+        </NavLink>
+      </li> */}
       <li>
         {user && (
           <NavLink to={`/DashBoard/${user?.role}`} className="activeNavLink ">
@@ -178,7 +188,7 @@ const Navbar = () => {
   );
   return (
     <div className="sticky top-0 z-50">
-      <div className="navbar bg-[#1A4870] text-white px-12">
+      <div className="navbar bg-[#1A4870] text-white md:px-12">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -276,6 +286,16 @@ const Navbar = () => {
               <li className="w-full bg-[#1A4870]">
                 {user ? (
                   <>
+                    <li>
+                      <NavLink to="/recentView" className="activeNavLink ">
+                        <button>RecentView</button>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/wishList" className="activeNavLink ">
+                        <button>WishList</button>
+                      </NavLink>
+                    </li>
                     <button
                       className="text-white btn bg-[#1A4870] hover:bg-[#5B99C2] btn-sm justify-between  z-[10] "
                       onClick={handleLogout}
@@ -290,6 +310,16 @@ const Navbar = () => {
                         Login
                       </button>
                     </Link>
+                    <li>
+                      <NavLink to="/recentView" className="activeNavLink ">
+                        <button>RecentView</button>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/wishList" className="activeNavLink ">
+                        <button>WishList</button>
+                      </NavLink>
+                    </li>
                   </div>
                 )}
               </li>

@@ -90,6 +90,11 @@ const userMenu = (
       </NavLink>
     </li>
     <li>
+      <NavLink to="/DashBoard/user/userProfile" className="activeNavLink ">
+        <button>Profile</button>
+      </NavLink>
+    </li>
+    <li>
       <NavLink to="/" className="activeNavLink ">
         <button>Homepage</button>
       </NavLink>
@@ -135,7 +140,7 @@ const NavBarMobile = () => {
               className="menu menu-sm dropdown-content bg-[#295F98]  rounded-box z-[10] mt-3 w-52 p-2 shadow"
             >
               <li>{email}</li>
-              {role === "Admin" ? (
+              {role === "ADMIN" ? (
                 <>{adminMenu}</>
               ) : role === "VENDOR" ? (
                 <>{vendorMenu}</>

@@ -126,7 +126,7 @@ const NewArrivaleSection = () => {
                           onMouseLeave={handleMouseLeave}
                         >
                           <Link to={`/ProductDetailsView/${product.productId}`}>
-                            <div className="card glass w-64">
+                            <div className="  glass w-64">
                               <div className="w-full h-52">
                                 <figure>
                                   <img

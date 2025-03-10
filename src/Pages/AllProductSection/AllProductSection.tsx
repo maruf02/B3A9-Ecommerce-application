@@ -132,7 +132,7 @@ const AllProductSection = () => {
   };
 
   return (
-    <div className="w-full h-full min-h-screen px-10">
+    <div className="w-full h-full min-h-screen md:px-10">
       {/* title bar left section */}
       <div className="flex-1 ">
         <a className=" text-4xl font-bold underline pl-3">ALL PRODUCTS: </a>

@@ -218,17 +218,39 @@ const ProductDetailsPage = () => {
             <h1 className="text-xl">Available Qty: {product.quantity}</h1>
             <h1 className="flex flex-row align-middle text-xl">
               <span className="pr-2">Require Qty:</span>
-              <input
-                type="number"
-                name="requiredQty"
-                value={requiredQty}
-                onChange={handleQtyChange}
-                disabled={isOutOfStock}
-                min="1"
-                max={product.quantity}
-                placeholder="QTY"
-                className="input input-bordered input-primary  input-sm w-16 max-w-xs text-black text-lg font-semibold bg-inherit "
-              />
+              <div className="flex items-center">
+                <button
+                  onClick={() =>
+                    setRequiredQty((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={requiredQty <= 1 || isOutOfStock}
+                  className="btn btn-sm btn-outline btn-primary mr-1"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  name="requiredQty"
+                  value={requiredQty}
+                  onChange={handleQtyChange}
+                  disabled={isOutOfStock}
+                  min="1"
+                  max={product.quantity}
+                  placeholder="QTY"
+                  className="input input-bordered input-primary  input-sm w-16 max-w-xs text-black text-lg font-semibold bg-inherit "
+                />
+                <button
+                  onClick={() =>
+                    setRequiredQty((prev) =>
+                      Math.min(prev + 1, product.quantity)
+                    )
+                  }
+                  disabled={requiredQty >= product.quantity || isOutOfStock}
+                  className="btn btn-sm btn-outline btn-primary ml-1"
+                >
+                  +
+                </button>
+              </div>
               {isOutOfStock ? (
                 <span className="pl-2 text-red-700 font-normal">
                   Out of Stock

@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RootState } from "../../../Redux/store";
-import { ApiError, TUser } from "../../../types";
+import { TUser } from "../../../types";
 import {
   useChangePasswordMutation,
   useGetUserByUserIdQuery,

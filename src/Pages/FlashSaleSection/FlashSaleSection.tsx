@@ -57,7 +57,7 @@ const FlashSaleSection = () => {
 
   return (
     <div>
-      <div className="w-full h-full my-5 px-10">
+      <div className="w-full h-full my-5 md:px-10">
         {/* title section */}
         <div className="flex flex-row justify-between py-5">
           <h1 className="text-xl md:text-3xl text-black font-bold pl-5">
@@ -77,8 +77,8 @@ const FlashSaleSection = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 2 }}
         >
-          <div className="px-8 mt-5 w-full h-full my-10">
-            <div className="flex flex-wrap justify-center align-middle gap-5">
+          <div className="px-8 mt-5 w-full h-full my-10 ">
+            <div className="flex flex-wrap justify-center align-middle gap-5 px-10">
               {randomProducts.length === 0 ? (
                 <p className="text-green-500 text-3xl font-semibold ">
                   Sorry, Nothing found!!
@@ -125,7 +125,7 @@ const FlashSaleSection = () => {
                         onMouseLeave={handleMouseLeave}
                       >
                         <Link to={`/ProductDetailsView/${product.productId}`}>
-                          <div className="card glass w-64">
+                          <div className="  glass w-64">
                             <div className="w-full h-52">
                               <figure>
                                 <img
